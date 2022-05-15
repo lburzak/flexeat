@@ -1,0 +1,79 @@
+@startuml flexeat-uml
+skinparam linetype ortho
+
+package state {
+    class DishState {
+        +editing: bool
+        +ingredients: List<FilledIngredient>
+    }
+
+    class ProductState {
+        +editing: bool
+        +nutritionFacts: NutritionFacts
+        +packagings: List<PackagingStats>
+        +compatibleArticles: List<String>
+    }
+
+    class FilledIngredient {
+        +articleName: String
+        +weight: int
+        +productName: String
+        +packagingWeight: int
+        +nutritionFacts: NutritionFacts
+        +cost: int
+    }
+
+    class ListedProduct {
+        +productName: String
+        +packagingWeight: int
+        +nutritionFacts: NutritionFacts
+    }
+
+    class PackagingStats {
+        +weight: int
+        +lastPrice: int
+    }
+
+    DishState --* FilledIngredient
+    ProductState --* PackagingStats
+}
+
+package presentation {
+    class DishesListBloc {
+    +state: List<Dish>
+    }
+
+    class DishBloc {
+        +state: DishState
+    }
+
+    class ProductsListBloc {
+        +state: List<ListedProduct>
+    }
+
+    class ProductBloc {
+        +state: ProductState
+        +toggleEditing(): void
+        +reportPrice(price: int): void
+        +addPackaging(weight: int): void
+    }
+    
+    DishBloc --o DishState
+    ProductsListBloc --o ListedProduct
+    ProductBloc --o ProductState
+}
+
+package domain {
+    entity NutritionFacts {
+        +calories: int
+        +proteinsPercent: int
+    }
+    
+    entity Dish {
+        +name: String
+    }
+}
+
+DishesListBloc --o Dish
+ProductState --o NutritionFacts
+@enduml

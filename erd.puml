@@ -1,0 +1,42 @@
+@startuml flexeat-erd
+skinparam linetype ortho
+  skinparam packageStyle rectangle
+  skinparam shadowing false
+  skinparam class {
+    BackgroundColor White
+    BorderColor Black
+    ArrowColor Black
+  }
+  hide circle
+  class Price {
+    + int value
+    + datetime reportDate
+  }
+  class Packaging {
+    + int netWeight
+    + string ean
+  }
+  class Nutrition {
+    + int calories
+    + int proteins
+  }
+  class Ingredient {
+    + int weight
+  }
+  class Dish {
+    + int portions
+  }
+
+  Dish }|--|{ Ingredient
+  Ingredient ||--|| Article
+  Packaging ||--|{ Price
+  Article }|--|{ Product
+  Nutrition ||--|| Product
+  Packaging }|--|| Product
+  Meal }|--|{ Dish
+  ' packaging = ingredient.article.product.packaging
+  ' packagingPricePerGram = packaging.price.value / packaging.netWeight
+  ' ingredientPrice = packagingPricePerGram * ingredient.weight
+  ' portionPrice = ingredients.prices.sum / dish.portions
+  '
+@enduml

@@ -1,0 +1,43 @@
+Table dish {
+  id int [pk, increment]
+  name varchar [not null]
+  portions int
+}
+
+Table article {
+  id int [pk, increment]
+  name varchar [not null]
+}
+
+Table ingredient {
+  id int [pk, increment]
+  weight int [null]
+  dish_id int [ref: > dish.id, not null]
+  article_id int [ref: > article.id, not null]
+}
+
+Table product {
+  id int [pk, increment]
+  name varchar [not null]
+  calories int [null]
+  proteins int [null]
+}
+
+Table substitute {
+  id int [pk, increment]
+  article_id int [ref: > article.id]
+  product_id int [ref: > product.id]
+}
+
+Table packaging {
+  id int [pk, increment]
+  product_id int [ref: > product.id, not null]
+  ean varchar [null]
+  int netWeight [not null]
+}
+
+Table price {
+  id int [pk, increment]
+  packaging_id int [ref: > packaging.id, not null]
+  value int [not null]
+}
