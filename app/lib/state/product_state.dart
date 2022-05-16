@@ -9,12 +9,14 @@ class ProductState {
   final NutritionFacts? nutritionFacts;
   final List<String> compatibleArticles;
   final List<PackagingStats> packagings;
+  final bool loading;
 
   const ProductState({
     this.productName = "",
     this.nutritionFacts,
     this.compatibleArticles = const [],
     this.packagings = const [],
+    this.loading = false,
   });
 
   ProductState copyWith({
@@ -22,12 +24,14 @@ class ProductState {
     NutritionFacts? nutritionFacts,
     List<String>? compatibleArticles,
     List<PackagingStats>? packagings,
+    bool? loading,
   }) {
     return ProductState(
       productName: productName ?? this.productName,
       nutritionFacts: nutritionFacts ?? this.nutritionFacts,
       compatibleArticles: compatibleArticles ?? this.compatibleArticles,
       packagings: packagings ?? this.packagings,
+      loading: loading ?? this.loading,
     );
   }
 }
