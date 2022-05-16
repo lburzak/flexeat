@@ -39,28 +39,30 @@ package state {
 }
 
 package presentation {
-    class DishesListBloc {
-    +state: List<Dish>
+    class DishesListCubit {
+        +state: List<Dish>
     }
 
-    class DishBloc {
+    class DishCubit {
         +state: DishState
     }
 
-    class ProductsListBloc {
+    class ProductsListCubit {
         +state: List<ListedProduct>
     }
 
-    class ProductBloc {
+    class ProductCubit {
         +state: ProductState
-        +toggleEditing(): void
+        +edit(): void
+        +save(): void
+        +setName(name: String): void
         +reportPrice(price: int): void
         +addPackaging(weight: int): void
     }
     
-    DishBloc --o DishState
-    ProductsListBloc --o ListedProduct
-    ProductBloc --o ProductState
+    DishCubit --o DishState
+    ProductsListCubit --o ListedProduct
+    ProductCubit --o ProductState
 }
 
 package domain {
@@ -74,6 +76,6 @@ package domain {
     }
 }
 
-DishesListBloc --o Dish
+DishesListCubit --o Dish
 ProductState --o NutritionFacts
 @enduml
