@@ -1,5 +1,5 @@
 import 'package:flexeat/bloc/product_cubit.dart';
-import 'package:flexeat/product_page.dart';
+import 'package:flexeat/ui/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
