@@ -7,13 +7,6 @@ package state {
         +ingredients: List<FilledIngredient>
     }
 
-    class ProductState {
-        +editing: bool
-        +nutritionFacts: NutritionFacts
-        +packagings: List<PackagingStats>
-        +compatibleArticles: List<String>
-    }
-
     class FilledIngredient {
         +articleName: String
         +weight: int
@@ -29,13 +22,7 @@ package state {
         +nutritionFacts: NutritionFacts
     }
 
-    class PackagingStats {
-        +weight: int
-        +lastPrice: int
-    }
-
     DishState --* FilledIngredient
-    ProductState --* PackagingStats
 }
 
 package presentation {
@@ -53,11 +40,13 @@ package presentation {
 
     class ProductCubit {
         +state: ProductState
-        +edit(): void
         +save(): void
         +setName(name: String): void
-        +reportPrice(price: int): void
-        +addPackaging(weight: int): void
+        +addPackaging(label: String, weight: int): void
+    }
+
+    class PriceCubit {
+        +reportPrice(price: int, storeName: String): void
     }
     
     DishCubit --o DishState
@@ -74,8 +63,47 @@ package domain {
     entity Dish {
         +name: String
     }
+
+    entity Product {
+        +id: int
+        +name: String
+        +nutritionFacts: NutritionFacts?
+        +packagings: List<Packaging>
+        +supplies: List<String>
+    }
+
+    entity Packaging {
+        +id: int
+        +label: String
+        +weight: int
+    }
+
+    entity Price {
+        +id: int
+        +value: int
+        +reportDate: DateTime
+        +store: String
+    }
+
+    interface ProductRepository {
+        +create(product: Product): Future<Product>
+        +update(product: Product): Future<void>
+        +findById(): Future<Product>
+    }
+
+    interface PriceRepository {
+        +getLastPriceByPackagingId(packagingId: int): Future<Price>
+    }
+
+    ProductRepository -- Product
+    Product --* Packaging
+    Product --o NutritionFacts
+    PriceRepository -- Price
 }
 
+ProductState --* Product
 DishesListCubit --o Dish
 ProductState --o NutritionFacts
+ProductCubit --* ProductRepository
+PriceCubit --* PriceRepository
 @enduml

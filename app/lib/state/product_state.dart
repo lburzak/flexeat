@@ -1,5 +1,5 @@
 import 'package:flexeat/domain/nutrition_facts.dart';
-import 'package:flexeat/state/packaging_stats.dart';
+import 'package:flexeat/domain/packaging.dart';
 import 'package:meta/meta.dart';
 
 
@@ -8,7 +8,7 @@ class ProductState {
   final String productName;
   final NutritionFacts? nutritionFacts;
   final List<String> compatibleArticles;
-  final List<PackagingStats> packagings;
+  final List<Packaging> packagings;
   final bool loading;
 
   const ProductState({
@@ -23,7 +23,7 @@ class ProductState {
     String? productName,
     NutritionFacts? nutritionFacts,
     List<String>? compatibleArticles,
-    List<PackagingStats>? packagings,
+    List<Packaging>? packagings,
     bool? loading,
   }) {
     return ProductState(

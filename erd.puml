@@ -8,21 +8,27 @@ skinparam linetype ortho
     ArrowColor Black
   }
   hide circle
+
   class Price {
     + int value
     + datetime reportDate
+    + string store
   }
+
   class Packaging {
     + int netWeight
     + string ean
   }
+
   class Nutrition {
     + int calories
     + int proteins
   }
+
   class Ingredient {
     + int weight
   }
+
   class Dish {
     + int portions
   }
