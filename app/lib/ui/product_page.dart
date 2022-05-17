@@ -1,7 +1,7 @@
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
-import 'package:flexeat/ui/circle_button.dart';
 import 'package:flexeat/state/product_state.dart';
+import 'package:flexeat/ui/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -56,21 +56,35 @@ class _ProductPageState extends State<ProductPage> {
                       ))
               : Text(context.select<ProductCubit, String>(
                   (cubit) => cubit.state.productName)),
-          Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                      onPressed: () {},
-                      child: Text(
-                        "Add nutrition facts".toUpperCase(),
-                        style: const TextStyle(fontSize: 12),
-                      )))),
+          _editing
+              ? Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                          onPressed: () {},
+                          child: Text(
+                            "Add nutrition facts".toUpperCase(),
+                            style: const TextStyle(fontSize: 12),
+                          ))))
+              : const SizedBox.shrink(),
           BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) => Row(
                     children: state.packagings
                         .map((packaging) => PackagingChip(packaging))
-                        .toList(growable: false),
+                        .cast<Widget>()
+                        .followedBy([
+                      _editing
+                          ? Padding(
+                              padding: const EdgeInsets.only(left: 8),
+                              child: CircleButton(
+                                size: 36,
+                                icon: Icons.add,
+                                onPressed: () => _addPackaging(context),
+                              ),
+                            )
+                          : const SizedBox.shrink()
+                    ]).toList(growable: false),
                   )),
           const Spacer(),
           _editing
@@ -91,10 +105,6 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     const SizedBox(
                       width: 12,
-                    ),
-                    CircleButton(
-                      icon: Icons.add,
-                      onPressed: () => _addPackaging(context),
                     ),
                     const Spacer(),
                     CircleButton(
@@ -124,7 +134,9 @@ class PackagingChip extends StatelessWidget {
         child: Row(
           children: [
             Text(packaging.label),
-            const SizedBox(width: 8,),
+            const SizedBox(
+              width: 8,
+            ),
             Text("${packaging.weight} g"),
           ],
         ),
