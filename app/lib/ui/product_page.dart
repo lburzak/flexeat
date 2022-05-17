@@ -1,4 +1,5 @@
 import 'package:flexeat/bloc/product_cubit.dart';
+import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/ui/circle_button.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter/material.dart';
@@ -36,8 +37,7 @@ class _ProductPageState extends State<ProductPage> {
     showDialog(
         context: context,
         builder: (context) => PackagingInputDialog(
-              onSubmit: (weight, label) =>
-                  cubit.addPackaging(weight, label),
+              onSubmit: (weight, label) => cubit.addPackaging(weight, label),
             ));
   }
 
@@ -66,6 +66,12 @@ class _ProductPageState extends State<ProductPage> {
                         "Add nutrition facts".toUpperCase(),
                         style: const TextStyle(fontSize: 12),
                       )))),
+          BlocBuilder<ProductCubit, ProductState>(
+              builder: (context, state) => Row(
+                    children: state.packagings
+                        .map((packaging) => PackagingChip(packaging))
+                        .toList(growable: false),
+                  )),
           const Spacer(),
           _editing
               ? Row(
@@ -98,6 +104,30 @@ class _ProductPageState extends State<ProductPage> {
                   ],
                 )
         ],
+      ),
+    );
+  }
+}
+
+class PackagingChip extends StatelessWidget {
+  final Packaging packaging;
+
+  const PackagingChip(this.packaging, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Theme.of(context).colorScheme.primary,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(300)),
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Row(
+          children: [
+            Text(packaging.label),
+            const SizedBox(width: 8,),
+            Text("${packaging.weight} g"),
+          ],
+        ),
       ),
     );
   }

@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
             scaffoldBackgroundColor: colorScheme.background,
             iconTheme: IconThemeData(color: colorScheme.onBackground),
             buttonTheme: const ButtonThemeData(colorScheme: colorScheme),
+            textTheme: Typography.whiteMountainView,
             colorScheme: colorScheme),
         home: Scaffold(
             body: BlocProvider(
