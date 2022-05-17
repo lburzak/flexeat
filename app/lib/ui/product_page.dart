@@ -21,13 +21,24 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _stopEditing() {
+    _save();
     setState(() {
       _editing = false;
     });
   }
 
-  void save() {
+  void _save() {
     context.read<ProductCubit>().save();
+  }
+
+  void _addPackaging(BuildContext context) {
+    final cubit = context.read<ProductCubit>();
+    showDialog(
+        context: context,
+        builder: (context) => PackagingInputDialog(
+              onSubmit: (weight, label) =>
+                  cubit.addPackaging(weight, label),
+            ));
   }
 
   @override
@@ -37,11 +48,13 @@ class _ProductPageState extends State<ProductPage> {
       child: Column(
         children: [
           _editing
-              ? BlocBuilder<ProductCubit, ProductState>(builder: (context, state) => TextFormField(
-            initialValue: state.productName,
-            onChanged: (text) => context.read<ProductCubit>().setName(text),
-          )
-            )              : Text(context.select<ProductCubit, String>(
+              ? BlocBuilder<ProductCubit, ProductState>(
+                  builder: (context, state) => TextFormField(
+                        initialValue: state.productName,
+                        onChanged: (text) =>
+                            context.read<ProductCubit>().setName(text),
+                      ))
+              : Text(context.select<ProductCubit, String>(
                   (cubit) => cubit.state.productName)),
           Padding(
               padding: const EdgeInsets.all(16.0),
@@ -75,7 +88,7 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     CircleButton(
                       icon: Icons.add,
-                      onPressed: () {},
+                      onPressed: () => _addPackaging(context),
                     ),
                     const Spacer(),
                     CircleButton(
@@ -87,5 +100,57 @@ class _ProductPageState extends State<ProductPage> {
         ],
       ),
     );
+  }
+}
+
+class PackagingInputDialog extends StatefulWidget {
+  final void Function(int weight, String label)? onSubmit;
+
+  const PackagingInputDialog({Key? key, this.onSubmit}) : super(key: key);
+
+  @override
+  State<PackagingInputDialog> createState() => _PackagingInputDialogState();
+}
+
+class _PackagingInputDialogState extends State<PackagingInputDialog> {
+  String _label = "";
+  String _weight = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text("New packaging"),
+      content: Column(
+        children: [
+          TextFormField(
+            onChanged: _changeLabel,
+          ),
+          TextFormField(
+            onChanged: _changeWeight,
+          ),
+        ],
+      ),
+      actions: [TextButton(onPressed: _submit, child: const Text("Add"))],
+    );
+  }
+
+  void _changeLabel(String text) {
+    setState(() {
+      _label = text;
+    });
+  }
+
+  void _changeWeight(String text) {
+    setState(() {
+      _weight = text;
+    });
+  }
+
+  void _submit() {
+    int weight = int.tryParse(_weight) ?? 0;
+
+    widget.onSubmit?.call(weight, _label);
+
+    Navigator.of(context).pop();
   }
 }
