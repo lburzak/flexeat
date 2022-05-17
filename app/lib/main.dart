@@ -3,6 +3,8 @@ import 'package:flexeat/ui/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'data/in_memory_product_repository.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -27,7 +29,7 @@ class MyApp extends StatelessWidget {
             colorScheme: colorScheme),
         home: Scaffold(
             body: BlocProvider(
-          create: (_) => ProductCubit(),
+          create: (_) => ProductCubit(InMemoryProductRepository()),
           child: const ProductPage(),
         )));
   }
