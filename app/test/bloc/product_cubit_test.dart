@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flexeat/bloc/product_cubit.dart';
+import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -88,31 +89,56 @@ void main() {
       expect(cubit.state.loading, isFalse);
     });
 
-    test('state is fetched from repository', () async {
-      dataCompleter.complete(existingProduct);
-      await dataCompleter.future;
-      expect(cubit.state.productName, equals(existingProduct.name));
-    });
+    group('after data is fetched', () {
+      setUp(() async {
+        dataCompleter.complete(existingProduct);
+        await dataCompleter.future;
+      });
 
-    test('.save() updates existing product', () async {
-      dataCompleter.complete(existingProduct);
-      await dataCompleter.future;
-      const updatedName = "Updated name";
-      cubit.setName(updatedName);
-      cubit.save();
-      verify(productRepository
-          .update(Product(id: existingProduct.id, name: updatedName)));
-    });
+      test('state is fetched from repository', () async {
+        expect(cubit.state.productName, equals(existingProduct.name));
+      });
 
-    test('.save() properly changes loading', () async {
-      dataCompleter.complete(existingProduct);
-      await dataCompleter.future;
-      expect(cubit.state.loading, isFalse);
-      cubit.save();
-      expect(cubit.state.loading, isTrue);
-      updateCompleter.complete();
-      await updateCompleter.future;
-      expect(cubit.state.loading, isFalse);
+      test('.save() updates existing product', () async {
+        const updatedName = "Updated name";
+        cubit.setName(updatedName);
+        cubit.save();
+        verify(productRepository
+            .update(Product(id: existingProduct.id, name: updatedName)));
+      });
+
+      test('.save() properly changes loading', () async {
+        expect(cubit.state.loading, isFalse);
+        cubit.save();
+        expect(cubit.state.loading, isTrue);
+        updateCompleter.complete();
+        await updateCompleter.future;
+        expect(cubit.state.loading, isFalse);
+      });
+
+      const weight = 300;
+      const label = "Box";
+      const packaging = Packaging(weight: weight, label: label);
+
+      test('.addPackaging() updates packagings list', () async {
+        cubit.addPackaging(weight, label);
+        expect(cubit.state.packagings, contains(packaging));
+      });
+
+      test('.addPackaging() updates product in repository', () async {
+        cubit.addPackaging(weight, label);
+        const expectedPackagings = [packaging];
+        verify(productRepository.update(argThat(
+            equals(existingProduct.copyWith(packagings: expectedPackagings)))));
+      });
+
+      test('.addPackaging() handles loading state properly', () async {
+        cubit.addPackaging(weight, label);
+        expect(cubit.state.loading, isTrue);
+        updateCompleter.complete();
+        await updateCompleter.future;
+        expect(cubit.state.loading, isFalse);
+      });
     });
   });
 

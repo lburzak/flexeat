@@ -2,6 +2,7 @@ import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../domain/packaging.dart';
 import '../domain/product.dart';
 
 class ProductCubit extends Cubit<ProductState> {
@@ -46,7 +47,28 @@ class ProductCubit extends Cubit<ProductState> {
 
   void reportPrice(int price) {}
 
-  void addPackaging(int weight) {}
+  void addPackaging(int weight, String label) {
+    final packaging = Packaging(
+      weight: weight,
+      label: label
+    );
+
+    final List<Packaging> packagings = List.from(state.packagings);
+    packagings.add(packaging);
+
+    final product = Product(
+        id: _productId!,
+        name: state.productName,
+        packagings: packagings
+    );
+
+    emit(state.copyWith(loading: true));
+    _productRepository.update(product).then((_) {
+      emit(state.copyWith(loading: false));
+    });
+
+    emit(state.copyWith(packagings: product.packagings));
+  }
 
   void setName(String text) {
     emit(state.copyWith(productName: text));
