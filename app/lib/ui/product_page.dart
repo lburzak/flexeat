@@ -46,42 +46,55 @@ class _ProductPageState extends State<ProductPage> {
     return Padding(
       padding: const EdgeInsets.only(left: 24, right: 24, top: 64, bottom: 24),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _editing
-              ? BlocBuilder<ProductCubit, ProductState>(
-                  builder: (context, state) => TextFormField(
-                        initialValue: state.productName,
-                        onChanged: (text) =>
-                            context.read<ProductCubit>().setName(text),
-                      ))
-              : Text(context.select<ProductCubit, String>(
-                  (cubit) => cubit.state.productName)),
-          _editing
-              ? Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                          onPressed: () {},
-                          child: Text(
-                            "Add nutrition facts".toUpperCase(),
-                            style: const TextStyle(fontSize: 12),
-                          ))))
-              : const SizedBox.shrink(),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 32.0),
+            child: _editing
+                ? BlocBuilder<ProductCubit, ProductState>(
+                    builder: (context, state) => TextFormField(
+                          style: Theme.of(context).textTheme.headline5,
+                          initialValue: state.productName,
+                          onChanged: (text) =>
+                              context.read<ProductCubit>().setName(text),
+                        ))
+                : Text(
+                    context.select<ProductCubit, String>(
+                        (cubit) => cubit.state.productName),
+                    style: Theme.of(context).textTheme.headline1),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 32),
+            child: _editing
+                ? Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                            onPressed: () {},
+                            child: Text(
+                              "Add nutrition facts".toUpperCase(),
+                              style: const TextStyle(fontSize: 12),
+                            ))))
+                : const SizedBox.shrink(),
+          ),
           BlocBuilder<ProductCubit, ProductState>(
               builder: (context, state) => Row(
                     children: state.packagings
                         .map((packaging) => PackagingChip(packaging))
                         .cast<Widget>()
+                        .expand((element) => [
+                              element,
+                              const SizedBox(
+                                width: 8,
+                              )
+                            ])
                         .followedBy([
                       _editing
-                          ? Padding(
-                              padding: const EdgeInsets.only(left: 8),
-                              child: CircleButton(
-                                size: 36,
-                                icon: Icons.add,
-                                onPressed: () => _addPackaging(context),
-                              ),
+                          ? CircleButton(
+                              size: 34,
+                              icon: Icons.add,
+                              onPressed: () => _addPackaging(context),
                             )
                           : const SizedBox.shrink()
                     ]).toList(growable: false),
@@ -130,8 +143,10 @@ class PackagingChip extends StatelessWidget {
       color: Theme.of(context).colorScheme.primary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(300)),
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(packaging.label),
             const SizedBox(
@@ -162,14 +177,38 @@ class _PackagingInputDialogState extends State<PackagingInputDialog> {
   Widget build(BuildContext context) {
     return AlertDialog(
       title: const Text("New packaging"),
+      scrollable: true,
       content: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
           TextFormField(
+            decoration: const InputDecoration(
+                labelText: "Label",
+                hintText: "e.g. Box",
+                prefixIcon: Icon(Icons.inventory)),
             onChanged: _changeLabel,
           ),
           TextFormField(
+            decoration: const InputDecoration(
+                labelText: "Net weight",
+                suffixText: "grams",
+                prefixIcon: Icon(Icons.scale)),
+            keyboardType: TextInputType.number,
             onChanged: _changeWeight,
           ),
+          const SizedBox(height: 40),
+          TextFormField(
+            decoration: InputDecoration(
+                helperText: "Optional",
+                labelText: "EAN",
+                prefixIcon: const Icon(Icons.qr_code),
+                suffixIcon: InkWell(
+                  child: const Icon(Icons.photo_camera),
+                  onTap: () {},
+                )),
+            keyboardType: TextInputType.number,
+            onChanged: _changeLabel,
+          )
         ],
       ),
       actions: [TextButton(onPressed: _submit, child: const Text("Add"))],
