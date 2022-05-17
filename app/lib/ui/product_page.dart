@@ -1,7 +1,6 @@
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/state/product_state.dart';
-import 'package:flexeat/ui/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,7 +31,7 @@ class _ProductPageState extends State<ProductPage> {
     context.read<ProductCubit>().save();
   }
 
-  void _addPackaging(BuildContext context) {
+  void _showPackagingDialog(BuildContext context) {
     final cubit = context.read<ProductCubit>();
     showDialog(
         context: context,
@@ -63,66 +62,86 @@ class _ProductPageState extends State<ProductPage> {
                         (cubit) => cubit.state.productName),
                     style: Theme.of(context).textTheme.headline1),
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 32),
-            child: _editing
-                ? Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: SizedBox(
+          _editing
+              ? Column(
+                  children: [
+                    Row(
+                      children: const [
+                        Icon(Icons.local_dining),
+                        SizedBox(
+                          width: 12,
+                        ),
+                        Text("Nutrition facts")
+                      ],
+                    ),
+                    SizedBox(
                         width: double.infinity,
                         child: ElevatedButton(
                             onPressed: () {},
                             child: Text(
-                              "Add nutrition facts".toUpperCase(),
-                              style: const TextStyle(fontSize: 12),
-                            ))))
-                : const SizedBox.shrink(),
+                              "Add".toUpperCase(),
+                            ))),
+                  ],
+                )
+              : const SizedBox.shrink(),
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 12),
+                child: Row(
+                  children: const [
+                    Icon(Icons.inventory),
+                    SizedBox(
+                      width: 12,
+                    ),
+                    Text("Packagings")
+                  ],
+                ),
+              ),
+              BlocBuilder<ProductCubit, ProductState>(
+                  builder: (context, state) => Row(
+                        children: state.packagings
+                            .map((packaging) => PackagingChip(packaging))
+                            .cast<Widget>()
+                            .expand((element) => [
+                                  element,
+                                  const SizedBox(
+                                    width: 8,
+                                  )
+                                ])
+                            .toList(growable: false),
+                      )),
+            ],
           ),
-          BlocBuilder<ProductCubit, ProductState>(
-              builder: (context, state) => Row(
-                    children: state.packagings
-                        .map((packaging) => PackagingChip(packaging))
-                        .cast<Widget>()
-                        .expand((element) => [
-                              element,
-                              const SizedBox(
-                                width: 8,
-                              )
-                            ])
-                        .followedBy([
-                      _editing
-                          ? CircleButton(
-                              size: 34,
-                              icon: Icons.add,
-                              onPressed: () => _addPackaging(context),
-                            )
-                          : const SizedBox.shrink()
-                    ]).toList(growable: false),
-                  )),
           const Spacer(),
           _editing
               ? Row(
                   children: [
+                    FloatingActionButton.extended(
+                      onPressed: () => _showPackagingDialog(context),
+                      icon: const Icon(Icons.shopping_bag),
+                      label: Text("Add packaging".toUpperCase()),
+                    ),
                     const Spacer(),
-                    CircleButton(
-                      icon: Icons.save,
+                    FloatingActionButton(
                       onPressed: _stopEditing,
+                      child: const Icon(Icons.save),
                     ),
                   ],
                 )
               : Row(
                   children: [
-                    CircleButton(
-                      icon: Icons.attach_money,
+                    FloatingActionButton(
                       onPressed: () {},
+                      child: const Icon(Icons.attach_money),
                     ),
                     const SizedBox(
                       width: 12,
                     ),
                     const Spacer(),
-                    CircleButton(
-                      icon: Icons.edit,
+                    FloatingActionButton(
                       onPressed: _startEditing,
+                      child: const Icon(Icons.edit),
                     ),
                   ],
                 )
@@ -143,12 +162,18 @@ class PackagingChip extends StatelessWidget {
       color: Theme.of(context).colorScheme.primary,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(300)),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(packaging.label),
+            Text(
+              packaging.label,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2
+                  ?.copyWith(fontWeight: FontWeight.bold),
+            ),
             const SizedBox(
               width: 8,
             ),

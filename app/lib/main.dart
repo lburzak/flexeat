@@ -10,12 +10,12 @@ void main() {
   runApp(const MyApp());
 }
 
-const colorScheme = ColorScheme.light(
-    background: Color(0xff1E88E5),
+final colorScheme = ColorScheme.light(
+    background: Colors.blue.shade600,
     primary: Color(0xff006DB3),
     onBackground: Colors.white);
 
-final textTheme = GoogleFonts.tajawalTextTheme(ThemeData.light().textTheme);
+final textTheme = GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme);
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -26,9 +26,12 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: ThemeData(
             primarySwatch: Colors.blue,
+            floatingActionButtonTheme: FloatingActionButtonThemeData(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onBackground),
             scaffoldBackgroundColor: colorScheme.background,
             iconTheme: IconThemeData(color: colorScheme.onBackground),
-            buttonTheme: const ButtonThemeData(colorScheme: colorScheme),
+            buttonTheme: ButtonThemeData(colorScheme: colorScheme),
             textTheme: textTheme.copyWith(
                 headline1: textTheme.headline1?.copyWith(
                   fontSize: 32,
