@@ -56,18 +56,20 @@ class ProductCubit extends Cubit<ProductState> {
     final List<Packaging> packagings = List.from(state.packagings);
     packagings.add(packaging);
 
-    final product = Product(
-        id: _productId!,
-        name: state.productName,
-        packagings: packagings
-    );
+    if (_productId != null) {
+      final product = Product(
+          id: _productId!,
+          name: state.productName,
+          packagings: packagings
+      );
 
-    emit(state.copyWith(loading: true));
-    _productRepository.update(product).then((_) {
-      emit(state.copyWith(loading: false));
-    });
+      emit(state.copyWith(loading: true));
+      _productRepository.update(product).then((_) {
+        emit(state.copyWith(loading: false));
+      });
+    }
 
-    emit(state.copyWith(packagings: product.packagings));
+    emit(state.copyWith(packagings: packagings));
   }
 
   void setName(String text) {

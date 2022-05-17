@@ -16,6 +16,9 @@ void main() {
   late MockProductRepository productRepository;
 
   const name = "Test name";
+  const weight = 300;
+  const label = "Box";
+  const packaging = Packaging(weight: weight, label: label);
 
   setUp(() {
     productRepository = MockProductRepository();
@@ -61,6 +64,16 @@ void main() {
       expect(cubit.state.loading, isTrue);
       verify(productRepository.create(const Product(id: 0, name: name)))
           .called(1);
+    });
+
+    test('.addPackaging() updates packagings list', () async {
+      cubit.addPackaging(weight, label);
+      expect(cubit.state.packagings, contains(packaging));
+    });
+
+    test('.addPackaging() does not update product in repository', () async {
+      cubit.addPackaging(weight, label);
+      verifyNever(productRepository.update(any));
     });
   });
 
@@ -115,10 +128,6 @@ void main() {
         await updateCompleter.future;
         expect(cubit.state.loading, isFalse);
       });
-
-      const weight = 300;
-      const label = "Box";
-      const packaging = Packaging(weight: weight, label: label);
 
       test('.addPackaging() updates packagings list', () async {
         cubit.addPackaging(weight, label);
