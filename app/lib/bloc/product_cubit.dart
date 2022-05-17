@@ -34,7 +34,7 @@ class ProductCubit extends Cubit<ProductState> {
           .create(Product(id: 0, name: state.productName))
           .then((product) {
         _productId = product.id;
-        emit(state.copyWith(loading: false));
+        emit(state.copyWith(loading: false, packagings: product.packagings));
       });
       return;
     }
@@ -48,24 +48,18 @@ class ProductCubit extends Cubit<ProductState> {
   void reportPrice(int price) {}
 
   void addPackaging(int weight, String label) {
-    final packaging = Packaging(
-      weight: weight,
-      label: label
-    );
+    final packaging = Packaging(weight: weight, label: label);
 
     final List<Packaging> packagings = List.from(state.packagings);
     packagings.add(packaging);
 
     if (_productId != null) {
       final product = Product(
-          id: _productId!,
-          name: state.productName,
-          packagings: packagings
-      );
+          id: _productId!, name: state.productName, packagings: packagings);
 
       emit(state.copyWith(loading: true));
-      _productRepository.update(product).then((_) {
-        emit(state.copyWith(loading: false));
+      _productRepository.update(product).then((product) {
+        emit(state.copyWith(loading: false, packagings: product.packagings));
       });
     }
 

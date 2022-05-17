@@ -20,4 +20,21 @@ class Packaging {
 
   @override
   int get hashCode => id.hashCode ^ weight.hashCode ^ label.hashCode;
+
+  Packaging copyWith({
+    int? id,
+    int? weight,
+    String? label,
+  }) {
+    return Packaging(
+      id: id ?? this.id,
+      weight: weight ?? this.weight,
+      label: label ?? this.label,
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Packaging{id: $id, weight: $weight, label: $label}';
+  }
 }

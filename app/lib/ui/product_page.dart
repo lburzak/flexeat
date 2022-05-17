@@ -74,13 +74,16 @@ class _ProductPageState extends State<ProductPage> {
                         Text("Nutrition facts")
                       ],
                     ),
-                    SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                            onPressed: () {},
-                            child: Text(
-                              "Add".toUpperCase(),
-                            ))),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton(
+                              onPressed: () {},
+                              child: Text(
+                                "Add".toUpperCase(),
+                              ))),
+                    ),
                   ],
                 )
               : const SizedBox.shrink(),
@@ -99,17 +102,9 @@ class _ProductPageState extends State<ProductPage> {
                 ),
               ),
               BlocBuilder<ProductCubit, ProductState>(
-                  builder: (context, state) => Row(
-                        children: state.packagings
-                            .map((packaging) => PackagingChip(packaging))
-                            .cast<Widget>()
-                            .expand((element) => [
-                                  element,
-                                  const SizedBox(
-                                    width: 8,
-                                  )
-                                ])
-                            .toList(growable: false),
+                  builder: (context, state) => PackagingSelector(
+                        packagings: state.packagings,
+                        selectable: !_editing,
                       )),
             ],
           ),
@@ -153,34 +148,80 @@ class _ProductPageState extends State<ProductPage> {
 
 class PackagingChip extends StatelessWidget {
   final Packaging packaging;
+  final bool selected;
+  final void Function(bool selected)? onSelected;
 
-  const PackagingChip(this.packaging, {Key? key}) : super(key: key);
+  const PackagingChip(this.packaging,
+      {Key? key, this.selected = false, this.onSelected})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.primary,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(300)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+    return ChoiceChip(
+        selected: selected,
+        onSelected: onSelected,
+        elevation: 2,
+        label: Row(
           children: [
-            Text(
-              packaging.label,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyText2
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
+            Text(packaging.label),
             const SizedBox(
               width: 8,
             ),
-            Text("${packaging.weight} g"),
+            Text(
+              "${packaging.weight} g",
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
-        ),
-      ),
+        ));
+  }
+}
+
+class PackagingSelector extends StatefulWidget {
+  final List<Packaging> packagings;
+  final bool selectable;
+
+  const PackagingSelector(
+      {Key? key, required this.packagings, this.selectable = true})
+      : super(key: key);
+
+  @override
+  State<PackagingSelector> createState() => _PackagingSelectorState();
+}
+
+class _PackagingSelectorState extends State<PackagingSelector> {
+  int selectedId = 0;
+
+  @override
+  void initState() {
+    selectedId = widget.packagings.isNotEmpty ? widget.packagings.first.id : 0;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: widget.packagings
+          .map((packaging) => PackagingChip(
+                packaging,
+                selected: packaging.id == selectedId,
+                onSelected: widget.selectable
+                    ? (selected) {
+                        if (selected) {
+                          setState(() {
+                            selectedId = packaging.id;
+                          });
+                        }
+                      }
+                    : null,
+              ))
+          .cast<Widget>()
+          .expand((element) => [
+                element,
+                const SizedBox(
+                  width: 8,
+                )
+              ])
+          .toList(growable: false),
     );
   }
 }

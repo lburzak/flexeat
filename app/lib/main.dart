@@ -32,7 +32,9 @@ class LightTheme {
     return parent.colorScheme.copyWith(
         background: const Color(0xffDFDFDF),
         primary: const Color(0xff005cb2),
+        onPrimary: Colors.white,
         surfaceVariant: Colors.blue.shade600,
+        primaryContainer: const Color(0xff69b6ff),
         onSurfaceVariant: Colors.white);
   }
 
@@ -59,7 +61,8 @@ class LightTheme {
   ChipThemeData _buildChipTheme(ChipThemeData base) {
     return base.copyWith(
       backgroundColor: _colors.primary,
-      // labelStyle: textTheme.bodyText2
+      labelStyle: TextStyle(color: _colors.onPrimary),
+      selectedColor: _colors.primaryContainer,
     );
   }
 

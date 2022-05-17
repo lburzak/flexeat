@@ -33,6 +33,11 @@ void main() {
       when(productRepository
               .create(argThat(equals(const Product(id: 0, name: name)))))
           .thenAnswer((_) async => saveCompleter.future);
+      when(productRepository.update(any))
+          .thenAnswer((_) async => const Product(id: 1, name: name));
+      when(productRepository.create(argThat(equals(
+              const Product(id: 0, name: name, packagings: [packaging])))))
+          .thenAnswer((_) async => saveCompleter.future);
       cubit.setName(name);
     });
 
@@ -75,12 +80,28 @@ void main() {
       cubit.addPackaging(weight, label);
       verifyNever(productRepository.update(any));
     });
+
+    test('.save() updates packagings list', () async {
+      cubit.addPackaging(weight, label);
+      cubit.save();
+      final packagingInDb = packaging.copyWith(id: 1);
+      saveCompleter
+          .complete(Product(id: 1, name: name, packagings: [packagingInDb]));
+      await saveCompleter.future;
+      expect(cubit.state.packagings, contains(packagingInDb));
+    });
   });
 
   group('when productId is not null', () {
     late Completer<Product> dataCompleter;
-    late Completer<void> updateCompleter;
-    const existingProduct = Product(id: 5, name: "Some product");
+    late Completer<Product> updateCompleter;
+    const existingProduct = Product(id: 1, name: "Some product");
+    const newPackaging = Packaging(weight: weight, label: label);
+    const packagingFromRepository =
+        Packaging(id: 1, weight: weight, label: label);
+    const updatedName = "Updated name";
+    final updatedProduct = existingProduct
+        .copyWith(name: updatedName, packagings: [packagingFromRepository]);
 
     setUp(() {
       dataCompleter = Completer();
@@ -113,18 +134,17 @@ void main() {
       });
 
       test('.save() updates existing product', () async {
-        const updatedName = "Updated name";
         cubit.setName(updatedName);
         cubit.save();
         verify(productRepository
-            .update(Product(id: existingProduct.id, name: updatedName)));
+            .update(existingProduct.copyWith(name: updatedName)));
       });
 
       test('.save() properly changes loading', () async {
         expect(cubit.state.loading, isFalse);
         cubit.save();
         expect(cubit.state.loading, isTrue);
-        updateCompleter.complete();
+        updateCompleter.complete(updatedProduct);
         await updateCompleter.future;
         expect(cubit.state.loading, isFalse);
       });
@@ -135,18 +155,24 @@ void main() {
       });
 
       test('.addPackaging() updates product in repository', () async {
-        cubit.addPackaging(weight, label);
-        const expectedPackagings = [packaging];
+        cubit.addPackaging(newPackaging.weight, newPackaging.label);
         verify(productRepository.update(argThat(
-            equals(existingProduct.copyWith(packagings: expectedPackagings)))));
+            equals(existingProduct.copyWith(packagings: [newPackaging])))));
       });
 
       test('.addPackaging() handles loading state properly', () async {
         cubit.addPackaging(weight, label);
         expect(cubit.state.loading, isTrue);
-        updateCompleter.complete();
+        updateCompleter.complete(updatedProduct);
         await updateCompleter.future;
         expect(cubit.state.loading, isFalse);
+      });
+
+      test('.addPackaging() updates packages list', () async {
+        cubit.addPackaging(weight, label);
+        updateCompleter.complete(updatedProduct);
+        await updateCompleter.future;
+        expect(cubit.state.packagings, contains(packagingFromRepository));
       });
     });
   });

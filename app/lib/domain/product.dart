@@ -11,10 +11,11 @@ class Product {
       other is Product &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          name == other.name;
+          name == other.name &&
+          packagings == other.packagings;
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode;
+  int get hashCode => id.hashCode ^ name.hashCode ^ packagings.hashCode;
 
   const Product({
     required this.id,
@@ -32,5 +33,10 @@ class Product {
       name: name ?? this.name,
       packagings: packagings ?? this.packagings,
     );
+  }
+
+  @override
+  String toString() {
+    return 'Product{id: $id, name: $name, packagings: $packagings}';
   }
 }
