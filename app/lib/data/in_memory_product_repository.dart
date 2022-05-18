@@ -39,4 +39,10 @@ class InMemoryProductRepository implements ProductRepository {
         .map((e) => e.copyWith(id: e.id == 0 ? ++lastPackagingId : e.id))
         .toList(growable: false);
   }
+
+  @override
+  Future<List<Product>> findAll() {
+    // TODO: implement findAll
+    throw UnimplementedError();
+  }
 }
