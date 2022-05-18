@@ -1,7 +1,10 @@
 import 'package:flexeat/bloc/product_cubit.dart';
-import 'package:flexeat/ui/product_page.dart';
+import 'package:flexeat/bloc/products_list_cubit.dart';
+import 'package:flexeat/repository/product_repository.dart';
+import 'package:flexeat/ui/products_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import 'data/in_memory_product_repository.dart';
 
@@ -80,9 +83,23 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: LightTheme(Theme.of(context)).build(),
         home: Scaffold(
-            body: BlocProvider(
-          create: (_) => ProductCubit(InMemoryProductRepository()),
-          child: const ProductPage(),
+            body: Provider<ProductRepository>(
+          create: (context) => InMemoryProductRepository(),
+          child: Builder(
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) =>
+                      ProductsListCubit(RepositoryProvider.of(context)),
+                ),
+                BlocProvider(
+                  create: (context) =>
+                      ProductCubit(RepositoryProvider.of(context)),
+                )
+              ],
+              child: const ProductsListPage(),
+            ),
+          ),
         )));
   }
 }

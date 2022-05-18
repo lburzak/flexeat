@@ -41,8 +41,7 @@ class InMemoryProductRepository implements ProductRepository {
   }
 
   @override
-  Future<List<Product>> findAll() {
-    // TODO: implement findAll
-    throw UnimplementedError();
+  Future<List<Product>> findAll() async {
+    return [const Product(id: 12, name: "First")];
   }
 }
