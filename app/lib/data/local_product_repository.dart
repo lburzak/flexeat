@@ -1,3 +1,4 @@
+import 'package:flexeat/data/row.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:sqflite/sqflite.dart';
@@ -45,11 +46,11 @@ class LocalProductRepository implements ProductRepository {
     await database.update(productTable, _serialize(product));
   }
 
-  Map<String, dynamic> _serialize(Product product) {
+  Row _serialize(Product product) {
     return {idColumn: product.id, nameColumn: product.name};
   }
 
-  Product _deserialize(Map<String, dynamic> row) {
+  Product _deserialize(Row row) {
     return Product(id: row[idColumn], name: row[nameColumn]);
   }
 }
