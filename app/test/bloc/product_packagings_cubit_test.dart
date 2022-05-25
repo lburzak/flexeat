@@ -27,7 +27,7 @@ void main() {
     dataCompleter = when(packagingRepository.findAllByProductId(productId))
         .thenReturnCompleter(initialPackagings);
 
-    createCompleter = when(packagingRepository.create(any))
+    createCompleter = when(packagingRepository.create(productId, any))
         .thenReturnCompleter(createdPackaging);
 
     cubit = ProductPackagingsCubit(packagingRepository, productId);
@@ -41,7 +41,7 @@ void main() {
 
   test('.addPackaging() adds packaging to repository', () {
     cubit.addPackaging(packaging);
-    verify(packagingRepository.create(packaging));
+    verify(packagingRepository.create(productId, packaging));
   });
 
   test('fetches product packagings', () async {
