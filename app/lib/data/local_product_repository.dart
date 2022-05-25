@@ -3,7 +3,7 @@ import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-const productTable = 'products';
+const productTable = 'product';
 const nameColumn = 'name';
 const idColumn = 'id';
 
