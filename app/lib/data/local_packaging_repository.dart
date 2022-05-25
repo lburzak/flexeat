@@ -1,6 +1,13 @@
+import 'package:flexeat/data/row.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:sqflite/sqflite.dart';
+
+const packagingTable = 'packaging';
+const idColumn = 'id';
+const productIdColumn = 'product_id';
+const labelColumn = 'label';
+const weightColumn = 'weight';
 
 class LocalPackagingRepository implements PackagingRepository {
   final Database _database;
@@ -13,18 +20,30 @@ class LocalPackagingRepository implements PackagingRepository {
       throw UnimplementedError("Creating packagings with ID not supported.");
     }
 
-    final id = await _database.insert('packaging', {
-      'product_id': productId,
-      'label': packaging.label,
-      'weight': packaging.weight
-    });
+    final id = await _database.insert(
+        packagingTable, _deserialize(packaging, productId: productId));
 
     return packaging.copyWith(id: id);
   }
 
   @override
-  Future<List<Packaging>> findAllByProductId(int productId) {
-    // TODO: implement findAllByProductId
-    throw UnimplementedError();
+  Future<List<Packaging>> findAllByProductId(int productId) async {
+    final rows = await _database.query(packagingTable,
+        where: '$productIdColumn = ?', whereArgs: [productId]);
+    final packagings = rows.map((row) => _serialize(row));
+    throw packagings;
+  }
+
+  Row _deserialize(Packaging packaging, {required int productId}) {
+    return {
+      productIdColumn: productId,
+      labelColumn: packaging.label,
+      weightColumn: packaging.weight
+    };
+  }
+
+  Packaging _serialize(Row row) {
+    return Packaging(
+        id: row[idColumn], weight: row[weightColumn], label: row[labelColumn]);
   }
 }

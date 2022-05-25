@@ -6,7 +6,7 @@ import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
 import '../util/prepared_completer.dart';
-import 'packages_cubit_test.mocks.dart';
+import 'product_packagings_cubit_test.mocks.dart';
 
 @GenerateMocks([PackagingRepository])
 void main() {
