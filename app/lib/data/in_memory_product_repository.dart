@@ -10,8 +10,7 @@ class InMemoryProductRepository implements ProductRepository {
 
   @override
   Future<Product> create(Product product) async {
-    final newProduct = product.copyWith(
-        id: ++lastId, packagings: _inflatedPackagings(product.packagings));
+    final newProduct = product.copyWith(id: ++lastId);
     products = products.followedBy([newProduct]);
     return newProduct;
   }
@@ -28,8 +27,7 @@ class InMemoryProductRepository implements ProductRepository {
   Future<Product> update(Product product) async {
     final productsWithoutProduct =
         products.where((element) => element.id != product.id);
-    final newProduct =
-        product.copyWith(packagings: _inflatedPackagings(product.packagings));
+    final newProduct = product.copyWith();
     products = productsWithoutProduct.followedBy([newProduct]);
     return newProduct;
   }

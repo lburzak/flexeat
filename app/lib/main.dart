@@ -1,15 +1,21 @@
+import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
+import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
+import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/ui/products_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:kiwi/kiwi.dart';
 import 'package:provider/provider.dart';
 
 import 'data/in_memory_product_repository.dart';
 
 void main() {
-  runApp(const MyApp());
+  final container = buildContainer();
+  runApp(MyApp(container));
 }
 
 class LightTheme {
@@ -75,7 +81,9 @@ class LightTheme {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final KiwiContainer container;
+
+  const MyApp(this.container, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -89,12 +97,13 @@ class MyApp extends StatelessWidget {
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) =>
-                      ProductsListCubit(RepositoryProvider.of(context)),
+                  create: (context) => container<ProductsListCubit>(),
                 ),
                 BlocProvider(
-                  create: (context) =>
-                      ProductCubit(RepositoryProvider.of(context)),
+                  create: (context) => container<ProductPackagingsCubit>(),
+                ),
+                BlocProvider(
+                  create: (context) => container<ProductCubit>(),
                 )
               ],
               child: const ProductsListPage(),
@@ -102,4 +111,34 @@ class MyApp extends StatelessWidget {
           ),
         )));
   }
+}
+
+class AdhocPackagingRepository extends PackagingRepository {
+  @override
+  Future<Packaging> create(Packaging packaging) async {
+    return const Packaging(weight: 300, label: "hello");
+  }
+
+  @override
+  Future<List<Packaging>> findAllByProductId(int productId) async {
+    return [];
+  }
+}
+
+KiwiContainer buildContainer() {
+  final container = KiwiContainer();
+
+  container
+      .registerFactory((container) => ProductCubit(container(), container()));
+  container.registerFactory<ProductRepository>(
+      (container) => InMemoryProductRepository());
+  container.registerFactory((container) => LoadingCubit());
+  container.registerFactory(
+      (container) => ProductsListCubit(container(), container()));
+  container
+      .registerFactory((container) => ProductPackagingsCubit(container(), 1));
+  container.registerFactory<PackagingRepository>(
+      (container) => AdhocPackagingRepository());
+
+  return container;
 }

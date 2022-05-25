@@ -17,10 +17,7 @@ class LocalProductRepository implements ProductRepository {
     return await database.transaction((txn) async {
       final productId = await txn.insert('product', {'name': product.name});
 
-      final packagings = await Future.wait(product.packagings.map(
-          (packaging) => createPackagingForProduct(txn, packaging, productId)));
-
-      return product.copyWith(id: productId, packagings: packagings);
+      return product.copyWith(id: productId);
     });
   }
 

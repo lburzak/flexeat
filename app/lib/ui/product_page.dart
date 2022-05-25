@@ -1,5 +1,7 @@
 import 'package:flexeat/bloc/product_cubit.dart';
+import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -32,11 +34,12 @@ class _ProductPageState extends State<ProductPage> {
   }
 
   void _showPackagingDialog(BuildContext context) {
-    final cubit = context.read<ProductCubit>();
+    final cubit = context.read<ProductPackagingsCubit>();
     showDialog(
         context: context,
         builder: (context) => PackagingInputDialog(
-              onSubmit: (weight, label) => cubit.addPackaging(weight, label),
+              onSubmit: (weight, label) =>
+                  cubit.addPackaging(Packaging(weight: weight, label: label)),
             ));
   }
 
@@ -101,7 +104,7 @@ class _ProductPageState extends State<ProductPage> {
                   ],
                 ),
               ),
-              BlocBuilder<ProductCubit, ProductState>(
+              BlocBuilder<ProductPackagingsCubit, ProductPackagingsState>(
                   builder: (context, state) => PackagingSelector(
                         packagings: state.packagings,
                         selectable: !_editing,
