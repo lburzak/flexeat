@@ -19,8 +19,7 @@ class LocalProductRepository implements ProductRepository {
     }
 
     return await database.transaction((txn) async {
-      final productId =
-          await txn.insert(productTable, {nameColumn: product.name});
+      final productId = await txn.insert(productTable, _serialize(product));
 
       return product.copyWith(id: productId);
     });
