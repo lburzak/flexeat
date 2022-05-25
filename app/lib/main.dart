@@ -2,20 +2,19 @@ import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
-import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/data/database.dart' as database;
+import 'package:flexeat/data/local_packaging_repository.dart';
+import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/ui/products_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiwi/kiwi.dart';
-import 'package:provider/provider.dart';
-
-import 'data/in_memory_product_repository.dart';
+import 'package:sqflite/sqflite.dart';
 
 void main() {
-  final container = buildContainer();
-  runApp(MyApp(container));
+  runApp(const MyApp());
 }
 
 class LightTheme {
@@ -80,10 +79,16 @@ class LightTheme {
   }
 }
 
-class MyApp extends StatelessWidget {
-  final KiwiContainer container;
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
 
-  const MyApp(this.container, {Key? key}) : super(key: key);
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  late KiwiContainer container;
+  bool loaded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -91,54 +96,52 @@ class MyApp extends StatelessWidget {
         title: 'Flutter Demo',
         theme: LightTheme(Theme.of(context)).build(),
         home: Scaffold(
-            body: Provider<ProductRepository>(
-          create: (context) => InMemoryProductRepository(),
-          child: Builder(
-            builder: (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider(
-                  create: (context) => container<ProductsListCubit>(),
-                ),
-                BlocProvider(
-                  create: (context) => container<ProductPackagingsCubit>(),
-                ),
-                BlocProvider(
-                  create: (context) => container<ProductCubit>(),
-                )
-              ],
-              child: const ProductsListPage(),
-            ),
-          ),
-        )));
-  }
-}
-
-class AdhocPackagingRepository extends PackagingRepository {
-  @override
-  Future<Packaging> create(Packaging packaging) async {
-    return const Packaging(weight: 300, label: "hello");
+            body: loaded
+                ? MultiBlocProvider(
+                    providers: [
+                      BlocProvider(
+                        create: (context) => container<ProductsListCubit>(),
+                      ),
+                      BlocProvider(
+                        create: (context) =>
+                            container<ProductPackagingsCubit>(),
+                      ),
+                      BlocProvider(
+                        create: (context) => container<ProductCubit>(),
+                      )
+                    ],
+                    child: const ProductsListPage(),
+                  )
+                : const CircularProgressIndicator()));
   }
 
   @override
-  Future<List<Packaging>> findAllByProductId(int productId) async {
-    return [];
+  void initState() {
+    super.initState();
+    database.openDatabase().then((db) {
+      setState(() {
+        container = buildContainer(db);
+        loaded = true;
+      });
+    });
   }
 }
 
-KiwiContainer buildContainer() {
+KiwiContainer buildContainer(Database database) {
   final container = KiwiContainer();
 
   container
       .registerFactory((container) => ProductCubit(container(), container()));
   container.registerFactory<ProductRepository>(
-      (container) => InMemoryProductRepository());
+      (container) => LocalProductRepository(container()));
   container.registerFactory((container) => LoadingCubit());
   container.registerFactory(
       (container) => ProductsListCubit(container(), container()));
   container
       .registerFactory((container) => ProductPackagingsCubit(container(), 1));
   container.registerFactory<PackagingRepository>(
-      (container) => AdhocPackagingRepository());
+      (container) => LocalPackagingRepository(container()));
+  container.registerInstance(database);
 
   return container;
 }
