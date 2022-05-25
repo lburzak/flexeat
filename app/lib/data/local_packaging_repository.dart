@@ -21,7 +21,7 @@ class LocalPackagingRepository implements PackagingRepository {
     }
 
     final id = await _database.insert(
-        packagingTable, _deserialize(packaging, productId: productId));
+        packagingTable, _serialize(packaging, productId: productId));
 
     return packaging.copyWith(id: id);
   }
@@ -30,11 +30,11 @@ class LocalPackagingRepository implements PackagingRepository {
   Future<List<Packaging>> findAllByProductId(int productId) async {
     final rows = await _database.query(packagingTable,
         where: '$productIdColumn = ?', whereArgs: [productId]);
-    final packagings = rows.map((row) => _serialize(row));
+    final packagings = rows.map((row) => _deserialize(row));
     throw packagings;
   }
 
-  Row _deserialize(Packaging packaging, {required int productId}) {
+  Row _serialize(Packaging packaging, {required int productId}) {
     return {
       productIdColumn: productId,
       labelColumn: packaging.label,
@@ -42,7 +42,7 @@ class LocalPackagingRepository implements PackagingRepository {
     };
   }
 
-  Packaging _serialize(Row row) {
+  Packaging _deserialize(Row row) {
     return Packaging(
         id: row[idColumn], weight: row[weightColumn], label: row[labelColumn]);
   }
