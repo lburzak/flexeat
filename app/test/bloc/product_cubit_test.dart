@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/domain/product.dart';
@@ -10,10 +11,11 @@ import 'package:mockito/mockito.dart';
 
 import 'product_cubit_test.mocks.dart';
 
-@GenerateMocks([ProductRepository])
+@GenerateMocks([ProductRepository, LoadingCubit])
 void main() {
   late ProductCubit cubit;
   late MockProductRepository productRepository;
+  late LoadingCubit loadingCubit;
 
   const name = "Test name";
   const weight = 300;
@@ -27,7 +29,8 @@ void main() {
   group('when productId is null', () {
     late Completer<Product> saveCompleter;
     setUp(() {
-      cubit = ProductCubit(productRepository);
+      loadingCubit = MockLoadingCubit();
+      cubit = ProductCubit(productRepository, loadingCubit);
       saveCompleter = Completer<Product>();
 
       when(productRepository
@@ -47,12 +50,12 @@ void main() {
     });
 
     test(".save() changes loading properly", () async {
-      expect(cubit.state.loading, isFalse);
+      expect(loadingCubit.state, isFalse);
       cubit.save();
-      expect(cubit.state.loading, isTrue);
+      expect(loadingCubit.state, isTrue);
       saveCompleter.complete(const Product(id: 1, name: name));
       await saveCompleter.future;
-      expect(cubit.state.loading, isFalse);
+      expect(loadingCubit.state, isFalse);
     });
 
     test(".save() after saving does not create new product", () async {
@@ -66,7 +69,7 @@ void main() {
 
     test(".save() when loading does not create new product", () {
       cubit.save();
-      expect(cubit.state.loading, isTrue);
+      expect(loadingCubit.state, isTrue);
       verify(productRepository.create(const Product(id: 0, name: name)))
           .called(1);
     });
@@ -113,14 +116,15 @@ void main() {
       when(productRepository.update(any))
           .thenAnswer((_) async => updateCompleter.future);
 
-      cubit = ProductCubit(productRepository, productId: existingProduct.id);
+      cubit = ProductCubit(productRepository, loadingCubit,
+          productId: existingProduct.id);
     });
 
     test('data fetching properly handles loading', () async {
-      expect(cubit.state.loading, isTrue);
+      expect(loadingCubit.state, isTrue);
       dataCompleter.complete(existingProduct);
       await dataCompleter.future;
-      expect(cubit.state.loading, isFalse);
+      expect(loadingCubit.state, isFalse);
     });
 
     group('after data is fetched', () {
@@ -141,12 +145,12 @@ void main() {
       });
 
       test('.save() properly changes loading', () async {
-        expect(cubit.state.loading, isFalse);
+        expect(loadingCubit.state, isFalse);
         cubit.save();
-        expect(cubit.state.loading, isTrue);
+        expect(loadingCubit.state, isTrue);
         updateCompleter.complete(updatedProduct);
         await updateCompleter.future;
-        expect(cubit.state.loading, isFalse);
+        expect(loadingCubit.state, isFalse);
       });
 
       test('.addPackaging() updates packagings list', () async {
@@ -162,10 +166,10 @@ void main() {
 
       test('.addPackaging() handles loading state properly', () async {
         cubit.addPackaging(weight, label);
-        expect(cubit.state.loading, isTrue);
+        expect(loadingCubit.state, isTrue);
         updateCompleter.complete(updatedProduct);
         await updateCompleter.future;
-        expect(cubit.state.loading, isFalse);
+        expect(loadingCubit.state, isFalse);
       });
 
       test('.addPackaging() updates packages list', () async {
