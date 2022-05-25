@@ -1,7 +1,10 @@
-import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:sqflite/sqflite.dart';
+
+const productTable = 'products';
+const nameColumn = 'name';
+const idColumn = 'id';
 
 class LocalProductRepository implements ProductRepository {
   final Database database;
@@ -15,42 +18,38 @@ class LocalProductRepository implements ProductRepository {
     }
 
     return await database.transaction((txn) async {
-      final productId = await txn.insert('product', {'name': product.name});
+      final productId =
+          await txn.insert(productTable, {nameColumn: product.name});
 
       return product.copyWith(id: productId);
     });
   }
 
-  Future<Packaging> createPackagingForProduct(
-      Transaction txn, Packaging packaging, int productId) async {
-    if (packaging.id != 0) {
-      throw UnimplementedError("Creating packagings with ID not supported.");
-    }
-
-    final id = await txn.insert('packaging', {
-      'product_id': productId,
-      'label': packaging.label,
-      'weight': packaging.weight
-    });
-
-    return packaging.copyWith(id: id);
-  }
-
   @override
   Future<List<Product>> findAll() async {
-    // TODO: implement findById
-    throw UnimplementedError();
+    final rows = await database.query(productTable);
+    final products =
+        rows.map((row) => _deserialize(row)).toList(growable: false);
+    return products;
   }
 
   @override
-  Future<Product> findById(int id) {
-    // TODO: implement findById
-    throw UnimplementedError();
+  Future<Product> findById(int id) async {
+    final rows = await database
+        .query(productTable, where: '$idColumn = ?', whereArgs: [id]);
+    return _deserialize(rows.first);
   }
 
   @override
-  Future<Product> update(Product product) {
-    // TODO: implement update
-    throw UnimplementedError();
+  Future<void> update(Product product) async {
+    await database.update(productTable, _serialize(product));
+  }
+
+  Map<String, dynamic> _serialize(Product product) {
+    return {idColumn: product.id, nameColumn: product.name};
+  }
+
+  Product _deserialize(Map<String, dynamic> row) {
+    return Product(id: row[idColumn], name: row[nameColumn]);
   }
 }
