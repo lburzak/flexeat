@@ -9,7 +9,7 @@ const productTable = 'product';
 const nameColumn = 'name';
 const idColumn = 'id';
 
-enum DataEvent { productCreated }
+enum DataEvent { productCreated, productChanged }
 
 class LocalProductRepository implements ProductRepository {
   final Database _database;
@@ -54,14 +54,22 @@ class LocalProductRepository implements ProductRepository {
 
   @override
   Future<void> update(Product product) async {
-    await _database.update(productTable, _serialize(product));
+    await _database.update(productTable, _serialize(product),
+        where: '$idColumn = ?', whereArgs: [product.id]);
+
+    emit(DataEvent.productChanged);
   }
 
   @override
   Stream<List<Product>> watchAll() async* {
+    final applicableEvents = [
+      DataEvent.productCreated,
+      DataEvent.productChanged
+    ];
+
     yield await findAll();
     yield* dataEvents
-        .where((event) => event == DataEvent.productCreated)
+        .where((event) => applicableEvents.contains(event))
         .asyncMap((event) => findAll());
   }
 
