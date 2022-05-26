@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flexeat/data/row.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
@@ -7,10 +9,20 @@ const productTable = 'product';
 const nameColumn = 'name';
 const idColumn = 'id';
 
-class LocalProductRepository implements ProductRepository {
-  final Database database;
+enum DataEvent { productCreated }
 
-  LocalProductRepository(this.database);
+class LocalProductRepository implements ProductRepository {
+  final Database _database;
+  final StreamController<DataEvent> _dataEventController =
+      StreamController(sync: true);
+
+  Stream<DataEvent> get dataEvents => _dataEventController.stream;
+
+  void emit(DataEvent dataEvent) {
+    _dataEventController.add(dataEvent);
+  }
+
+  LocalProductRepository(this._database);
 
   @override
   Future<Product> create(Product product) async {
@@ -18,14 +30,16 @@ class LocalProductRepository implements ProductRepository {
       throw UnimplementedError("Creating products with ID not supported.");
     }
 
-    final productId = await database.insert(productTable, _serialize(product));
+    final productId = await _database.insert(productTable, _serialize(product));
+
+    emit(DataEvent.productCreated);
 
     return product.copyWith(id: productId);
   }
 
   @override
   Future<List<Product>> findAll() async {
-    final rows = await database.query(productTable);
+    final rows = await _database.query(productTable);
     final products =
         rows.map((row) => _deserialize(row)).toList(growable: false);
     return products;
@@ -33,14 +47,22 @@ class LocalProductRepository implements ProductRepository {
 
   @override
   Future<Product> findById(int id) async {
-    final rows = await database
+    final rows = await _database
         .query(productTable, where: '$idColumn = ?', whereArgs: [id]);
     return _deserialize(rows.first);
   }
 
   @override
   Future<void> update(Product product) async {
-    await database.update(productTable, _serialize(product));
+    await _database.update(productTable, _serialize(product));
+  }
+
+  @override
+  Stream<List<Product>> watchAll() async* {
+    yield await findAll();
+    yield* dataEvents
+        .where((event) => event == DataEvent.productCreated)
+        .asyncMap((event) => findAll());
   }
 
   Row _serialize(Product product) {

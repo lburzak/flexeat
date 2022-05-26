@@ -132,7 +132,7 @@ KiwiContainer buildContainer(Database database) {
 
   container
       .registerFactory((container) => ProductCubit(container(), container()));
-  container.registerFactory<ProductRepository>(
+  container.registerSingleton<ProductRepository>(
       (container) => LocalProductRepository(container()));
   container.registerFactory((container) => LoadingCubit());
   container.registerFactory(
