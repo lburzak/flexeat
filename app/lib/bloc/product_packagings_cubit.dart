@@ -5,17 +5,18 @@ import 'package:flexeat/state/product_packagings_state.dart';
 
 class ProductPackagingsCubit extends Cubit<ProductPackagingsState> {
   final PackagingRepository _packagingRepository;
-  final int _productId;
+  int? _productId;
 
-  ProductPackagingsCubit(PackagingRepository packagingRepository, int productId)
+  ProductPackagingsCubit(PackagingRepository packagingRepository)
       : _packagingRepository = packagingRepository,
-        _productId = productId,
-        super(const ProductPackagingsState()) {
-    packagingRepository.findAllByProductId(productId).then(_updatePackagings);
-  }
+        super(const ProductPackagingsState());
 
   void addPackaging(Packaging packaging) {
-    _packagingRepository.create(_productId, packaging).then(_insertPackaging);
+    if (_productId == null) {
+      throw StateError("Product not set");
+    }
+
+    _packagingRepository.create(_productId!, packaging).then(_insertPackaging);
   }
 
   void _insertPackaging(Packaging packaging) {
@@ -27,5 +28,10 @@ class ProductPackagingsCubit extends Cubit<ProductPackagingsState> {
 
   void _updatePackagings(List<Packaging> packagings) {
     emit(state.copyWith(packagings: packagings));
+  }
+
+  void setProductId(int productId) {
+    _productId = productId;
+    _packagingRepository.findAllByProductId(productId).then(_updatePackagings);
   }
 }
