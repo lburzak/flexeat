@@ -46,7 +46,10 @@ class LocalProductRepository implements ProductRepository {
   }
 
   Row _serialize(Product product) {
-    return {idColumn: product.id, nameColumn: product.name};
+    return {
+      idColumn: product.id > 0 ? product.id : null,
+      nameColumn: product.name
+    };
   }
 
   Product _deserialize(Row row) {

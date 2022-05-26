@@ -7,7 +7,7 @@ import 'package:flexeat/data/local_packaging_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
-import 'package:flexeat/ui/products_list_page.dart';
+import 'package:flexeat/ui/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiwi/kiwi.dart';
@@ -87,32 +87,32 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  final _appRouter = AppRouter();
   late KiwiContainer container;
   bool loaded = false;
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        title: 'Flutter Demo',
-        theme: LightTheme(Theme.of(context)).build(),
-        home: Scaffold(
-            body: loaded
-                ? MultiBlocProvider(
-                    providers: [
-                      BlocProvider(
-                        create: (context) => container<ProductsListCubit>(),
-                      ),
-                      BlocProvider(
-                        create: (context) =>
-                            container<ProductPackagingsCubit>(),
-                      ),
-                      BlocProvider(
-                        create: (context) => container<ProductCubit>(),
-                      )
-                    ],
-                    child: const ProductsListPage(),
-                  )
-                : const CircularProgressIndicator()));
+    return loaded
+        ? MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (context) => container<ProductsListCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => container<ProductPackagingsCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => container<ProductCubit>(),
+              )
+            ],
+            child: MaterialApp.router(
+                title: 'Flutter Demo',
+                routerDelegate: _appRouter.delegate(),
+                routeInformationParser: _appRouter.defaultRouteParser(),
+                theme: LightTheme(Theme.of(context)).build()),
+          )
+        : const CircularProgressIndicator();
   }
 
   @override
