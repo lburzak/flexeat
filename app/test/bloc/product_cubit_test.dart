@@ -15,24 +15,25 @@ void main() {
   late ProductCubit cubit;
   late MockProductRepository productRepository;
   late LoadingCubit loadingCubit;
-  late MockProductPackagingsCubit productPackagingsCubit;
+  late PreparedCompleter<Product> dataCompleter;
 
   const product = Product(id: 0, name: "Test name");
+  const existingProduct = Product(id: 1, name: "Some product");
 
   final createdProduct = product.copyWith(id: 4);
 
   setUp(() {
     productRepository = MockProductRepository();
-    productPackagingsCubit = MockProductPackagingsCubit();
+    loadingCubit = LoadingCubit();
+    cubit = ProductCubit(productRepository, loadingCubit);
+
+    dataCompleter = when(productRepository.findById(existingProduct.id))
+        .thenReturnCompleter(existingProduct);
   });
 
   group('when productId is null', () {
     late PreparedCompleter<Product> createCompleter;
     setUp(() {
-      loadingCubit = LoadingCubit();
-      cubit =
-          ProductCubit(productRepository, loadingCubit, productPackagingsCubit);
-
       createCompleter = when(productRepository.create(argThat(equals(product))))
           .thenReturnCompleter(createdProduct);
 
@@ -59,31 +60,17 @@ void main() {
       cubit.save();
       verify(productRepository.create(product)).called(1);
     });
-
-    test(".save() notifies PackagingsCubit of new product id", () async {
-      cubit.save();
-      await createCompleter.ensureComplete();
-      verify(productPackagingsCubit
-          .setProductId(argThat(equals(createdProduct.id))));
-    });
   });
 
   group('when productId is not null', () {
-    late PreparedCompleter<Product> dataCompleter;
-    const existingProduct = Product(id: 1, name: "Some product");
     const updatedName = "Updated name";
     final updatedProduct = existingProduct.copyWith(name: updatedName);
 
     setUp(() {
-      dataCompleter = when(productRepository.findById(existingProduct.id))
-          .thenReturnCompleter(existingProduct);
-
       when(productRepository.update(argThat(equals(updatedProduct))))
           .thenAnswer((_) async => updatedProduct);
 
-      cubit = ProductCubit(
-          productRepository, loadingCubit, productPackagingsCubit,
-          productId: existingProduct.id);
+      cubit.setProductId(existingProduct.id);
     });
 
     group('after data is fetched', () {
@@ -102,6 +89,12 @@ void main() {
             .update(existingProduct.copyWith(name: updatedName)));
       });
     });
+  });
+
+  test(".setProductId() populates selected product data", () async {
+    cubit.setProductId(existingProduct.id);
+    await dataCompleter.ensureComplete();
+    expect(cubit.state.productName, equals(existingProduct.name));
   });
 
   test(".setName() changes name", () {

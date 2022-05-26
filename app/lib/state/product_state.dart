@@ -4,21 +4,27 @@ import 'package:meta/meta.dart';
 @immutable
 class ProductState {
   final String productName;
+  final int? id;
   final NutritionFacts? nutritionFacts;
   final List<String> compatibleArticles;
 
   const ProductState(
       {this.productName = "",
+      this.id,
       this.nutritionFacts,
       this.compatibleArticles = const []});
 
-  ProductState copyWith(
-      {String? productName,
-      NutritionFacts? nutritionFacts,
-      List<String>? compatibleArticles}) {
+  ProductState copyWith({
+    String? productName,
+    int? id,
+    NutritionFacts? nutritionFacts,
+    List<String>? compatibleArticles,
+  }) {
     return ProductState(
-        productName: productName ?? this.productName,
-        nutritionFacts: nutritionFacts ?? this.nutritionFacts,
-        compatibleArticles: compatibleArticles ?? this.compatibleArticles);
+      productName: productName ?? this.productName,
+      id: id ?? this.id,
+      nutritionFacts: nutritionFacts ?? this.nutritionFacts,
+      compatibleArticles: compatibleArticles ?? this.compatibleArticles,
+    );
   }
 }

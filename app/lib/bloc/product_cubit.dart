@@ -1,5 +1,4 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
-import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -7,28 +6,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../domain/product.dart';
 
 class ProductCubit extends Cubit<ProductState> {
-  int? _productId;
   final ProductRepository _productRepository;
   final LoadingCubit _loadingCubit;
-  final ProductPackagingsCubit _productPackagingsCubit;
 
-  ProductCubit(
-      this._productRepository, this._loadingCubit, this._productPackagingsCubit,
-      {int? productId})
-      : _productId = productId,
-        super(const ProductState()) {
-    if (_productId != null) {
-      _fetchData().listenIn(_loadingCubit);
-    }
-  }
+  ProductCubit(this._productRepository, this._loadingCubit)
+      : super(const ProductState());
 
-  Future<void> _fetchData() async {
-    if (_productId == null) {
-      throw StateError("Product ID is null, cannot fetch");
-    }
-
-    final product = await _productRepository.findById(_productId!);
-    emit(ProductState(productName: product.name));
+  Future<void> _fetchData(int productId) async {
+    final product = await _productRepository.findById(productId);
+    emit(ProductState(productName: product.name, id: product.id));
   }
 
   void save() {
@@ -36,23 +22,26 @@ class ProductCubit extends Cubit<ProductState> {
       return;
     }
 
-    if (_productId == null) {
+    if (state.id == null) {
       _productRepository
           .create(Product(name: state.productName))
           .listenIn(_loadingCubit)
           .then((product) {
-        _productId = product.id;
-        _productPackagingsCubit.setProductId(product.id);
+        emit(state.copyWith(id: product.id));
       });
       return;
     }
 
     _productRepository
-        .update(Product(id: _productId!, name: state.productName))
+        .update(Product(id: state.id!, name: state.productName))
         .listenIn(_loadingCubit);
   }
 
   void setName(String text) {
     emit(state.copyWith(productName: text));
+  }
+
+  void setProductId(int id) {
+    _fetchData(id);
   }
 }

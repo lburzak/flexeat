@@ -1,15 +1,33 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
+import 'package:flexeat/state/product_state.dart';
 
 class ProductPackagingsCubit extends Cubit<ProductPackagingsState> {
   final PackagingRepository _packagingRepository;
+  late StreamSubscription<ProductState> productStateSubscription;
   int? _productId;
 
-  ProductPackagingsCubit(PackagingRepository packagingRepository)
+  ProductPackagingsCubit(
+      PackagingRepository packagingRepository, ProductCubit productCubit)
       : _packagingRepository = packagingRepository,
-        super(const ProductPackagingsState());
+        super(const ProductPackagingsState()) {
+    productStateSubscription = productCubit.stream.listen((state) {
+      if (state.id != null && _productId != state.id) {
+        _setProductId(state.id!);
+      }
+    });
+  }
+
+  @override
+  Future<void> close() async {
+    productStateSubscription.cancel();
+    return super.close();
+  }
 
   void addPackaging(Packaging packaging) {
     if (_productId == null) {
@@ -30,7 +48,7 @@ class ProductPackagingsCubit extends Cubit<ProductPackagingsState> {
     emit(state.copyWith(packagings: packagings));
   }
 
-  void setProductId(int productId) {
+  void _setProductId(int productId) {
     _productId = productId;
     _packagingRepository.findAllByProductId(productId).then(_updatePackagings);
   }
