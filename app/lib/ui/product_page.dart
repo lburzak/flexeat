@@ -8,14 +8,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductPage extends StatefulWidget {
-  const ProductPage({Key? key}) : super(key: key);
+  final int? productId;
+
+  const ProductPage({Key? key, this.productId}) : super(key: key);
 
   @override
   State<ProductPage> createState() => _ProductPageState();
 }
 
 class _ProductPageState extends State<ProductPage> {
-  bool _editing = false;
+  bool _editing = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.productId != null) {
+      context.read<ProductCubit>().setProductId(widget.productId!);
+      _editing = false;
+    }
+  }
 
   void _startEditing() {
     setState(() {

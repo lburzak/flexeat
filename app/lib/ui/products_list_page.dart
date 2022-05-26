@@ -21,7 +21,7 @@ class ProductsListPage extends StatelessWidget {
       floatingActionButton: FloatingActionButton(
           child: const Icon(Icons.add),
           onPressed: () {
-            context.router.push(const ProductRoute());
+            context.router.push(ProductRoute());
           }),
     );
   }
@@ -34,6 +34,11 @@ class ProductEntry extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(title: Text(product.name));
+    return ListTile(
+      title: Text(product.name),
+      onTap: () {
+        context.router.push(ProductRoute(productId: product.id));
+      },
+    );
   }
 }
