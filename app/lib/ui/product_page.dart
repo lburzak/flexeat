@@ -3,6 +3,7 @@ import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
+import 'package:flexeat/ui/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,6 +47,10 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: _editing ? _stopEditing : _startEditing,
+        child: Icon(_editing ? Icons.done : Icons.edit),
+      ),
       body: Padding(
         padding:
             const EdgeInsets.only(left: 24, right: 24, top: 64, bottom: 24),
@@ -92,59 +97,37 @@ class _ProductPageState extends State<ProductPage> {
                     ],
                   )
                 : const SizedBox.shrink(),
-            Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.inventory),
-                      SizedBox(
-                        width: 12,
-                      ),
-                      Text("Packagings")
-                    ],
-                  ),
-                ),
-                BlocBuilder<ProductPackagingsCubit, ProductPackagingsState>(
-                    builder: (context, state) => PackagingSelector(
-                          packagings: state.packagings,
-                          selectable: !_editing,
-                        )),
-              ],
-            ),
-            const Spacer(),
-            _editing
-                ? Row(
+            !_editing
+                ? Column(
                     children: [
-                      FloatingActionButton.extended(
-                        onPressed: () => _showPackagingDialog(context),
-                        icon: const Icon(Icons.shopping_bag),
-                        label: Text("Add packaging".toUpperCase()),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        child: Column(
+                          children: [
+                            Row(
+                              children: const [
+                                Icon(Icons.inventory),
+                                SizedBox(
+                                  width: 12,
+                                ),
+                                Text("Packagings")
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                      const Spacer(),
-                      FloatingActionButton(
-                        onPressed: _stopEditing,
-                        child: const Icon(Icons.save),
-                      ),
+                      BlocBuilder<ProductPackagingsCubit,
+                              ProductPackagingsState>(
+                          builder: (context, state) => PackagingSelector(
+                                packagings: state.packagings,
+                                selectable: !_editing,
+                                onAdd: () {
+                                  _showPackagingDialog(context);
+                                },
+                              )),
                     ],
                   )
-                : Row(
-                    children: [
-                      FloatingActionButton(
-                        onPressed: () {},
-                        child: const Icon(Icons.attach_money),
-                      ),
-                      const SizedBox(
-                        width: 12,
-                      ),
-                      const Spacer(),
-                      FloatingActionButton(
-                        onPressed: _startEditing,
-                        child: const Icon(Icons.edit),
-                      ),
-                    ],
-                  )
+                : const SizedBox.shrink(),
           ],
         ),
       ),
@@ -185,9 +168,10 @@ class PackagingChip extends StatelessWidget {
 class PackagingSelector extends StatefulWidget {
   final List<Packaging> packagings;
   final bool selectable;
+  final void Function()? onAdd;
 
   const PackagingSelector(
-      {Key? key, required this.packagings, this.selectable = true})
+      {Key? key, required this.packagings, this.selectable = true, this.onAdd})
       : super(key: key);
 
   @override
@@ -227,7 +211,15 @@ class _PackagingSelectorState extends State<PackagingSelector> {
                   width: 8,
                 )
               ])
-          .toList(growable: false),
+          .followedBy([
+        CircleButton(
+          size: 34,
+          icon: Icons.add,
+          onPressed: () {
+            widget.onAdd?.call();
+          },
+        )
+      ]).toList(growable: false),
     );
   }
 }
