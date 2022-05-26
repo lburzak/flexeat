@@ -91,10 +91,17 @@ void main() {
     });
   });
 
-  test(".setProductId() populates selected product data", () async {
+  test(".setProductId() populates selected product data when id is not null",
+      () async {
     cubit.setProductId(existingProduct.id);
     await dataCompleter.ensureComplete();
     expect(cubit.state.productName, equals(existingProduct.name));
+  });
+
+  test('.setProductId() clears product data when id is null', () {
+    cubit.setProductId(null);
+    expect(cubit.state.id, equals(null));
+    expect(cubit.state.productName, equals(''));
   });
 
   test(".setName() changes name", () {

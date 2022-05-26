@@ -41,7 +41,11 @@ class ProductCubit extends Cubit<ProductState> {
     emit(state.copyWith(productName: text));
   }
 
-  void setProductId(int id) {
-    _fetchData(id);
+  void setProductId(int? id) {
+    if (id != null) {
+      _fetchData(id);
+    } else {
+      emit(const ProductState());
+    }
   }
 }

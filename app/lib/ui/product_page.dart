@@ -17,15 +17,16 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  bool _editing = true;
+  bool _editing = false;
 
   @override
   void initState() {
     super.initState();
 
-    if (widget.productId != null) {
-      context.read<ProductCubit>().setProductId(widget.productId!);
-      _editing = false;
+    context.read<ProductCubit>().setProductId(widget.productId);
+
+    if (widget.productId == null) {
+      _editing = true;
     }
   }
 
