@@ -16,16 +16,16 @@ Future<void> _initDatabase(sqflite.Database db, int version) async {
 
 const createProductTable = """
 CREATE TABLE product (
-  id INT PRIMARY KEY,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL
 );
 """;
 
 const createPackagingTable = """
 CREATE TABLE packaging (
-  id INT PRIMARY KEY,
-  product_id INT NOT NULL,
-  weight INT NOT NULL,
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  product_id INTEGER NOT NULL,
+  weight INTEGER NOT NULL,
   label TEXT,
   FOREIGN KEY (product_id) REFERENCES product(id)
 );

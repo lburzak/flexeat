@@ -18,11 +18,9 @@ class LocalProductRepository implements ProductRepository {
       throw UnimplementedError("Creating products with ID not supported.");
     }
 
-    return await database.transaction((txn) async {
-      final productId = await txn.insert(productTable, _serialize(product));
+    final productId = await database.insert(productTable, _serialize(product));
 
-      return product.copyWith(id: productId);
-    });
+    return product.copyWith(id: productId);
   }
 
   @override

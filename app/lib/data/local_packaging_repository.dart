@@ -31,7 +31,7 @@ class LocalPackagingRepository implements PackagingRepository {
     final rows = await _database.query(packagingTable,
         where: '$productIdColumn = ?', whereArgs: [productId]);
     final packagings = rows.map((row) => _deserialize(row));
-    throw packagings;
+    return packagings.toList(growable: false);
   }
 
   Row _serialize(Packaging packaging, {required int productId}) {
