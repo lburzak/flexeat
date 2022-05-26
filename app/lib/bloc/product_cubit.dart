@@ -1,4 +1,5 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
+import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,8 +10,11 @@ class ProductCubit extends Cubit<ProductState> {
   int? _productId;
   final ProductRepository _productRepository;
   final LoadingCubit _loadingCubit;
+  final ProductPackagingsCubit _productPackagingsCubit;
 
-  ProductCubit(this._productRepository, this._loadingCubit, {int? productId})
+  ProductCubit(
+      this._productRepository, this._loadingCubit, this._productPackagingsCubit,
+      {int? productId})
       : _productId = productId,
         super(const ProductState()) {
     if (_productId != null) {
@@ -38,6 +42,7 @@ class ProductCubit extends Cubit<ProductState> {
           .listenIn(_loadingCubit)
           .then((product) {
         _productId = product.id;
+        _productPackagingsCubit.setProductId(product.id);
       });
       return;
     }

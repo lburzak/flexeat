@@ -130,14 +130,15 @@ class _MyAppState extends State<MyApp> {
 KiwiContainer buildContainer(Database database) {
   final container = KiwiContainer();
 
-  container
-      .registerFactory((container) => ProductCubit(container(), container()));
+  container.registerFactory(
+      (container) => ProductCubit(container(), container(), container()));
   container.registerFactory<ProductRepository>(
       (container) => LocalProductRepository(container()));
   container.registerFactory((container) => LoadingCubit());
   container.registerFactory(
       (container) => ProductsListCubit(container(), container()));
-  container.registerFactory((container) => ProductPackagingsCubit(container()));
+  container
+      .registerSingleton((container) => ProductPackagingsCubit(container()));
   container.registerFactory<PackagingRepository>(
       (container) => LocalPackagingRepository(container()));
   container.registerInstance(database);

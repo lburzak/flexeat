@@ -1,5 +1,6 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
+import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -9,11 +10,12 @@ import 'package:mockito/mockito.dart';
 import '../util/prepared_completer.dart';
 import 'product_cubit_test.mocks.dart';
 
-@GenerateMocks([ProductRepository])
+@GenerateMocks([ProductRepository, ProductPackagingsCubit])
 void main() {
   late ProductCubit cubit;
   late MockProductRepository productRepository;
   late LoadingCubit loadingCubit;
+  late MockProductPackagingsCubit productPackagingsCubit;
 
   const product = Product(id: 0, name: "Test name");
 
@@ -21,13 +23,15 @@ void main() {
 
   setUp(() {
     productRepository = MockProductRepository();
+    productPackagingsCubit = MockProductPackagingsCubit();
   });
 
   group('when productId is null', () {
     late PreparedCompleter<Product> createCompleter;
     setUp(() {
       loadingCubit = LoadingCubit();
-      cubit = ProductCubit(productRepository, loadingCubit);
+      cubit =
+          ProductCubit(productRepository, loadingCubit, productPackagingsCubit);
 
       createCompleter = when(productRepository.create(argThat(equals(product))))
           .thenReturnCompleter(createdProduct);
@@ -55,6 +59,13 @@ void main() {
       cubit.save();
       verify(productRepository.create(product)).called(1);
     });
+
+    test(".save() notifies PackagingsCubit of new product id", () async {
+      cubit.save();
+      await createCompleter.ensureComplete();
+      verify(productPackagingsCubit
+          .setProductId(argThat(equals(createdProduct.id))));
+    });
   });
 
   group('when productId is not null', () {
@@ -70,7 +81,8 @@ void main() {
       when(productRepository.update(argThat(equals(updatedProduct))))
           .thenAnswer((_) async => updatedProduct);
 
-      cubit = ProductCubit(productRepository, loadingCubit,
+      cubit = ProductCubit(
+          productRepository, loadingCubit, productPackagingsCubit,
           productId: existingProduct.id);
     });
 
