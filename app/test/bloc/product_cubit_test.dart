@@ -96,6 +96,7 @@ void main() {
     cubit.setProductId(existingProduct.id);
     await dataCompleter.ensureComplete();
     expect(cubit.state.productName, equals(existingProduct.name));
+    expect(cubit.state.id, equals(existingProduct.id));
   });
 
   test('.setProductId() clears product data when id is null', () {

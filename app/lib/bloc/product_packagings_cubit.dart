@@ -16,6 +16,7 @@ class ProductPackagingsCubit extends Cubit<ProductPackagingsState> {
       PackagingRepository packagingRepository, ProductCubit productCubit)
       : _packagingRepository = packagingRepository,
         super(const ProductPackagingsState()) {
+    _productId = productCubit.state.id;
     productStateSubscription = productCubit.stream.listen((state) {
       if (state.id != null && _productId != state.id) {
         _setProductId(state.id!);

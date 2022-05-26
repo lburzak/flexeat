@@ -131,7 +131,7 @@ KiwiContainer buildContainer(Database database) {
   final container = KiwiContainer();
 
   container
-      .registerFactory((container) => ProductCubit(container(), container()));
+      .registerSingleton((container) => ProductCubit(container(), container()));
   container.registerSingleton<ProductRepository>(
       (container) => LocalProductRepository(container()));
   container.registerFactory((container) => LoadingCubit());
