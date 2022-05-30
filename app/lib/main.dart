@@ -12,7 +12,8 @@ import 'package:flexeat/ui/app_router.gr.dart';
 import 'package:flexeat/usecase/create_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:kiwi/kiwi.dart';
+import 'package:kiwi/kiwi.dart' hide Factory;
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 
 void main() {
@@ -86,6 +87,33 @@ class LightTheme {
   }
 }
 
+typedef Factory<T, P0> = T Function(P0 p0);
+
+class AppContainer {
+  final KiwiContainer _container = KiwiContainer();
+
+  AppContainer(Database database) {
+    _container.registerSingleton<ProductRepository>(
+        (container) => LocalProductRepository(container()));
+    _container.registerSingleton((container) => LoadingCubit());
+    _container.registerFactory((container) =>
+        ProductsListCubit(container(), container(), container(), container()));
+    _container.registerSingleton((container) => NavigationCubit());
+    _container.registerFactory<PackagingRepository>(
+        (container) => LocalPackagingRepository(container()));
+    _container.registerFactory((container) => CreateProduct(container()));
+    _container.registerInstance(database);
+  }
+
+  T provide<T>() => _container<T>();
+
+  Factory<ProductCubit, int> productCubitFactory() => (int productId) =>
+      ProductCubit(_container(), _container(), productId: productId);
+
+  Factory<ProductPackagingsCubit, int> packagingsCubitFactory() =>
+      (int productId) => ProductPackagingsCubit(_container(), productId);
+}
+
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -95,35 +123,37 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final _appRouter = AppRouter();
-  late KiwiContainer container;
+  late AppContainer container;
   bool loaded = false;
 
   @override
   Widget build(BuildContext context) {
     return loaded
-        ? MultiBlocProvider(
+        ? MultiProvider(
             providers: [
-              BlocProvider(
-                create: (context) => container<NavigationCubit>(),
-              ),
-              BlocProvider(
-                create: (context) => container<ProductsListCubit>(),
-              ),
-              BlocProvider(
-                create: (context) => container<ProductPackagingsCubit>(),
-              ),
-              BlocProvider(
-                create: (context) => container<ProductCubit>(),
-              ),
-              BlocProvider(
-                create: (context) => container<LoadingCubit>(),
-              )
+              Provider<Factory<ProductCubit, int>>(
+                  create: (_) => container.productCubitFactory()),
+              Provider<Factory<ProductPackagingsCubit, int>>(
+                  create: (_) => container.packagingsCubitFactory())
             ],
-            child: MaterialApp.router(
-                title: 'Flutter Demo',
-                routerDelegate: _appRouter.delegate(),
-                routeInformationParser: _appRouter.defaultRouteParser(),
-                theme: LightTheme(Theme.of(context)).build()),
+            child: MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => container.provide<NavigationCubit>(),
+                ),
+                BlocProvider(
+                  create: (context) => container.provide<ProductsListCubit>(),
+                ),
+                BlocProvider(
+                  create: (context) => container.provide<LoadingCubit>(),
+                )
+              ],
+              child: MaterialApp.router(
+                  title: 'Flutter Demo',
+                  routerDelegate: _appRouter.delegate(),
+                  routeInformationParser: _appRouter.defaultRouteParser(),
+                  theme: LightTheme(Theme.of(context)).build()),
+            ),
           )
         : const CircularProgressIndicator();
   }
@@ -133,30 +163,9 @@ class _MyAppState extends State<MyApp> {
     super.initState();
     database.openDatabase().then((db) {
       setState(() {
-        container = buildContainer(db);
+        container = AppContainer(db);
         loaded = true;
       });
     });
   }
-}
-
-KiwiContainer buildContainer(Database database) {
-  final container = KiwiContainer();
-
-  container
-      .registerSingleton((container) => ProductCubit(container(), container()));
-  container.registerSingleton<ProductRepository>(
-      (container) => LocalProductRepository(container()));
-  container.registerSingleton((container) => LoadingCubit());
-  container.registerFactory((container) =>
-      ProductsListCubit(container(), container(), container(), container()));
-  container.registerSingleton(
-      (container) => ProductPackagingsCubit(container(), container()));
-  container.registerSingleton((container) => NavigationCubit());
-  container.registerFactory<PackagingRepository>(
-      (container) => LocalPackagingRepository(container()));
-  container.registerFactory((container) => CreateProduct(container()));
-  container.registerInstance(database);
-
-  return container;
 }

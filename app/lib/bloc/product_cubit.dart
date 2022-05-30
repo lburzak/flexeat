@@ -9,8 +9,11 @@ class ProductCubit extends Cubit<ProductState> {
   final ProductRepository _productRepository;
   final LoadingCubit _loadingCubit;
 
-  ProductCubit(this._productRepository, this._loadingCubit)
-      : super(const ProductState());
+  ProductCubit(this._productRepository, this._loadingCubit,
+      {required int productId})
+      : super(const ProductState()) {
+    _fetchData(productId);
+  }
 
   Future<void> _fetchData(int productId) async {
     final product =
@@ -40,13 +43,5 @@ class ProductCubit extends Cubit<ProductState> {
 
   void setName(String text) {
     emit(state.copyWith(productName: text));
-  }
-
-  void setProductId(int? id) {
-    if (id != null) {
-      _fetchData(id);
-    } else {
-      emit(const ProductState());
-    }
   }
 }

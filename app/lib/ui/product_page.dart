@@ -8,11 +8,13 @@ import 'package:flexeat/ui/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../main.dart';
+
 class ProductPage extends StatefulWidget {
-  final int? productId;
+  final int productId;
   final String initialName;
 
-  const ProductPage({Key? key, this.productId, this.initialName = ""})
+  const ProductPage({Key? key, required this.productId, this.initialName = ""})
       : super(key: key);
 
   @override
@@ -25,12 +27,6 @@ class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
     super.initState();
-
-    context.read<ProductCubit>().setProductId(widget.productId);
-
-    if (widget.productId == null) {
-      _editing = true;
-    }
   }
 
   void _startEditing() {
@@ -62,100 +58,117 @@ class _ProductPageState extends State<ProductPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _editing ? _stopEditing : _startEditing,
-        child: Icon(_editing ? Icons.done : Icons.edit),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 32.0),
-              child: _editing
-                  ? BlocBuilder<ProductCubit, ProductState>(
-                      builder: (context, state) => TextFormField(
-                            style: Theme.of(context).textTheme.headline5,
-                            initialValue: state.productName,
-                            onChanged: (text) =>
-                                context.read<ProductCubit>().setName(text),
-                          ))
-                  : Hero(
-                      tag: 'hero-productName-${widget.productId}',
-                      child: Material(
-                        type: MaterialType.transparency,
-                        child: Text(
-                            context.select<LoadingCubit, bool>(
-                                    (cubit) => cubit.state)
-                                ? widget.initialName
-                                : context.select<ProductCubit, String>(
-                                    (cubit) => cubit.state.productName),
-                            style: Theme.of(context).textTheme.headline1),
-                      ),
-                    ),
-            ),
-            _editing
-                ? Column(
-                    children: [
-                      Row(
-                        children: const [
-                          Icon(Icons.local_dining),
-                          SizedBox(
-                            width: 12,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => context
+              .read<Factory<ProductPackagingsCubit, int>>()(widget.productId),
+        ),
+        BlocProvider<ProductCubit>(
+            create: (context) =>
+                context.read<Factory<ProductCubit, int>>()(widget.productId))
+      ],
+      child: Builder(builder: (context) {
+        return Scaffold(
+          appBar: AppBar(),
+          floatingActionButton: FloatingActionButton(
+            onPressed: _editing ? _stopEditing : _startEditing,
+            child: Icon(_editing ? Icons.done : Icons.edit),
+          ),
+          body: Padding(
+            padding:
+                const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 32.0),
+                  child: _editing
+                      ? BlocBuilder<ProductCubit, ProductState>(
+                          builder: (context, state) => TextFormField(
+                                style: Theme.of(context).textTheme.headline5,
+                                initialValue: state.productName,
+                                onChanged: (text) =>
+                                    context.read<ProductCubit>().setName(text),
+                              ))
+                      : Hero(
+                          tag: 'hero-productName-${widget.productId}',
+                          child: Material(
+                            type: MaterialType.transparency,
+                            child: BlocListener<LoadingCubit, bool>(
+                              listener: (context, state) => print(state),
+                              child: Text(
+                                  context.select<LoadingCubit, bool>(
+                                          (cubit) => cubit.state)
+                                      ? widget.initialName
+                                      : context.select<ProductCubit, String>(
+                                          (cubit) => cubit.state.productName),
+                                  style: Theme.of(context).textTheme.headline1),
+                            ),
                           ),
-                          Text("Nutrition facts")
+                        ),
+                ),
+                _editing
+                    ? Column(
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(Icons.local_dining),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              Text("Nutrition facts")
+                            ],
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    onPressed: () {},
+                                    child: Text(
+                                      "Add".toUpperCase(),
+                                    ))),
+                          ),
                         ],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: SizedBox(
-                            width: double.infinity,
-                            child: ElevatedButton(
-                                onPressed: () {},
-                                child: Text(
-                                  "Add".toUpperCase(),
-                                ))),
-                      ),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-            !_editing
-                ? Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: const [
-                                Icon(Icons.inventory),
-                                SizedBox(
-                                  width: 12,
+                      )
+                    : const SizedBox.shrink(),
+                !_editing
+                    ? Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: const [
+                                    Icon(Icons.inventory),
+                                    SizedBox(
+                                      width: 12,
+                                    ),
+                                    Text("Packagings")
+                                  ],
                                 ),
-                                Text("Packagings")
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                      BlocBuilder<ProductPackagingsCubit,
-                              ProductPackagingsState>(
-                          builder: (context, state) => PackagingSelector(
-                                packagings: state.packagings,
-                                selectable: !_editing,
-                                onAdd: () {
-                                  _showPackagingDialog(context);
-                                },
-                              )),
-                    ],
-                  )
-                : const SizedBox.shrink(),
-          ],
-        ),
-      ),
+                          ),
+                          BlocBuilder<ProductPackagingsCubit,
+                                  ProductPackagingsState>(
+                              builder: (context, state) => PackagingSelector(
+                                    packagings: state.packagings,
+                                    selectable: !_editing,
+                                    onAdd: () {
+                                      _showPackagingDialog(context);
+                                    },
+                                  )),
+                        ],
+                      )
+                    : const SizedBox.shrink(),
+              ],
+            ),
+          ),
+        );
+      }),
     );
   }
 }
