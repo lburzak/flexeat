@@ -104,6 +104,9 @@ class _MyAppState extends State<MyApp> {
               ),
               BlocProvider(
                 create: (context) => container<ProductCubit>(),
+              ),
+              BlocProvider(
+                create: (context) => container<LoadingCubit>(),
               )
             ],
             child: MaterialApp.router(
@@ -134,7 +137,7 @@ KiwiContainer buildContainer(Database database) {
       .registerSingleton((container) => ProductCubit(container(), container()));
   container.registerSingleton<ProductRepository>(
       (container) => LocalProductRepository(container()));
-  container.registerFactory((container) => LoadingCubit());
+  container.registerSingleton((container) => LoadingCubit());
   container.registerFactory(
       (container) => ProductsListCubit(container(), container()));
   container.registerSingleton(

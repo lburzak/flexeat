@@ -1,3 +1,4 @@
+import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/domain/packaging.dart';
@@ -9,8 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductPage extends StatefulWidget {
   final int? productId;
+  final String initialName;
 
-  const ProductPage({Key? key, this.productId}) : super(key: key);
+  const ProductPage({Key? key, this.productId, this.initialName = ""})
+      : super(key: key);
 
   @override
   State<ProductPage> createState() => _ProductPageState();
@@ -80,10 +83,19 @@ class _ProductPageState extends State<ProductPage> {
                             onChanged: (text) =>
                                 context.read<ProductCubit>().setName(text),
                           ))
-                  : Text(
-                      context.select<ProductCubit, String>(
-                          (cubit) => cubit.state.productName),
-                      style: Theme.of(context).textTheme.headline1),
+                  : Hero(
+                      tag: 'hero-productName-${widget.productId}',
+                      child: Material(
+                        type: MaterialType.transparency,
+                        child: Text(
+                            context.select<LoadingCubit, bool>(
+                                    (cubit) => cubit.state)
+                                ? widget.initialName
+                                : context.select<ProductCubit, String>(
+                                    (cubit) => cubit.state.productName),
+                            style: Theme.of(context).textTheme.headline1),
+                      ),
+                    ),
             ),
             _editing
                 ? Column(

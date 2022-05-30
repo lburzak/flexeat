@@ -13,7 +13,8 @@ class ProductCubit extends Cubit<ProductState> {
       : super(const ProductState());
 
   Future<void> _fetchData(int productId) async {
-    final product = await _productRepository.findById(productId);
+    final product =
+        await _productRepository.findById(productId).listenIn(_loadingCubit);
     emit(ProductState(productName: product.name, id: product.id));
   }
 
