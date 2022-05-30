@@ -1,4 +1,5 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
+import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
@@ -8,6 +9,7 @@ import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/ui/app_router.gr.dart';
+import 'package:flexeat/usecase/create_product.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiwi/kiwi.dart';
@@ -97,6 +99,9 @@ class _MyAppState extends State<MyApp> {
         ? MultiBlocProvider(
             providers: [
               BlocProvider(
+                create: (context) => container<NavigationCubit>(),
+              ),
+              BlocProvider(
                 create: (context) => container<ProductsListCubit>(),
               ),
               BlocProvider(
@@ -138,12 +143,14 @@ KiwiContainer buildContainer(Database database) {
   container.registerSingleton<ProductRepository>(
       (container) => LocalProductRepository(container()));
   container.registerSingleton((container) => LoadingCubit());
-  container.registerFactory(
-      (container) => ProductsListCubit(container(), container()));
+  container.registerFactory((container) =>
+      ProductsListCubit(container(), container(), container(), container()));
   container.registerSingleton(
       (container) => ProductPackagingsCubit(container(), container()));
+  container.registerSingleton((container) => NavigationCubit());
   container.registerFactory<PackagingRepository>(
       (container) => LocalPackagingRepository(container()));
+  container.registerFactory((container) => CreateProduct(container()));
   container.registerInstance(database);
 
   return container;

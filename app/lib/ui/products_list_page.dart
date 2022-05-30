@@ -1,4 +1,5 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/state/products_list_state.dart';
@@ -11,18 +12,25 @@ class ProductsListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocBuilder<ProductsListCubit, ProductsListState>(
-          builder: (context, state) => ListView.builder(
-                itemCount: state.products.length,
-                itemBuilder: (context, index) =>
-                    ProductEntry(product: state.products[index]),
-              )),
-      floatingActionButton: FloatingActionButton(
-          child: const Icon(Icons.add),
-          onPressed: () {
-            context.router.push(ProductRoute());
-          }),
+    return BlocListener<NavigationCubit, NavigationState>(
+      listener: (context, state) {
+        if (state is ToProductNavigationState) {
+          context.router.push(ProductRoute(productId: state.productId));
+        }
+      },
+      child: Scaffold(
+        body: BlocBuilder<ProductsListCubit, ProductsListState>(
+            builder: (context, state) => ListView.builder(
+                  itemCount: state.products.length,
+                  itemBuilder: (context, index) =>
+                      ProductEntry(product: state.products[index]),
+                )),
+        floatingActionButton: FloatingActionButton(
+            child: const Icon(Icons.add),
+            onPressed: () {
+              context.read<ProductsListCubit>().createProduct();
+            }),
+      ),
     );
   }
 }
