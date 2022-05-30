@@ -32,6 +32,7 @@ class LightTheme {
         colorScheme: _colors,
         scaffoldBackgroundColor: _colors.surfaceVariant,
         textTheme: _buildTextTheme(_parent.textTheme),
+        appBarTheme: _buildAppBarTheme(),
         floatingActionButtonTheme:
             _buildFloatingActionButtonTheme(_parent.floatingActionButtonTheme),
         chipTheme: _buildChipTheme(_parent.chipTheme),
@@ -46,6 +47,10 @@ class LightTheme {
         surfaceVariant: Colors.blue.shade600,
         primaryContainer: const Color(0xff69b6ff),
         onSurfaceVariant: Colors.white);
+  }
+
+  AppBarTheme _buildAppBarTheme() {
+    return const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0);
   }
 
   TextTheme _buildTextTheme(TextTheme base) {

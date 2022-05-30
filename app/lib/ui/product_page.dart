@@ -63,13 +63,13 @@ class _ProductPageState extends State<ProductPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(),
       floatingActionButton: FloatingActionButton(
         onPressed: _editing ? _stopEditing : _startEditing,
         child: Icon(_editing ? Icons.done : Icons.edit),
       ),
       body: Padding(
-        padding:
-            const EdgeInsets.only(left: 24, right: 24, top: 64, bottom: 24),
+        padding: const EdgeInsets.only(left: 24, right: 24, top: 0, bottom: 24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
