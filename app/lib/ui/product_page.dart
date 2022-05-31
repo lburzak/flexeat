@@ -5,6 +5,7 @@ import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flexeat/ui/circle_button.dart';
+import 'package:flexeat/ui/nutrition_facts_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,6 +39,12 @@ class _ProductPageState extends State<ProductPage> {
               onSubmit: (weight, label) =>
                   cubit.addPackaging(Packaging(weight: weight, label: label)),
             ));
+  }
+
+  void _showNutritionFactsDialog(BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (_) => NutritionFactsDialog(productId: widget.productId));
   }
 
   @override
@@ -140,7 +147,8 @@ class _ProductPageState extends State<ProductPage> {
                       child: SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                              onPressed: () {},
+                              onPressed: () =>
+                                  _showNutritionFactsDialog(context),
                               child: Text(
                                 "Add".toUpperCase(),
                               ))),

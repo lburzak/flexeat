@@ -1,11 +1,14 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
+import 'package:flexeat/bloc/nutrition_facts_form_model.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
 import 'package:flexeat/data/database.dart' as database;
+import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_packaging_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
+import 'package:flexeat/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/ui/app_router.gr.dart';
@@ -102,6 +105,8 @@ class AppContainer {
     _container.registerFactory<PackagingRepository>(
         (container) => LocalPackagingRepository(container()));
     _container.registerFactory((container) => CreateProduct(container()));
+    _container.registerFactory<NutritionFactsRepository>(
+        (container) => LocalNutritionFactsRepository());
     _container.registerInstance(database);
   }
 
@@ -112,6 +117,10 @@ class AppContainer {
 
   Factory<ProductPackagingsCubit, int> packagingsCubitFactory() =>
       (int productId) => ProductPackagingsCubit(_container(), productId);
+
+  Factory<NutritionFactsFormModel, int> nutritionFactsFormModelFactory() =>
+      (int productId) =>
+          NutritionFactsFormModel(_container(), productId: productId);
 }
 
 class MyApp extends StatefulWidget {
@@ -134,7 +143,9 @@ class _MyAppState extends State<MyApp> {
               Provider<Factory<ProductCubit, int>>(
                   create: (_) => container.productCubitFactory()),
               Provider<Factory<ProductPackagingsCubit, int>>(
-                  create: (_) => container.packagingsCubitFactory())
+                  create: (_) => container.packagingsCubitFactory()),
+              Provider<Factory<NutritionFactsFormModel, int>>(
+                  create: (_) => container.nutritionFactsFormModelFactory())
             ],
             child: MultiBlocProvider(
               providers: [
