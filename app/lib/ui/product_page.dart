@@ -100,26 +100,19 @@ class _ProductPageState extends State<ProductPage> {
                             InkWell(
                                 child: Padding(
                                   padding: const EdgeInsets.all(12.0),
-                                  child: Hero(
-                                    tag: 'hero-productName-${widget.productId}',
-                                    child: Material(
-                                      type: MaterialType.transparency,
-                                      child: BlocListener<LoadingCubit, bool>(
-                                        listener: (context, state) =>
-                                            print(state),
-                                        child: Text(
-                                            context.select<LoadingCubit, bool>(
-                                                    (cubit) => cubit.state)
-                                                ? widget.initialName
-                                                : context.select<ProductCubit,
-                                                        String>(
+                                  child: Material(
+                                    type: MaterialType.transparency,
+                                    child: Text(
+                                        context.select<LoadingCubit, bool>(
+                                                (cubit) => cubit.state)
+                                            ? widget.initialName
+                                            : context
+                                                .select<ProductCubit, String>(
                                                     (cubit) => cubit
                                                         .state.productName),
-                                            style: Theme.of(context)
-                                                .textTheme
-                                                .headline1),
-                                      ),
-                                    ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .headline1),
                                   ),
                                 ),
                                 onTap: () {
