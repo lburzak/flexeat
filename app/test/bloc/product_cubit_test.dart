@@ -17,92 +17,35 @@ void main() {
   late LoadingCubit loadingCubit;
   late PreparedCompleter<Product> dataCompleter;
 
-  const product = Product(id: 0, name: "Test name");
-  const existingProduct = Product(id: 1, name: "Some product");
-
-  final createdProduct = product.copyWith(id: 4);
+  const product = Product(id: 1, name: "Some product");
+  final updatedProduct = product.copyWith(name: "Updated name");
 
   setUp(() {
     productRepository = MockProductRepository();
     loadingCubit = LoadingCubit();
-    cubit = ProductCubit(productRepository, loadingCubit);
 
-    dataCompleter = when(productRepository.findById(existingProduct.id))
-        .thenReturnCompleter(existingProduct);
+    dataCompleter =
+        when(productRepository.findById(argThat(equals(product.id))))
+            .thenReturnCompleter(product);
+
+    when(productRepository.update(argThat(equals(updatedProduct))))
+        .thenAnswer((_) async => updatedProduct);
   });
 
-  group('when productId is null', () {
-    late PreparedCompleter<Product> createCompleter;
-    setUp(() {
-      createCompleter = when(productRepository.create(argThat(equals(product))))
-          .thenReturnCompleter(createdProduct);
-
-      when(productRepository.update(any))
-          .thenAnswer((_) async => createdProduct);
-
-      cubit.setName(product.name);
-    });
-
-    test(".save() creates new product", () {
-      cubit.save();
-      verify(productRepository.create(product));
-    });
-
-    test(".save() after saving does not create new product", () async {
-      cubit.save();
-      await createCompleter.ensureComplete();
-      cubit.save();
-      verify(productRepository.create(product)).called(1);
-    });
-
-    test(".save() when loading does not create new product", () {
-      cubit.save();
-      cubit.save();
-      verify(productRepository.create(product)).called(1);
-    });
-  });
-
-  group('when productId is not null', () {
-    const updatedName = "Updated name";
-    final updatedProduct = existingProduct.copyWith(name: updatedName);
-
-    setUp(() {
-      when(productRepository.update(argThat(equals(updatedProduct))))
-          .thenAnswer((_) async => updatedProduct);
-
-      cubit.setProductId(existingProduct.id);
-    });
-
-    group('after data is fetched', () {
-      setUp(() async {
-        await dataCompleter.ensureComplete();
-      });
-
-      test('state is fetched from repository', () async {
-        expect(cubit.state.productName, equals(existingProduct.name));
-      });
-
-      test('.save() updates existing product', () async {
-        cubit.setName(updatedName);
-        cubit.save();
-        verify(productRepository
-            .update(existingProduct.copyWith(name: updatedName)));
-      });
-    });
-  });
-
-  test(".setProductId() populates selected product data when id is not null",
-      () async {
-    cubit.setProductId(existingProduct.id);
+  setUp(() async {
+    cubit =
+        ProductCubit(productRepository, loadingCubit, productId: product.id);
     await dataCompleter.ensureComplete();
-    expect(cubit.state.productName, equals(existingProduct.name));
-    expect(cubit.state.id, equals(existingProduct.id));
   });
 
-  test('.setProductId() clears product data when id is null', () {
-    cubit.setProductId(null);
-    expect(cubit.state.id, equals(null));
-    expect(cubit.state.productName, equals(''));
+  test('state is fetched from repository', () async {
+    expect(cubit.state.productName, equals(product.name));
+  });
+
+  test('.save() updates existing product', () async {
+    cubit.setName(updatedProduct.name);
+    cubit.save();
+    verify(productRepository.update(updatedProduct));
   });
 
   test(".setName() changes name", () {

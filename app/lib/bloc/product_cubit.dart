@@ -8,16 +8,18 @@ import '../domain/product.dart';
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository _productRepository;
   final LoadingCubit _loadingCubit;
+  final int _productId;
 
   ProductCubit(this._productRepository, this._loadingCubit,
       {required int productId})
-      : super(const ProductState()) {
-    _fetchData(productId);
+      : _productId = productId,
+        super(const ProductState()) {
+    _fetchData();
   }
 
-  Future<void> _fetchData(int productId) async {
+  Future<void> _fetchData() async {
     final product =
-        await _productRepository.findById(productId).listenIn(_loadingCubit);
+        await _productRepository.findById(_productId).listenIn(_loadingCubit);
     emit(ProductState(productName: product.name, id: product.id));
   }
 
@@ -26,18 +28,8 @@ class ProductCubit extends Cubit<ProductState> {
       return;
     }
 
-    if (state.id == null) {
-      _productRepository
-          .create(Product(name: state.productName))
-          .listenIn(_loadingCubit)
-          .then((product) {
-        emit(state.copyWith(id: product.id));
-      });
-      return;
-    }
-
     _productRepository
-        .update(Product(id: state.id!, name: state.productName))
+        .update(Product(id: _productId, name: state.productName))
         .listenIn(_loadingCubit);
   }
 
