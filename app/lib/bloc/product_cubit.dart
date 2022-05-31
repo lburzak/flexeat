@@ -36,6 +36,4 @@ class ProductCubit extends Cubit<ProductState> {
   void setName(String text) {
     emit(state.copyWith(productName: text));
   }
-
-  void changeName(String name) {}
 }
