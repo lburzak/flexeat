@@ -7,4 +7,10 @@ class LocalNutritionFactsRepository extends NutritionFactsRepository {
   Future<NutritionFacts> findByProductId(int productId) async {
     return const NutritionFacts();
   }
+
+  @override
+  Future<void> updateByProductId(int productId, NutritionFacts nutritionFacts) {
+    // TODO: implement updateByProductId
+    throw UnimplementedError();
+  }
 }

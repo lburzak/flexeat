@@ -69,7 +69,14 @@ class NutritionFactsDialog extends StatelessWidget {
                   )),
             ],
           ),
-          actions: [TextButton(onPressed: () {}, child: const Text("Save"))],
+          actions: [
+            TextButton(
+                onPressed: () {
+                  context.read<NutritionFactsFormModel>().submit();
+                  Navigator.of(context).pop();
+                },
+                child: const Text("Save"))
+          ],
         );
       }),
     );
