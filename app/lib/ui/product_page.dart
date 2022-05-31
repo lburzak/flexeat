@@ -22,6 +22,7 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
+  final _titleFocusNode = FocusNode();
   bool _editing = false;
 
   @override
@@ -71,6 +72,7 @@ class _ProductPageState extends State<ProductPage> {
                                     children: [
                                       Expanded(
                                         child: TextFormField(
+                                          focusNode: _titleFocusNode,
                                           style: Theme.of(context)
                                               .textTheme
                                               .headline5,
@@ -124,6 +126,7 @@ class _ProductPageState extends State<ProductPage> {
                                   setState(() {
                                     _editing = true;
                                   });
+                                  _titleFocusNode.requestFocus();
                                 }),
                           ],
                         ),
