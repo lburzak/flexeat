@@ -106,7 +106,7 @@ class AppContainer {
         (container) => LocalPackagingRepository(container()));
     _container.registerFactory((container) => CreateProduct(container()));
     _container.registerFactory<NutritionFactsRepository>(
-        (container) => LocalNutritionFactsRepository());
+        (container) => LocalNutritionFactsRepository(container()));
     _container.registerInstance(database);
   }
 

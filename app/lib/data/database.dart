@@ -30,3 +30,17 @@ CREATE TABLE packaging (
   FOREIGN KEY (product_id) REFERENCES product(id)
 );
 """;
+
+const createNutritionFactsTable = """
+CREATE TABLE nutrition_facts (
+  product_id INTEGER PRIMARY KEY,
+  energy INTEGER,
+  fat INTEGER,
+  carbohydrates INTEGER,
+  fibre INTEGER,
+  protein INTEGER,
+  salt INTEGER
+  
+  FOREIGN KEY (product_id) REFERENCES product(id)
+);
+""";
