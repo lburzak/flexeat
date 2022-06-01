@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
@@ -9,18 +10,12 @@ const productTable = 'product';
 const nameColumn = 'name';
 const idColumn = 'id';
 
-enum DataEvent { productCreated, productChanged }
+enum _DataEvent { productCreated, productChanged }
 
-class LocalProductRepository implements ProductRepository {
+class LocalProductRepository
+    with LiveRepository<_DataEvent>
+    implements ProductRepository {
   final Database _database;
-  final StreamController<DataEvent> _dataEventController =
-      StreamController(sync: true);
-
-  Stream<DataEvent> get dataEvents => _dataEventController.stream;
-
-  void emit(DataEvent dataEvent) {
-    _dataEventController.add(dataEvent);
-  }
 
   LocalProductRepository(this._database);
 
@@ -32,7 +27,7 @@ class LocalProductRepository implements ProductRepository {
 
     final productId = await _database.insert(productTable, _serialize(product));
 
-    emit(DataEvent.productCreated);
+    emit(_DataEvent.productCreated);
 
     return product.copyWith(id: productId);
   }
@@ -57,14 +52,14 @@ class LocalProductRepository implements ProductRepository {
     await _database.update(productTable, _serialize(product),
         where: '$idColumn = ?', whereArgs: [product.id]);
 
-    emit(DataEvent.productChanged);
+    emit(_DataEvent.productChanged);
   }
 
   @override
   Stream<List<Product>> watchAll() async* {
     final applicableEvents = [
-      DataEvent.productCreated,
-      DataEvent.productChanged
+      _DataEvent.productCreated,
+      _DataEvent.productChanged
     ];
 
     yield await findAll();
