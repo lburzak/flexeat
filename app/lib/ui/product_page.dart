@@ -67,6 +67,7 @@ class _ProductPageState extends State<ProductPage> {
             padding:
                 const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 12),
             child: Column(
+              mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
@@ -154,6 +155,7 @@ class _ProductPageState extends State<ProductPage> {
                   ],
                 ),
                 Column(
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 12),
@@ -205,6 +207,7 @@ class PackagingChip extends StatelessWidget {
         onSelected: onSelected,
         elevation: 2,
         label: Row(
+          mainAxisSize: MainAxisSize.min,
           children: [
             Text(packaging.label),
             const SizedBox(
@@ -243,37 +246,36 @@ class _PackagingSelectorState extends State<PackagingSelector> {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: widget.packagings
-          .map((packaging) => PackagingChip(
-                packaging,
-                selected: packaging.id == selectedId,
-                onSelected: widget.selectable
-                    ? (selected) {
-                        if (selected) {
-                          setState(() {
-                            selectedId = packaging.id;
-                          });
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Wrap(
+        spacing: 6.0,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: widget.packagings
+            .map((packaging) => PackagingChip(
+                  packaging,
+                  selected: packaging.id == selectedId,
+                  onSelected: widget.selectable
+                      ? (selected) {
+                          if (selected) {
+                            setState(() {
+                              selectedId = packaging.id;
+                            });
+                          }
                         }
-                      }
-                    : null,
-              ))
-          .cast<Widget>()
-          .expand((element) => [
-                element,
-                const SizedBox(
-                  width: 8,
-                )
-              ])
-          .followedBy([
-        CircleButton(
-          size: 34,
-          icon: Icons.add,
-          onPressed: () {
-            widget.onAdd?.call();
-          },
-        )
-      ]).toList(growable: false),
+                      : null,
+                ))
+            .cast<Widget>()
+            .followedBy([
+          CircleButton(
+            size: 34,
+            icon: Icons.add,
+            onPressed: () {
+              widget.onAdd?.call();
+            },
+          )
+        ]).toList(growable: false),
+      ),
     );
   }
 }
