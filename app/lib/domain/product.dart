@@ -1,32 +1,30 @@
 class Product {
   final int id;
   final String name;
-  final List<String> suppliedArticles;
 
-  const Product(
-      {this.id = 0, this.name = "", this.suppliedArticles = const []});
+  const Product({
+    this.id = 0,
+    this.name = "",
+  });
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Product &&
+      (other is Product &&
           runtimeType == other.runtimeType &&
           id == other.id &&
-          name == other.name &&
-          suppliedArticles == other.suppliedArticles;
+          name == other.name);
 
   @override
-  int get hashCode => id.hashCode ^ name.hashCode ^ suppliedArticles.hashCode;
+  int get hashCode => id.hashCode ^ name.hashCode;
 
   Product copyWith({
     int? id,
     String? name,
-    List<String>? suppliedArticles,
   }) {
     return Product(
       id: id ?? this.id,
       name: name ?? this.name,
-      suppliedArticles: suppliedArticles ?? this.suppliedArticles,
     );
   }
 }
