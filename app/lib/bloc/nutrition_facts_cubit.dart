@@ -14,6 +14,6 @@ class NutritionFactsCubit extends Cubit<NutritionFacts> {
   }
 
   void setProductId(int productId) {
-    _nutritionFactsRepository.findByProductId(productId).then(emit);
+    // _nutritionFactsRepository.findByProductId(productId).then(emit);
   }
 }

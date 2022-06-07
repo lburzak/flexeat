@@ -5,13 +5,13 @@ import 'package:meta/meta.dart';
 class ProductState {
   final String productName;
   final int? id;
-  final NutritionFacts? nutritionFacts;
+  final NutritionFacts nutritionFacts;
   final List<String> compatibleArticles;
 
   const ProductState(
       {this.productName = "",
       this.id,
-      this.nutritionFacts,
+      this.nutritionFacts = const NutritionFacts(),
       this.compatibleArticles = const []});
 
   ProductState copyWith({

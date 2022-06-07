@@ -1,15 +1,16 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
+import 'package:flexeat/domain/nutrition_facts.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flexeat/ui/circle_button.dart';
-import 'package:flexeat/ui/nutrition_facts_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../main.dart';
+import 'nutrition_facts_dialog.dart';
 
 class ProductPage extends StatefulWidget {
   final int productId;
@@ -144,14 +145,11 @@ class _ProductPageState extends State<ProductPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: SizedBox(
-                          width: double.infinity,
-                          child: ElevatedButton(
-                              onPressed: () =>
-                                  _showNutritionFactsDialog(context),
-                              child: Text(
-                                "Add".toUpperCase(),
-                              ))),
+                      child: BlocBuilder<ProductCubit, ProductState>(
+                        builder: (context, state) => NutritionFactsSection(
+                            nutritionFacts: state.nutritionFacts,
+                            onEdit: () => _showNutritionFactsDialog(context)),
+                      ),
                     ),
                   ],
                 ),
@@ -353,5 +351,111 @@ class _PackagingInputDialogState extends State<PackagingInputDialog> {
     widget.onSubmit?.call(weight, _label);
 
     Navigator.of(context).pop();
+  }
+}
+
+class NutritionFactsSection extends StatelessWidget {
+  final void Function()? onEdit;
+  final NutritionFacts nutritionFacts;
+
+  const NutritionFactsSection(
+      {Key? key, required this.nutritionFacts, this.onEdit})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final map = nutritionFacts.toMap();
+    if (map.values.every((element) => element == null)) {
+      return SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+              onPressed: onEdit,
+              child: Text(
+                "Add".toUpperCase(),
+              )));
+    }
+
+    final entries = nutritionFacts
+        .toMap()
+        .entries
+        .map((entry) => Row(
+              children: [
+                Icon(_getFactIcon(entry.key)),
+                Text(entry.value == null ? '?' : entry.value.toString())
+              ],
+            ))
+        .toList();
+
+    return Table(
+      children: [
+        TableRow(children: [
+          _NutritionFactCell(icon: Icons.bolt, value: nutritionFacts.energy),
+          _NutritionFactCell(icon: Icons.water_drop, value: nutritionFacts.fat),
+          _NutritionFactCell(
+              icon: Icons.bakery_dining, value: nutritionFacts.carbohydrates),
+        ]),
+        TableRow(children: [
+          _NutritionFactCell(icon: Icons.hive, value: nutritionFacts.fibre),
+          _NutritionFactCell(
+              icon: Icons.whatshot, value: nutritionFacts.protein),
+          _NutritionFactCell(icon: Icons.fitbit, value: nutritionFacts.salt),
+        ]),
+      ],
+    );
+  }
+
+  IconData? _getFactIcon(String factName) {
+    switch (factName) {
+      case 'energy':
+        return Icons.bolt;
+      case 'fat':
+        return Icons.water_drop;
+      case 'carbohydrates':
+        return Icons.bakery_dining;
+      case 'fibre':
+        return Icons.hive;
+      case 'protein':
+        return Icons.whatshot;
+      case 'salt':
+        return Icons.fitbit;
+    }
+
+    return null;
+  }
+}
+
+class _NutritionFactCell extends StatelessWidget {
+  final IconData icon;
+  final double? value;
+
+  const _NutritionFactCell({Key? key, required this.icon, this.value})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TableCell(
+        child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Icon(icon),
+          const SizedBox(width: 12),
+          Text("${doubleToStringOrQuestionMark(value)} g")
+        ],
+      ),
+    ));
+  }
+
+  String doubleToStringOrQuestionMark(double? value) {
+    if (value == null) {
+      return '?';
+    } else {
+      final intValue = value.toInt();
+      if (intValue == value) {
+        return intValue.toString();
+      } else {
+        return value.toString();
+      }
+    }
   }
 }

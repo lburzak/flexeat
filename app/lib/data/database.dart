@@ -11,6 +11,7 @@ Future<void> _initDatabase(sqflite.Database db, int version) async {
   await db.transaction((txn) async {
     await txn.execute(createProductTable);
     await txn.execute(createPackagingTable);
+    await txn.execute(createNutritionFactsTable);
   });
 }
 
@@ -34,13 +35,12 @@ CREATE TABLE packaging (
 const createNutritionFactsTable = """
 CREATE TABLE nutrition_facts (
   product_id INTEGER PRIMARY KEY,
-  energy INTEGER,
-  fat INTEGER,
-  carbohydrates INTEGER,
-  fibre INTEGER,
-  protein INTEGER,
-  salt INTEGER
-  
+  energy REAL,
+  fat REAL,
+  carbohydrates REAL,
+  fibre REAL,
+  protein REAL,
+  salt REAL,
   FOREIGN KEY (product_id) REFERENCES product(id)
 );
 """;

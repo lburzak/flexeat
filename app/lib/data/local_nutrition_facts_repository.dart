@@ -34,11 +34,15 @@ class LocalNutritionFactsRepository
     final result = await _database.query(nutritionFactsTable,
         where: '$productIdColumn = ?', whereArgs: [productId]);
 
+    if (result.isEmpty) {
+      return const NutritionFacts();
+    }
+
     return result.first.deserialize();
   }
 
   @override
-  Stream<NutritionFacts?> watchByProductId(int productId) async* {
+  Stream<NutritionFacts> watchByProductId(int productId) async* {
     yield await findByProductId(productId);
 
     yield* dataEvents

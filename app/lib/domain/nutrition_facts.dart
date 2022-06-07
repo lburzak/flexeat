@@ -1,10 +1,10 @@
 class NutritionFacts {
-  final int? energy;
-  final int? fat;
-  final int? carbohydrates;
-  final int? fibre;
-  final int? protein;
-  final int? salt;
+  final double? energy;
+  final double? fat;
+  final double? carbohydrates;
+  final double? fibre;
+  final double? protein;
+  final double? salt;
 
   const NutritionFacts({
     this.energy,
@@ -39,5 +39,16 @@ class NutritionFacts {
   @override
   String toString() {
     return 'NutritionFacts{energy: $energy, fat: $fat, carbohydrates: $carbohydrates, fibre: $fibre, protein: $protein, salt: $salt}';
+  }
+
+  Map<String, double?> toMap() {
+    return {
+      'energy': energy,
+      'fat': fat,
+      'carbohydrates': carbohydrates,
+      'fibre': fibre,
+      'protein': protein,
+      'salt': salt,
+    };
   }
 }

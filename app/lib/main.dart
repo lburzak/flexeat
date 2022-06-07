@@ -105,7 +105,7 @@ class AppContainer {
     _container.registerFactory<PackagingRepository>(
         (container) => LocalPackagingRepository(container()));
     _container.registerFactory((container) => CreateProduct(container()));
-    _container.registerFactory<NutritionFactsRepository>(
+    _container.registerSingleton<NutritionFactsRepository>(
         (container) => LocalNutritionFactsRepository(container()));
     _container.registerInstance(database);
   }
@@ -113,7 +113,7 @@ class AppContainer {
   T provide<T>() => _container<T>();
 
   Factory<ProductCubit, int> productCubitFactory() => (int productId) =>
-      ProductCubit(_container(), _container(), productId: productId);
+      ProductCubit(provide(), provide(), provide(), productId: productId);
 
   Factory<ProductPackagingsCubit, int> packagingsCubitFactory() =>
       (int productId) => ProductPackagingsCubit(_container(), productId);
