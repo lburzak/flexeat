@@ -377,52 +377,26 @@ class NutritionFactsSection extends StatelessWidget {
               )));
     }
 
-    final entries = nutritionFacts
-        .toMap()
-        .entries
-        .map((entry) => Row(
-              children: [
-                Icon(_getFactIcon(entry.key)),
-                Text(entry.value == null ? '?' : entry.value.toString())
-              ],
-            ))
-        .toList();
-
-    return Table(
-      children: [
-        TableRow(children: [
-          _NutritionFactCell(icon: Icons.bolt, value: nutritionFacts.energy),
-          _NutritionFactCell(icon: Icons.water_drop, value: nutritionFacts.fat),
-          _NutritionFactCell(
-              icon: Icons.bakery_dining, value: nutritionFacts.carbohydrates),
-        ]),
-        TableRow(children: [
-          _NutritionFactCell(icon: Icons.hive, value: nutritionFacts.fibre),
-          _NutritionFactCell(
-              icon: Icons.whatshot, value: nutritionFacts.protein),
-          _NutritionFactCell(icon: Icons.fitbit, value: nutritionFacts.salt),
-        ]),
-      ],
+    return GestureDetector(
+      onTap: onEdit,
+      child: Table(
+        children: [
+          TableRow(children: [
+            _NutritionFactCell(icon: Icons.bolt, value: nutritionFacts.energy),
+            _NutritionFactCell(
+                icon: Icons.water_drop, value: nutritionFacts.fat),
+            _NutritionFactCell(
+                icon: Icons.bakery_dining, value: nutritionFacts.carbohydrates),
+          ]),
+          TableRow(children: [
+            _NutritionFactCell(icon: Icons.hive, value: nutritionFacts.fibre),
+            _NutritionFactCell(
+                icon: Icons.whatshot, value: nutritionFacts.protein),
+            _NutritionFactCell(icon: Icons.fitbit, value: nutritionFacts.salt),
+          ]),
+        ],
+      ),
     );
-  }
-
-  IconData? _getFactIcon(String factName) {
-    switch (factName) {
-      case 'energy':
-        return Icons.bolt;
-      case 'fat':
-        return Icons.water_drop;
-      case 'carbohydrates':
-        return Icons.bakery_dining;
-      case 'fibre':
-        return Icons.hive;
-      case 'protein':
-        return Icons.whatshot;
-      case 'salt':
-        return Icons.fitbit;
-    }
-
-    return null;
   }
 }
 

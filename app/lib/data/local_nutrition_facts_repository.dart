@@ -55,21 +55,30 @@ class LocalNutritionFactsRepository
   @override
   Future<void> updateByProductId(
       int productId, NutritionFacts nutritionFacts) async {
-    await _database.insert(nutritionFactsTable, nutritionFacts.serialize(),
+    await _database.insert(
+        nutritionFactsTable, nutritionFacts.serialize(productId: productId),
         conflictAlgorithm: ConflictAlgorithm.replace);
     emit(_NutritionFactsUpdatedEvent(productId));
   }
 }
 
 extension _Serialization on NutritionFacts {
-  Row serialize() => {
-        energyColumn: energy,
-        fatColumn: fat,
-        carbohydratesColumn: carbohydrates,
-        fibreColumn: fibre,
-        proteinColumn: protein,
-        saltColumn: salt,
-      };
+  Row serialize({int? productId}) {
+    final map = <String, Object?>{
+      energyColumn: energy,
+      fatColumn: fat,
+      carbohydratesColumn: carbohydrates,
+      fibreColumn: fibre,
+      proteinColumn: protein,
+      saltColumn: salt,
+    };
+
+    if (productId != null) {
+      map[productIdColumn] = productId;
+    }
+
+    return map;
+  }
 }
 
 extension _Deserialization on Row {
