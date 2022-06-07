@@ -16,7 +16,18 @@ class NutritionFactsFormModel {
 
   NutritionFactsFormModel(this._nutritionFactsRepository,
       {required int productId})
-      : _productId = productId;
+      : _productId = productId {
+    _nutritionFactsRepository.findByProductId(productId).then(_populateFields);
+  }
+
+  void _populateFields(NutritionFacts nutritionFacts) {
+    form.control('energy').value = nutritionFacts.energy;
+    form.control('fat').value = nutritionFacts.fat;
+    form.control('carbohydrates').value = nutritionFacts.carbohydrates;
+    form.control('fibre').value = nutritionFacts.fibre;
+    form.control('protein').value = nutritionFacts.protein;
+    form.control('salt').value = nutritionFacts.salt;
+  }
 
   void submit() {
     final nutritionFacts = NutritionFacts(
