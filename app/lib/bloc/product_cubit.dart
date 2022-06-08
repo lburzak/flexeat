@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flexeat/bloc/loading_cubit.dart';
+import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/state/product_state.dart';
@@ -11,12 +12,15 @@ import '../domain/product.dart';
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository _productRepository;
   final NutritionFactsRepository _nutritionFactsRepository;
+  final ArticleRepository _articleRepository;
   final LoadingCubit _loadingCubit;
   final int _productId;
   late StreamSubscription subscription;
+  late StreamSubscription allArticlesSub;
+  late StreamSubscription productArticlesSub;
 
   ProductCubit(this._productRepository, this._loadingCubit,
-      this._nutritionFactsRepository,
+      this._nutritionFactsRepository, this._articleRepository,
       {required int productId})
       : _productId = productId,
         super(const ProductState()) {
@@ -27,11 +31,23 @@ class ProductCubit extends Cubit<ProductState> {
         .listen((nutritionFacts) {
       emit(state.copyWith(nutritionFacts: nutritionFacts));
     });
+
+    allArticlesSub = _articleRepository.watchAll().listen((articles) {
+      emit(state.copyWith(availableArticles: articles));
+    });
+
+    productArticlesSub = _articleRepository
+        .watchByProductId(_productId)
+        .listen((productArticles) {
+      emit(state.copyWith(compatibleArticles: productArticles));
+    });
   }
 
   @override
   Future<void> close() async {
     subscription.cancel();
+    allArticlesSub.cancel();
+    productArticlesSub.cancel();
     super.close();
   }
 
@@ -53,5 +69,19 @@ class ProductCubit extends Cubit<ProductState> {
 
   void setName(String text) {
     emit(state.copyWith(productName: text));
+  }
+
+  void unlinkArticle(int articleId) {
+    _articleRepository.unlinkFromProduct(articleId, _productId);
+  }
+
+  void linkArticle(int articleId) {
+    _articleRepository.linkToProduct(articleId, _productId);
+  }
+
+  void linkNewArticle(String name) {
+    _articleRepository.create(name).then((id) {
+      _articleRepository.linkToProduct(id, _productId);
+    });
   }
 }

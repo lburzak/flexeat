@@ -12,6 +12,8 @@ Future<void> _initDatabase(sqflite.Database db, int version) async {
     await txn.execute(createProductTable);
     await txn.execute(createPackagingTable);
     await txn.execute(createNutritionFactsTable);
+    await txn.execute(createArticlesTable);
+    await txn.execute(createProductArticleTable);
   });
 }
 
@@ -42,5 +44,22 @@ CREATE TABLE nutrition_facts (
   protein REAL,
   salt REAL,
   FOREIGN KEY (product_id) REFERENCES product(id)
+);
+""";
+
+const createArticlesTable = """
+CREATE TABLE article (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  name TEXT NOT NULL
+);
+""";
+
+const createProductArticleTable = """
+CREATE TABLE product_article(
+  product_id INTEGER,
+  article_id INTEGER,
+  FOREIGN KEY (product_id) REFERENCES product(id),
+  FOREIGN KEY (article_id) REFERENCES article(id),
+  PRIMARY KEY (product_id, article_id)
 );
 """;

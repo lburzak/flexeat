@@ -5,9 +5,11 @@ import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
 import 'package:flexeat/data/database.dart' as database;
+import 'package:flexeat/data/local_article_repository.dart';
 import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_packaging_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
+import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
@@ -107,13 +109,16 @@ class AppContainer {
     _container.registerFactory((container) => CreateProduct(container()));
     _container.registerSingleton<NutritionFactsRepository>(
         (container) => LocalNutritionFactsRepository(container()));
+    _container.registerSingleton<ArticleRepository>(
+        (container) => LocalArticleRepository(container()));
     _container.registerInstance(database);
   }
 
   T provide<T>() => _container<T>();
 
   Factory<ProductCubit, int> productCubitFactory() => (int productId) =>
-      ProductCubit(provide(), provide(), provide(), productId: productId);
+      ProductCubit(provide(), provide(), provide(), provide(),
+          productId: productId);
 
   Factory<ProductPackagingsCubit, int> packagingsCubitFactory() =>
       (int productId) => ProductPackagingsCubit(_container(), productId);

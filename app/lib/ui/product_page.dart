@@ -8,7 +8,10 @@ import 'package:flexeat/state/product_state.dart';
 import 'package:flexeat/ui/circle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:provider/provider.dart';
 
+import '../domain/article.dart';
 import '../main.dart';
 import 'nutrition_facts_dialog.dart';
 
@@ -182,6 +185,59 @@ class _ProductPageState extends State<ProductPage> {
                             )),
                   ],
                 ),
+                Column(
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 12, bottom: 4),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [
+                          Row(
+                            children: const [
+                              Icon(Icons.link),
+                              SizedBox(
+                                width: 12,
+                              ),
+                              Text("Used as")
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    BlocBuilder<ProductCubit, ProductState>(
+                        builder: (context, state) => ArticlesList(
+                              articles: state.compatibleArticles,
+                              onUnlink: (articleId) => context
+                                  .read<ProductCubit>()
+                                  .unlinkArticle(articleId),
+                              onAdd: () => showModalBottomSheet(
+                                  context: context,
+                                  builder: (context) => Provider(
+                                        create: (context) => context.read<
+                                                Factory<ProductCubit, int>>()(
+                                            widget.productId),
+                                        child: Builder(builder: (context) {
+                                          return LinkArticleView(
+                                              onSubmitArticle: (article) {
+                                                context
+                                                    .read<ProductCubit>()
+                                                    .linkArticle(article.id);
+                                                Navigator.of(context).pop();
+                                              },
+                                              onSubmitText: (text) {
+                                                context
+                                                    .read<ProductCubit>()
+                                                    .linkNewArticle(text);
+                                                Navigator.of(context).pop();
+                                              },
+                                              articles:
+                                                  state.availableArticles);
+                                        }),
+                                      )),
+                            )),
+                  ],
+                ),
               ],
             ),
           ),
@@ -275,6 +331,149 @@ class _PackagingSelectorState extends State<PackagingSelector> {
             },
           )
         ]).toList(growable: false),
+      ),
+    );
+  }
+}
+
+class LinkArticleView extends StatefulWidget {
+  final List<Article> articles;
+  final void Function(Article article)? onSubmitArticle;
+  final void Function(String text)? onSubmitText;
+
+  const LinkArticleView(
+      {Key? key,
+      required this.articles,
+      this.onSubmitArticle,
+      this.onSubmitText})
+      : super(key: key);
+
+  @override
+  State<LinkArticleView> createState() => _LinkArticleViewState();
+}
+
+class _LinkArticleViewState extends State<LinkArticleView> {
+  Article? selectedArticle;
+  String input = "";
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedPadding(
+      padding: MediaQuery.of(context).viewInsets + const EdgeInsets.all(16),
+      duration: const Duration(milliseconds: 100),
+      curve: Curves.decelerate,
+      child: Row(
+        children: [
+          Expanded(
+            child: TypeAheadFormField<Article>(
+              initialValue: input,
+              suggestionsCallback: _buildSuggestions,
+              onSuggestionSelected: _onSelected,
+              itemBuilder: (context, article) =>
+                  ListTile(title: Text(article.name)),
+              textFieldConfiguration: TextFieldConfiguration(
+                  onChanged: _onChanged,
+                  decoration: InputDecoration(
+                      border: const OutlineInputBorder(),
+                      prefixIcon: selectedArticle == null
+                          ? const SizedBox.shrink()
+                          : const Icon(Icons.done, color: Colors.green))),
+              direction: AxisDirection.up,
+              minCharsForSuggestions: 2,
+              noItemsFoundBuilder: (_) => const SizedBox.shrink(),
+            ),
+          ),
+          const SizedBox(width: 16),
+          SizedBox(
+            width: 60,
+            child: AspectRatio(
+                aspectRatio: 1,
+                child: ElevatedButton(
+                    onPressed: _onSubmit, child: const Icon(Icons.link))),
+          )
+        ],
+      ),
+    );
+  }
+
+  void _onSubmit() {
+    if (selectedArticle != null) {
+      widget.onSubmitArticle?.call(selectedArticle!);
+    } else {
+      widget.onSubmitText?.call(input);
+    }
+  }
+
+  void _onSelected(Article article) {
+    setState(() {
+      selectedArticle = article;
+      input = article.name;
+    });
+  }
+
+  void _onChanged(String text) {
+    setState(() {
+      input = text;
+      final articleExists =
+          widget.articles.any((element) => element.name == text);
+      if (!articleExists) {
+        selectedArticle = null;
+      }
+    });
+  }
+
+  List<Article> _buildSuggestions(String value) => widget.articles
+      .where(
+          (element) => element.name.toLowerCase().contains(value.toLowerCase()))
+      .toList();
+
+  List<Article> _buildOptions(TextEditingValue value) => widget.articles
+      .where((element) => element.name.contains(value.text.toLowerCase()))
+      .toList();
+
+  String _stringForOption(Article article) => article.name;
+}
+
+class ArticlesList extends StatelessWidget {
+  final List<Article> articles;
+  final void Function(int articleId)? onUnlink;
+  final void Function()? onAdd;
+
+  const ArticlesList(
+      {Key? key, required this.articles, this.onUnlink, this.onAdd})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.topLeft,
+      child: Wrap(
+        spacing: 8,
+        crossAxisAlignment: WrapCrossAlignment.center,
+        children: articles
+            .map((article) => Chip(
+                  onDeleted: () {
+                    onUnlink?.call(article.id);
+                  },
+                  label: Text(article.name),
+                  deleteIcon: const Icon(
+                    Icons.close,
+                    size: 16,
+                  ),
+                  deleteIconColor: Colors.white,
+                ))
+            .cast<Widget>()
+            .followedBy([
+              CircleButton(
+                size: 32,
+                icon: Icons.add,
+                onPressed: () {
+                  onAdd?.call();
+                },
+              )
+            ])
+            .toList(growable: false)
+            .toList(),
       ),
     );
   }

@@ -1,30 +1,36 @@
 import 'package:flexeat/domain/nutrition_facts.dart';
 import 'package:meta/meta.dart';
 
+import '../domain/article.dart';
+
 @immutable
 class ProductState {
   final String productName;
   final int? id;
   final NutritionFacts nutritionFacts;
-  final List<String> compatibleArticles;
+  final List<Article> compatibleArticles;
+  final List<Article> availableArticles;
 
   const ProductState(
       {this.productName = "",
       this.id,
       this.nutritionFacts = const NutritionFacts(),
-      this.compatibleArticles = const []});
+      this.compatibleArticles = const [],
+      this.availableArticles = const []});
 
   ProductState copyWith({
     String? productName,
     int? id,
     NutritionFacts? nutritionFacts,
-    List<String>? compatibleArticles,
+    List<Article>? compatibleArticles,
+    List<Article>? availableArticles,
   }) {
     return ProductState(
       productName: productName ?? this.productName,
       id: id ?? this.id,
       nutritionFacts: nutritionFacts ?? this.nutritionFacts,
       compatibleArticles: compatibleArticles ?? this.compatibleArticles,
+      availableArticles: availableArticles ?? this.availableArticles,
     );
   }
 }
