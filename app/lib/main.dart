@@ -42,6 +42,7 @@ class LightTheme {
         floatingActionButtonTheme:
             _buildFloatingActionButtonTheme(_parent.floatingActionButtonTheme),
         chipTheme: _buildChipTheme(_parent.chipTheme),
+        cardTheme: _buildCardTheme(_parent.cardTheme),
         iconTheme: _buildIconTheme(_parent.iconTheme));
   }
 
@@ -52,7 +53,8 @@ class LightTheme {
         onPrimary: Colors.white,
         surfaceVariant: Colors.blue.shade600,
         primaryContainer: const Color(0xff69b6ff),
-        onSurfaceVariant: Colors.white);
+        onSurfaceVariant: Colors.white,
+        onBackground: Colors.black);
   }
 
   AppBarTheme _buildAppBarTheme() {
@@ -68,6 +70,8 @@ class LightTheme {
         headline5: base.headline5?.copyWith(
           color: _colors.onBackground,
         ),
+        bodyText1:
+            base.bodyText1?.copyWith(color: _colors.onBackground, fontSize: 16),
         bodyText2:
             base.bodyText2?.copyWith(color: _colors.onPrimary, fontSize: 16));
   }
@@ -89,6 +93,10 @@ class LightTheme {
 
   IconThemeData _buildIconTheme(IconThemeData base) {
     return base.copyWith(color: _colors.onBackground);
+  }
+
+  CardTheme _buildCardTheme(CardTheme base) {
+    return base;
   }
 }
 
