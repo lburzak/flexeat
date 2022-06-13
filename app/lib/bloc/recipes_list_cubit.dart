@@ -12,7 +12,7 @@ class RecipesListCubit extends Cubit<List<Recipe>> {
   late final StreamSubscription _sub;
 
   RecipesListCubit(this._recipeRepository, this._navigationCubit) : super([]) {
-    _sub = _recipeRepository.findAll().listen((recipes) {
+    _sub = _recipeRepository.watchAll().listen((recipes) {
       emit(recipes);
     });
   }
