@@ -23,4 +23,6 @@ class NavigationCubit extends Cubit<NavigationState> {
   void navigateToProduct({required int id}) {
     emit(NavigationState.toProduct(id));
   }
+
+  void navigateToRecipe({required int id}) {}
 }
