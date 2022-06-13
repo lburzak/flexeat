@@ -5,8 +5,8 @@ class Packaging {
 
   const Packaging({
     this.id = 0,
-    required this.weight,
-    required this.label,
+    this.weight = 0,
+    this.label = "",
   });
 
   @override
