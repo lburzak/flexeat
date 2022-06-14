@@ -48,10 +48,10 @@ class DishView extends StatelessWidget {
 
 class IngredientView extends StatelessWidget {
   final Ingredient ingredient;
-  final ProductIngredient productIngredient;
+  final ProductIngredient? productIngredient;
 
   const IngredientView(
-      {Key? key, required this.ingredient, required this.productIngredient})
+      {Key? key, required this.ingredient, this.productIngredient})
       : super(key: key);
 
   @override
@@ -67,7 +67,9 @@ class IngredientView extends StatelessWidget {
                 Text("${ingredient.weight} g")
               ],
             ),
-            ProductIngredientView(productIngredient: productIngredient)
+            productIngredient != null
+                ? ProductIngredientView(productIngredient: productIngredient!)
+                : ElevatedButton(onPressed: () {}, child: const Text("SELECT"))
           ],
         ),
       ),

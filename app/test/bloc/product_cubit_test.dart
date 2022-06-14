@@ -25,7 +25,7 @@ void main() {
     loadingCubit = LoadingCubit();
 
     dataCompleter =
-        when(productRepository.findById(argThat(equals(product.id))))
+        when(productRepository.findByPackagingId(argThat(equals(product.id))))
             .thenReturnCompleter(product);
 
     when(productRepository.update(argThat(equals(updatedProduct))))

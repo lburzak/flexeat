@@ -19,17 +19,22 @@ Future<void> _initDatabase(sqflite.Database db, int version) async {
   });
 }
 
+const product$ = "product";
+const product$id = "id";
 const createProductTable = """
-CREATE TABLE product (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE ${product$} (
+  ${product$id} INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL
 );
 """;
 
+const packaging$ = "packaging";
+const packaging$id = "id";
+const packaging$productId = "product_id";
 const createPackagingTable = """
-CREATE TABLE packaging (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  product_id INTEGER NOT NULL,
+CREATE TABLE ${packaging$} (
+  ${packaging$id} INTEGER PRIMARY KEY AUTOINCREMENT,
+  ${packaging$productId} INTEGER NOT NULL,
   weight INTEGER NOT NULL,
   label TEXT,
   FOREIGN KEY (product_id) REFERENCES product(id)

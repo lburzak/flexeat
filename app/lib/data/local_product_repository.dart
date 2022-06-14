@@ -76,6 +76,10 @@ class LocalProductRepository
   }
 
   Product _deserialize(Row row) {
-    return Product(id: row[idColumn], name: row[nameColumn]);
+    return row.toProduct();
   }
+}
+
+extension ProductSerialization on Row {
+  Product toProduct() => Product(id: this[idColumn], name: this[nameColumn]);
 }

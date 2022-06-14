@@ -1,5 +1,8 @@
+import 'package:flexeat/data/database.dart';
+import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/data/row.dart';
 import 'package:flexeat/model/packaging.dart';
+import 'package:flexeat/model/product.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -32,6 +35,34 @@ class LocalPackagingRepository implements PackagingRepository {
         where: '$productIdColumn = ?', whereArgs: [productId]);
     final packagings = rows.map((row) => _deserialize(row));
     return packagings.toList(growable: false);
+  }
+
+  @override
+  Future<Product?> findProductByPackagingId(int packagingId) async {
+    final rows = await _database.rawQuery("""
+    SELECT *
+    FROM ${packaging$} INNER JOIN ${product$}
+      ON ${packaging$}.${packaging$productId} = ${product$}.${product$id}
+    WHERE ${packaging$}.${packaging$id} = ?
+    """, [packagingId]);
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return rows.first.toProduct();
+  }
+
+  @override
+  Future<Packaging?> findById(int packagingId) async {
+    final rows = await _database.query(packagingTable,
+        where: "$idColumn = ?", whereArgs: [packagingId]);
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return _deserialize(rows.first);
   }
 
   Row _serialize(Packaging packaging, {required int productId}) {
