@@ -4,12 +4,12 @@ import 'package:flexeat/model/recipe.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RecipeCubit extends Cubit<Recipe> {
+class DishCubit extends Cubit<Recipe> {
   final RecipeRepository _recipeRepository;
   final int recipeId;
   late final StreamSubscription _sub;
 
-  RecipeCubit(this._recipeRepository, {required this.recipeId})
+  DishCubit(this._recipeRepository, {required this.recipeId})
       : super(const Recipe()) {
     _sub = _recipeRepository.watchById(recipeId).listen((event) {
       emit(event ?? const Recipe());

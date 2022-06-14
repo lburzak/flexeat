@@ -6,8 +6,8 @@ import 'package:flexeat/model/product.dart';
 import 'package:flexeat/model/product_ingredient.dart';
 import 'package:flutter/material.dart';
 
-class RecipePage extends StatelessWidget {
-  const RecipePage({Key? key}) : super(key: key);
+class DishPage extends StatelessWidget {
+  const DishPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
