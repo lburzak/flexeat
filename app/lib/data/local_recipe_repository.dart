@@ -4,11 +4,9 @@ import 'package:flexeat/domain/recipe.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
-enum DataEvent { created }
+import 'database.dart';
 
-const recipe$ = "recipe";
-const recipe$name = "name";
-const recipe$id = "id";
+enum DataEvent { created }
 
 class LocalRecipeRepository
     with LiveRepository<DataEvent>
@@ -60,7 +58,18 @@ class LocalRecipeRepository
 
   @override
   Future<void> updateNameById(int id, {required String name}) async {
-    await _database.update(recipe$, {recipe$name: name});
+    await _database.update(recipe$, {recipe$name: name},
+        where: "${recipe$id} = ?", whereArgs: [id]);
+  }
+
+  @override
+  Future<void> addIngredientById(int id,
+      {required int articleId, required int weight}) async {
+    await _database.insert(ingredient$, {
+      ingredient$articleId: articleId,
+      ingredient$recipeId: id,
+      ingredient$weight: weight
+    });
   }
 }
 

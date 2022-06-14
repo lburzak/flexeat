@@ -26,7 +26,10 @@ class RecipeCubit extends Cubit<Recipe> {
     _recipeRepository.updateNameById(recipeId, name: name);
   }
 
-  void addIngredient(int articleId, int weight) {}
+  void addIngredient(int articleId, int weight) {
+    _recipeRepository.addIngredientById(recipeId,
+        articleId: articleId, weight: weight);
+  }
 
   void selectProduct(int ingredientId, int productId) {}
 }

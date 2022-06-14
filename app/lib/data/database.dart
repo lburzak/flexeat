@@ -49,9 +49,11 @@ CREATE TABLE nutrition_facts (
 );
 """;
 
+const article$ = "article";
+const article$id = "id";
 const createArticlesTable = """
-CREATE TABLE article (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
+CREATE TABLE ${article$} (
+  ${article$id} INTEGER PRIMARY KEY AUTOINCREMENT,
   name TEXT NOT NULL
 );
 """;
@@ -66,20 +68,27 @@ CREATE TABLE product_article(
 );
 """;
 
+const recipe$ = "recipe";
+const recipe$id = "id";
+const recipe$name = "name";
 const createRecipeTable = """
-CREATE TABLE recipe(
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL,
+CREATE TABLE ${recipe$} (
+  ${recipe$id} INTEGER PRIMARY KEY AUTOINCREMENT,
+  ${recipe$name} TEXT NOT NULL,
 );
 """;
 
+const ingredient$ = "ingredient";
+const ingredient$recipeId = "recipe_id";
+const ingredient$articleId = "article_id";
+const ingredient$weight = "weight";
 const createIngredientTable = """
-CRATE TABLE ingredient(
-  recipe_id INTEGER NOT NULL,
-  article_id INTEGER NOT NULL,
-  weight INTEGER,
-  FOREIGN KEY (recipe_id) REFERENCES recipe(id),
-  FOREIGN KEY (article_id) REFERENCES article(id),
-  PRIMARY KEY (recipe_id, article_id)
+CRATE TABLE ${ingredient$} (
+  ${ingredient$recipeId} INTEGER NOT NULL,
+  ${ingredient$articleId} INTEGER NOT NULL,
+  ${ingredient$weight} INTEGER,
+  FOREIGN KEY (${ingredient$recipeId}) REFERENCES ${recipe$}(${recipe$id}),
+  FOREIGN KEY (${ingredient$articleId}) REFERENCES ${article$}(${article$id}),
+  PRIMARY KEY (${ingredient$recipeId}, ${ingredient$articleId})
 );
 """;
