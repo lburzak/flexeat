@@ -6,9 +6,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RecipeCubit extends Cubit<Recipe> {
   final RecipeRepository _recipeRepository;
+  final int recipeId;
   late final StreamSubscription _sub;
 
-  RecipeCubit(this._recipeRepository, {required int recipeId})
+  RecipeCubit(this._recipeRepository, {required this.recipeId})
       : super(const Recipe()) {
     _sub = _recipeRepository.watchById(recipeId).listen((event) {
       emit(event ?? const Recipe());
@@ -21,7 +22,9 @@ class RecipeCubit extends Cubit<Recipe> {
     super.close();
   }
 
-  void changeName(String name) {}
+  void changeName(String name) {
+    _recipeRepository.updateNameById(recipeId, name: name);
+  }
 
   void addIngredient(int articleId, int weight) {}
 

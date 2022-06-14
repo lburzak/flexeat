@@ -57,6 +57,11 @@ class LocalRecipeRepository
 
     yield* dataEvents.asyncMap((event) => findById(id));
   }
+
+  @override
+  Future<void> updateNameById(int id, {required String name}) async {
+    await _database.update(recipe$, {recipe$name: name});
+  }
 }
 
 extension Serialization on Recipe {
