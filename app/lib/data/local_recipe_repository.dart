@@ -39,6 +39,24 @@ class LocalRecipeRepository
         .where((event) => event == DataEvent.created)
         .asyncMap((event) => findAll());
   }
+
+  Future<Recipe?> findById(int id) async {
+    final rows = await _database
+        .query(recipe$, where: "${recipe$id} = ?", whereArgs: [id]);
+
+    if (rows.isEmpty) {
+      return null;
+    }
+
+    return rows.first.toRecipe();
+  }
+
+  @override
+  Stream<Recipe?> watchById(int id) async* {
+    yield await findById(id);
+
+    yield* dataEvents.asyncMap((event) => findById(id));
+  }
 }
 
 extension Serialization on Recipe {
