@@ -1,6 +1,9 @@
 import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
+import 'package:flexeat/domain/article.dart';
+import 'package:flexeat/domain/ingredient.dart';
 import 'package:flexeat/domain/recipe.dart';
+import 'package:flexeat/model/recipe_header.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -17,25 +20,33 @@ class LocalRecipeRepository
 
   @override
   Future<int> create(String name) async {
-    final recipe = Recipe(name: name);
-    final id = _database.insert(recipe$, recipe.serialize());
+    final recipeHeader = RecipeHeader(name: name);
+    final id = _database.insert(recipe$, recipeHeader.serialize());
 
     emit(DataEvent.created);
 
     return id;
   }
 
-  Future<List<Recipe>> findAll() async {
+  Future<List<RecipeHeader>> findAllHeaders() async {
     final rows = await _database.query(recipe$);
-    return rows.map((recipe) => recipe.toRecipe()).toList();
+    return rows.map((recipe) => recipe.toRecipeHeader()).toList();
   }
 
   @override
-  Stream<List<Recipe>> watchAll() async* {
-    yield await findAll();
+  Stream<List<RecipeHeader>> watchAllHeaders() async* {
+    yield await findAllHeaders();
     yield* dataEvents
         .where((event) => event == DataEvent.created)
-        .asyncMap((event) => findAll());
+        .asyncMap((event) => findAllHeaders());
+  }
+
+  Future<List<Ingredient>> _findIngredientsById(int id) async {
+    final rows = await _database.rawQuery(
+        "SELECT * FROM ${ingredient$} INNER JOIN ${article$} ON ${ingredient$articleId} = ${article$id} WHERE ${recipe$id} = ?",
+        [id]);
+
+    return rows.map((row) => row.toIngredient()).toList();
   }
 
   Future<Recipe?> findById(int id) async {
@@ -46,7 +57,10 @@ class LocalRecipeRepository
       return null;
     }
 
-    return rows.first.toRecipe();
+    final ingredients = await _findIngredientsById(id);
+
+    return Recipe(
+        header: rows.first.toRecipeHeader(), ingredients: ingredients);
   }
 
   @override
@@ -73,7 +87,7 @@ class LocalRecipeRepository
   }
 }
 
-extension Serialization on Recipe {
+extension Serialization on RecipeHeader {
   Row serialize() {
     final Row row = {recipe$name: name};
 
@@ -86,5 +100,11 @@ extension Serialization on Recipe {
 }
 
 extension ToRecipe on Row {
-  Recipe toRecipe() => Recipe(id: this[recipe$id], name: this[recipe$name]);
+  RecipeHeader toRecipeHeader() =>
+      RecipeHeader(id: this[recipe$id], name: this[recipe$name]);
+
+  Ingredient toIngredient() => Ingredient(
+      weight: this[ingredient$weight],
+      article:
+          Article(id: this[ingredient$articleId], name: this[article$name]));
 }

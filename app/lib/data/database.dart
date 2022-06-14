@@ -51,10 +51,11 @@ CREATE TABLE nutrition_facts (
 
 const article$ = "article";
 const article$id = "id";
+const article$name = "name";
 const createArticlesTable = """
 CREATE TABLE ${article$} (
   ${article$id} INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL
+  ${article$name} TEXT NOT NULL
 );
 """;
 

@@ -3,7 +3,7 @@ import 'package:flexeat/domain/ingredient.dart';
 import 'package:flexeat/domain/packaging.dart';
 import 'package:flexeat/domain/product.dart';
 import 'package:flexeat/domain/product_ingredient.dart';
-import 'package:flexeat/domain/recipe.dart';
+import 'package:flexeat/model/dish.dart';
 import 'package:flutter/material.dart';
 
 class RecipePage extends StatelessWidget {
@@ -11,8 +11,8 @@ class RecipePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return RecipeView(
-        recipe: Recipe(name: "Working", ingredients: {
+    return DishView(
+        dish: Dish(ingredients: {
       const Ingredient(weight: 300, article: Article(name: "Ogórek")):
           const ProductIngredient(
               packaging: Packaging(weight: 300, label: "ok"),
@@ -21,18 +21,18 @@ class RecipePage extends StatelessWidget {
   }
 }
 
-class RecipeView extends StatelessWidget {
-  final Recipe recipe;
+class DishView extends StatelessWidget {
+  final Dish dish;
 
-  const RecipeView({Key? key, required this.recipe}) : super(key: key);
+  const DishView({Key? key, required this.dish}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final entries = recipe.ingredients.entries.toList();
+    final entries = dish.ingredients.entries.toList();
     return Scaffold(
       body: Column(
         children: [
-          Text(recipe.name),
+          Text(dish.recipeHeader.name),
           Expanded(
             child: ListView.builder(
                 itemCount: entries.length,

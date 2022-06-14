@@ -1,9 +1,13 @@
+import 'package:flexeat/model/recipe_header.dart';
+
 import 'ingredient.dart';
 
 class Recipe {
-  final int id;
-  final String name;
+  final RecipeHeader header;
   final List<Ingredient> ingredients;
 
-  const Recipe({this.name = "", this.ingredients = const [], this.id = 0});
+  const Recipe({
+    this.header = const RecipeHeader(),
+    this.ingredients = const [],
+  });
 }

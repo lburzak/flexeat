@@ -1,9 +1,10 @@
 import 'package:flexeat/domain/recipe.dart';
+import 'package:flexeat/model/recipe_header.dart';
 
 abstract class RecipeRepository {
   Future<int> create(String name);
 
-  Stream<List<Recipe>> watchAll();
+  Stream<List<RecipeHeader>> watchAllHeaders();
 
   Stream<Recipe?> watchById(int id);
 

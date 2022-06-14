@@ -1,6 +1,5 @@
+import 'package:flexeat/model/recipe_header.dart';
 import 'package:flutter/material.dart';
-
-import '../domain/recipe.dart';
 
 class RecipesListPage extends StatelessWidget {
   const RecipesListPage({Key? key}) : super(key: key);
@@ -12,7 +11,7 @@ class RecipesListPage extends StatelessWidget {
 }
 
 class RecipesListView extends StatelessWidget {
-  final List<Recipe> recipes;
+  final List<RecipeHeader> recipes;
 
   const RecipesListView({Key? key, required this.recipes}) : super(key: key);
 
@@ -28,7 +27,7 @@ class RecipesListView extends StatelessWidget {
 }
 
 class RecipesListRow extends StatelessWidget {
-  final Recipe recipe;
+  final RecipeHeader recipe;
 
   const RecipesListRow({Key? key, required this.recipe}) : super(key: key);
 
