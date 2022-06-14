@@ -1,4 +1,4 @@
-import 'package:flexeat/domain/nutrition_facts.dart';
+import 'package:flexeat/model/nutrition_facts.dart';
 import 'package:flexeat/repository/nutrition_facts_repository.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 

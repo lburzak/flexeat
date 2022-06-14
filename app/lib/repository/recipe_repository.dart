@@ -1,4 +1,4 @@
-import 'package:flexeat/domain/recipe.dart';
+import 'package:flexeat/model/recipe.dart';
 import 'package:flexeat/model/recipe_header.dart';
 
 abstract class RecipeRepository {

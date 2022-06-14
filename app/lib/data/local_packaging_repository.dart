@@ -1,5 +1,5 @@
 import 'package:flexeat/data/row.dart';
-import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/model/packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:sqflite/sqflite.dart';
 

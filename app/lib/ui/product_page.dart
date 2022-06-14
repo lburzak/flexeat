@@ -1,8 +1,8 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
-import 'package:flexeat/domain/nutrition_facts.dart';
-import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/model/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flexeat/ui/circle_button.dart';
@@ -11,8 +11,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
-import '../domain/article.dart';
 import '../main.dart';
+import '../model/article.dart';
 import 'nutrition_facts_dialog.dart';
 
 class ProductPage extends StatefulWidget {

@@ -7,7 +7,7 @@ import 'package:flexeat/state/products_list_state.dart';
 import 'package:flexeat/usecase/create_product.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../domain/product.dart';
+import '../model/product.dart';
 
 class ProductsListCubit extends Cubit<ProductsListState> {
   final LoadingCubit _loadingCubit;

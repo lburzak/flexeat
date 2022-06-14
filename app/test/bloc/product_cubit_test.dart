@@ -1,7 +1,7 @@
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
-import 'package:flexeat/domain/product.dart';
+import 'package:flexeat/model/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

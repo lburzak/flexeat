@@ -1,4 +1,4 @@
-import '../domain/product.dart';
+import '../model/product.dart';
 
 class ProductsListState {
   final List<Product> products;

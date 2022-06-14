@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:flexeat/domain/recipe.dart';
+import 'package:flexeat/model/recipe.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

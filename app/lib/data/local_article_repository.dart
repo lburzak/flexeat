@@ -1,6 +1,6 @@
 import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
-import 'package:flexeat/domain/article.dart';
+import 'package:flexeat/model/article.dart';
 import 'package:flexeat/repository/article_repository.dart';
 import 'package:sqflite/sqflite.dart';
 

@@ -1,7 +1,7 @@
-import 'package:flexeat/domain/nutrition_facts.dart';
+import 'package:flexeat/model/nutrition_facts.dart';
 import 'package:meta/meta.dart';
 
-import '../domain/article.dart';
+import '../model/article.dart';
 
 @immutable
 class ProductState {

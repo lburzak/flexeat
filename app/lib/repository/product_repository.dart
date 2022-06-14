@@ -1,4 +1,4 @@
-import '../domain/product.dart';
+import '../model/product.dart';
 
 abstract class ProductRepository {
   Future<Product> create(Product product);

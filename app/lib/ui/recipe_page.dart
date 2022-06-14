@@ -1,9 +1,9 @@
-import 'package:flexeat/domain/article.dart';
-import 'package:flexeat/domain/ingredient.dart';
-import 'package:flexeat/domain/packaging.dart';
-import 'package:flexeat/domain/product.dart';
-import 'package:flexeat/domain/product_ingredient.dart';
+import 'package:flexeat/model/article.dart';
 import 'package:flexeat/model/dish.dart';
+import 'package:flexeat/model/ingredient.dart';
+import 'package:flexeat/model/packaging.dart';
+import 'package:flexeat/model/product.dart';
+import 'package:flexeat/model/product_ingredient.dart';
 import 'package:flutter/material.dart';
 
 class RecipePage extends StatelessWidget {

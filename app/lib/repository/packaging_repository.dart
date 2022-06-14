@@ -1,4 +1,4 @@
-import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/model/packaging.dart';
 
 abstract class PackagingRepository {
   Future<List<Packaging>> findAllByProductId(int productId);

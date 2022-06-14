@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
-import 'package:flexeat/domain/product.dart';
+import 'package:flexeat/model/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:sqflite/sqflite.dart';
 

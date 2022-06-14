@@ -1,5 +1,5 @@
-import 'package:flexeat/domain/ingredient.dart';
-import 'package:flexeat/domain/product_ingredient.dart';
+import 'package:flexeat/model/ingredient.dart';
+import 'package:flexeat/model/product_ingredient.dart';
 import 'package:flexeat/model/recipe_header.dart';
 
 class Dish {

@@ -1,4 +1,4 @@
-import 'package:flexeat/domain/packaging.dart';
+import 'package:flexeat/model/packaging.dart';
 import 'package:meta/meta.dart';
 
 @immutable

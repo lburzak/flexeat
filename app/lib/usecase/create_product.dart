@@ -1,4 +1,4 @@
-import 'package:flexeat/domain/product.dart';
+import 'package:flexeat/model/product.dart';
 import 'package:flexeat/repository/product_repository.dart';
 
 class CreateProduct {

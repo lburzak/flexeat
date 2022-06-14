@@ -7,7 +7,7 @@ import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../domain/product.dart';
+import '../model/product.dart';
 
 class ProductCubit extends Cubit<ProductState> {
   final ProductRepository _productRepository;
