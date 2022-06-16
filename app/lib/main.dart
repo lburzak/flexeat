@@ -1,20 +1,25 @@
+import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/bloc/nutrition_facts_form_model.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
+import 'package:flexeat/bloc/recipes_list_cubit.dart';
 import 'package:flexeat/data/database.dart' as database;
 import 'package:flexeat/data/local_article_repository.dart';
 import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_packaging_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
+import 'package:flexeat/data/local_recipe_repository.dart';
 import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
+import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:flexeat/ui/app_router.gr.dart';
 import 'package:flexeat/usecase/create_product.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:kiwi/kiwi.dart' hide Factory;
@@ -119,7 +124,11 @@ class AppContainer {
         (container) => LocalNutritionFactsRepository(container()));
     _container.registerSingleton<ArticleRepository>(
         (container) => LocalArticleRepository(container()));
+    _container
+        .registerSingleton<RecipeRepository>((c) => LocalRecipeRepository(c()));
     _container.registerInstance(database);
+    _container.registerFactory(
+        (container) => RecipesListCubit(container(), container()));
   }
 
   T provide<T>() => _container<T>();
@@ -134,6 +143,9 @@ class AppContainer {
   Factory<NutritionFactsFormModel, int> nutritionFactsFormModelFactory() =>
       (int productId) =>
           NutritionFactsFormModel(_container(), productId: productId);
+
+  Factory<DishCubit, int> dishCubitFactory() => (int recipeId) => //
+      DishCubit(_container(), _container(), recipeId: recipeId);
 }
 
 class MyApp extends StatefulWidget {
@@ -158,7 +170,9 @@ class _MyAppState extends State<MyApp> {
               Provider<Factory<ProductPackagingsCubit, int>>(
                   create: (_) => container.packagingsCubitFactory()),
               Provider<Factory<NutritionFactsFormModel, int>>(
-                  create: (_) => container.nutritionFactsFormModelFactory())
+                  create: (_) => container.nutritionFactsFormModelFactory()),
+              Provider<Factory<DishCubit, int>>(
+                  create: (_) => container.dishCubitFactory())
             ],
             child: MultiBlocProvider(
               providers: [
@@ -167,6 +181,9 @@ class _MyAppState extends State<MyApp> {
                 ),
                 BlocProvider(
                   create: (context) => container.provide<ProductsListCubit>(),
+                ),
+                BlocProvider(
+                  create: (context) => container.provide<RecipesListCubit>(),
                 ),
                 BlocProvider(
                   create: (context) => container.provide<LoadingCubit>(),

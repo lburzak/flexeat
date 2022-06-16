@@ -80,7 +80,7 @@ const recipe$name = "name";
 const createRecipeTable = """
 CREATE TABLE ${recipe$} (
   ${recipe$id} INTEGER PRIMARY KEY AUTOINCREMENT,
-  ${recipe$name} TEXT NOT NULL,
+  ${recipe$name} TEXT NOT NULL
 );
 """;
 
@@ -89,7 +89,7 @@ const ingredient$recipeId = "recipe_id";
 const ingredient$articleId = "article_id";
 const ingredient$weight = "weight";
 const createIngredientTable = """
-CRATE TABLE ${ingredient$} (
+CREATE TABLE ${ingredient$} (
   ${ingredient$recipeId} INTEGER NOT NULL,
   ${ingredient$articleId} INTEGER NOT NULL,
   ${ingredient$weight} INTEGER,

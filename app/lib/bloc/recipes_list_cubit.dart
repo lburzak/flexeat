@@ -23,6 +23,10 @@ class RecipesListCubit extends Cubit<List<RecipeHeader>> {
     });
   }
 
+  void openRecipe(int id) {
+    _navigationCubit.navigateToRecipe(id: id);
+  }
+
   @override
   Future<void> close() async {
     _sub.cancel();

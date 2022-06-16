@@ -1,23 +1,24 @@
-import 'package:flexeat/model/article.dart';
+import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/model/product.dart';
 import 'package:flexeat/model/product_ingredient.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../main.dart';
 
 class DishPage extends StatelessWidget {
-  const DishPage({Key? key}) : super(key: key);
+  final int recipeId;
+
+  const DishPage({Key? key, required this.recipeId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return DishView(
-        dish: Dish(ingredients: {
-      const Ingredient(weight: 300, article: Article(name: "Ogórek")):
-          const ProductIngredient(
-              packaging: Packaging(weight: 300, label: "ok"),
-              product: Product(name: "Plaki"))
-    }));
+    return BlocProvider(
+        create: (context) => context.read<Factory<DishCubit, int>>()(recipeId),
+        child: BlocBuilder<DishCubit, Dish>(
+          builder: (context, state) => DishView(dish: state),
+        ));
   }
 }
 

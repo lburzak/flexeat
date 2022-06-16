@@ -5,6 +5,9 @@ abstract class NavigationState {
       ToProductNavigationState(productId: id);
 
   static NavigationState stay() => StayNavigationState();
+
+  static NavigationState toDish(int recipeId) =>
+      ToDishNavigationState(recipeId: recipeId);
 }
 
 class StayNavigationState extends NavigationState {}
@@ -17,6 +20,14 @@ class ToProductNavigationState extends NavigationState {
   });
 }
 
+class ToDishNavigationState extends NavigationState {
+  int recipeId;
+
+  ToDishNavigationState({
+    required this.recipeId,
+  });
+}
+
 class NavigationCubit extends Cubit<NavigationState> {
   NavigationCubit() : super(NavigationState.stay());
 
@@ -24,5 +35,7 @@ class NavigationCubit extends Cubit<NavigationState> {
     emit(NavigationState.toProduct(id));
   }
 
-  void navigateToRecipe({required int id}) {}
+  void navigateToRecipe({required int id}) {
+    emit(NavigationState.toDish(id));
+  }
 }
