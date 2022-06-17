@@ -57,18 +57,14 @@ class ProductCubit extends Cubit<ProductState> {
     emit(ProductState(productName: product.name, id: product.id));
   }
 
-  void save() {
+  void changeName(String name) {
     if (_loadingCubit.state == true) {
       return;
     }
 
     _productRepository
-        .update(Product(id: _productId, name: state.productName))
+        .update(Product(id: _productId, name: name))
         .listenIn(_loadingCubit);
-  }
-
-  void setName(String text) {
-    emit(state.copyWith(productName: text));
   }
 
   void unlinkArticle(int articleId) {

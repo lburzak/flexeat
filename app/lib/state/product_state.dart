@@ -1,10 +1,11 @@
+import 'package:equatable/equatable.dart';
 import 'package:flexeat/model/nutrition_facts.dart';
 import 'package:meta/meta.dart';
 
 import '../model/article.dart';
 
 @immutable
-class ProductState {
+class ProductState extends Equatable {
   final String productName;
   final int? id;
   final NutritionFacts nutritionFacts;
@@ -33,4 +34,13 @@ class ProductState {
       availableArticles: availableArticles ?? this.availableArticles,
     );
   }
+
+  @override
+  List<Object?> get props => [
+        productName,
+        id,
+        nutritionFacts,
+        compatibleArticles,
+        availableArticles,
+      ];
 }

@@ -21,6 +21,7 @@ dependencies:
   auto_route: ^4.0.0
   reactive_forms: ^13.0.0
   flutter_typeahead: ^4.0.0
+  equatable: ^2.0.3
 
 dev_dependencies:
   flutter_test:

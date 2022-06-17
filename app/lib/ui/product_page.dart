@@ -1,4 +1,3 @@
-import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/model/nutrition_facts.dart';
@@ -6,6 +5,7 @@ import 'package:flexeat/model/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flexeat/ui/circle_button.dart';
+import 'package:flexeat/ui/editable_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
@@ -27,9 +27,6 @@ class ProductPage extends StatefulWidget {
 }
 
 class _ProductPageState extends State<ProductPage> {
-  final _titleFocusNode = FocusNode();
-  bool _editing = false;
-
   @override
   void initState() {
     super.initState();
@@ -75,66 +72,15 @@ class _ProductPageState extends State<ProductPage> {
               children: [
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: _editing
-                      ? Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0, vertical: 5),
-                          child: BlocBuilder<ProductCubit, ProductState>(
-                              builder: (context, state) => Row(
-                                    children: [
-                                      Expanded(
-                                        child: TextFormField(
-                                          focusNode: _titleFocusNode,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .headline5,
-                                          initialValue: state.productName,
-                                          onChanged: (text) => context
-                                              .read<ProductCubit>()
-                                              .setName(text),
-                                        ),
-                                      ),
-                                      IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              context
-                                                  .read<ProductCubit>()
-                                                  .save();
-                                              _editing = false;
-                                            });
-                                          },
-                                          icon: const Icon(Icons.done))
-                                    ],
-                                  )),
-                        )
-                      : Row(
-                          children: [
-                            InkWell(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(12.0),
-                                  child: Material(
-                                    type: MaterialType.transparency,
-                                    child: Text(
-                                        context.select<LoadingCubit, bool>(
-                                                (cubit) => cubit.state)
-                                            ? widget.initialName
-                                            : context
-                                                .select<ProductCubit, String>(
-                                                    (cubit) => cubit
-                                                        .state.productName),
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .headline1),
-                                  ),
-                                ),
-                                onTap: () {
-                                  setState(() {
-                                    _editing = true;
-                                  });
-                                  _titleFocusNode.requestFocus();
-                                }),
-                          ],
-                        ),
+                  child: BlocBuilder<ProductCubit, ProductState>(
+                    builder: (context, state) {
+                      return EditableHeader(
+                        initialText: state.productName,
+                        onSubmit: (text) =>
+                            context.read<ProductCubit>().changeName(text),
+                      );
+                    },
+                  ),
                 ),
                 Column(
                   children: [
