@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'database.dart';
 
-enum DataEvent { created }
+enum DataEvent { created, updated }
 
 class LocalRecipeRepository
     with LiveRepository<DataEvent>
@@ -36,9 +36,7 @@ class LocalRecipeRepository
   @override
   Stream<List<RecipeHeader>> watchAllHeaders() async* {
     yield await findAllHeaders();
-    yield* dataEvents
-        .where((event) => event == DataEvent.created)
-        .asyncMap((event) => findAllHeaders());
+    yield* dataEvents.asyncMap((event) => findAllHeaders());
   }
 
   Future<List<Ingredient>> _findIngredientsById(int id) async {
@@ -74,6 +72,8 @@ class LocalRecipeRepository
   Future<void> updateNameById(int id, {required String name}) async {
     await _database.update(recipe$, {recipe$name: name},
         where: "${recipe$id} = ?", whereArgs: [id]);
+
+    emit(DataEvent.updated);
   }
 
   @override

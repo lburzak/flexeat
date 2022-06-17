@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../main.dart';
+import 'editable_header.dart';
 
 class DishPage extends StatelessWidget {
   final int recipeId;
@@ -33,7 +34,14 @@ class DishView extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
-          Text(dish.recipeHeader.name),
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 24.0),
+            child: EditableHeader(
+              initialText: context.select<DishCubit, String>(
+                  (cubit) => cubit.state.recipeHeader.name),
+              onSubmit: (text) => context.read<DishCubit>().changeName(text),
+            ),
+          ),
           Expanded(
             child: ListView.builder(
                 itemCount: entries.length,
