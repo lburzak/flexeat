@@ -26,7 +26,6 @@ class RecipesListView extends StatelessWidget {
     return BlocListener<NavigationCubit, NavigationState>(
       listener: (context, state) {
         if (state is ToDishNavigationState) {
-          print(context.router.stack.map((e) => e.name));
           context.router.push(DishRoute(recipeId: state.recipeId));
         }
       },
