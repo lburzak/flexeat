@@ -8,11 +8,11 @@ import 'package:flexeat/ui/circle_button.dart';
 import 'package:flexeat/ui/editable_header.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
 import '../model/article.dart';
+import 'article_autocorrect_field.dart';
 import 'nutrition_facts_dialog.dart';
 
 class ProductPage extends StatefulWidget {
@@ -297,8 +297,7 @@ class LinkArticleView extends StatefulWidget {
 }
 
 class _LinkArticleViewState extends State<LinkArticleView> {
-  Article? selectedArticle;
-  String input = "";
+  ArticleAutocorrectValue value = const ArticleAutocorrectValue(input: "");
 
   @override
   Widget build(BuildContext context) {
@@ -309,23 +308,13 @@ class _LinkArticleViewState extends State<LinkArticleView> {
       child: Row(
         children: [
           Expanded(
-            child: TypeAheadFormField<Article>(
-              initialValue: input,
-              suggestionsCallback: _buildSuggestions,
-              onSuggestionSelected: _onSelected,
-              itemBuilder: (context, article) =>
-                  ListTile(title: Text(article.name)),
-              textFieldConfiguration: TextFieldConfiguration(
-                  onChanged: _onChanged,
-                  decoration: InputDecoration(
-                      border: const OutlineInputBorder(),
-                      prefixIcon: selectedArticle == null
-                          ? const SizedBox.shrink()
-                          : const Icon(Icons.done, color: Colors.green))),
-              direction: AxisDirection.up,
-              minCharsForSuggestions: 2,
-              noItemsFoundBuilder: (_) => const SizedBox.shrink(),
-            ),
+            child: ArticleAutocorrectField(
+                articles: widget.articles,
+                onChanged: (value) {
+                  setState(() {
+                    this.value = value;
+                  });
+                }),
           ),
           const SizedBox(width: 16),
           SizedBox(
@@ -341,41 +330,12 @@ class _LinkArticleViewState extends State<LinkArticleView> {
   }
 
   void _onSubmit() {
-    if (selectedArticle != null) {
-      widget.onSubmitArticle?.call(selectedArticle!);
+    if (value.matchedArticle != null) {
+      widget.onSubmitArticle?.call(value.matchedArticle!);
     } else {
-      widget.onSubmitText?.call(input);
+      widget.onSubmitText?.call(value.input);
     }
   }
-
-  void _onSelected(Article article) {
-    setState(() {
-      selectedArticle = article;
-      input = article.name;
-    });
-  }
-
-  void _onChanged(String text) {
-    setState(() {
-      input = text;
-      final articleExists =
-          widget.articles.any((element) => element.name == text);
-      if (!articleExists) {
-        selectedArticle = null;
-      }
-    });
-  }
-
-  List<Article> _buildSuggestions(String value) => widget.articles
-      .where(
-          (element) => element.name.toLowerCase().contains(value.toLowerCase()))
-      .toList();
-
-  List<Article> _buildOptions(TextEditingValue value) => widget.articles
-      .where((element) => element.name.contains(value.text.toLowerCase()))
-      .toList();
-
-  String _stringForOption(Article article) => article.name;
 }
 
 class ArticlesList extends StatelessWidget {

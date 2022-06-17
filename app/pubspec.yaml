@@ -22,6 +22,7 @@ dependencies:
   reactive_forms: ^13.0.0
   flutter_typeahead: ^4.0.0
   equatable: ^2.0.3
+  collection: ^1.16.0
 
 dev_dependencies:
   flutter_test:
