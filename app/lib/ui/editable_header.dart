@@ -13,20 +13,18 @@ class EditableHeader extends StatefulWidget {
 
 class _EditableHeaderState extends State<EditableHeader> {
   final _titleFocusNode = FocusNode();
+  final _controller = TextEditingController();
   bool _editing = false;
-  String _text = "";
 
   @override
   void initState() {
-    _text = widget.initialText;
+    _controller.text = widget.initialText;
     super.initState();
   }
 
   @override
   void didUpdateWidget(EditableHeader oldWidget) {
-    setState(() {
-      _text = widget.initialText;
-    });
+    _controller.text = widget.initialText;
     super.didUpdateWidget(oldWidget);
   }
 
@@ -41,18 +39,13 @@ class _EditableHeaderState extends State<EditableHeader> {
                   child: TextFormField(
                     focusNode: _titleFocusNode,
                     style: Theme.of(context).textTheme.headline5,
-                    initialValue: _text,
-                    onChanged: (text) {
-                      setState(() {
-                        _text = text;
-                      });
-                    },
+                    controller: _controller,
                   ),
                 ),
                 IconButton(
                     onPressed: () {
                       setState(() {
-                        widget.onSubmit?.call(_text);
+                        widget.onSubmit?.call(_controller.text);
                         _editing = false;
                       });
                     },
@@ -67,7 +60,7 @@ class _EditableHeaderState extends State<EditableHeader> {
                     padding: const EdgeInsets.all(12.0),
                     child: Material(
                       type: MaterialType.transparency,
-                      child: Text(_text,
+                      child: Text(_controller.text,
                           style: Theme.of(context).textTheme.headline1),
                     ),
                   ),
@@ -76,6 +69,8 @@ class _EditableHeaderState extends State<EditableHeader> {
                       _editing = true;
                     });
                     _titleFocusNode.requestFocus();
+                    _controller.selection = TextSelection(
+                        baseOffset: 0, extentOffset: _controller.text.length);
                   }),
             ],
           );
