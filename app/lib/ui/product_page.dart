@@ -26,6 +26,43 @@ class ProductPage extends StatefulWidget {
   State<ProductPage> createState() => _ProductPageState();
 }
 
+class Section extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Widget body;
+
+  const Section(
+      {Key? key, required this.icon, required this.label, required this.body})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Icon(icon,
+                      color: Theme.of(context).colorScheme.onSurfaceVariant),
+                  const SizedBox(
+                    width: 12,
+                  ),
+                  Text(label)
+                ],
+              ),
+            ],
+          ),
+        ),
+        body,
+      ],
+    );
+  }
+}
+
 class _ProductPageState extends State<ProductPage> {
   @override
   void initState() {
@@ -62,7 +99,11 @@ class _ProductPageState extends State<ProductPage> {
       ],
       child: Builder(builder: (context) {
         return Scaffold(
-          appBar: AppBar(),
+          backgroundColor: Theme.of(context).colorScheme.surfaceVariant,
+          appBar: AppBar(
+            iconTheme: Theme.of(context).iconTheme.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant),
+          ),
           body: Padding(
             padding:
                 const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 12),
@@ -76,82 +117,38 @@ class _ProductPageState extends State<ProductPage> {
                     builder: (context, state) {
                       return EditableHeader(
                         initialText: state.productName,
+                        style: Theme.of(context).textTheme.headline1?.copyWith(
+                            color:
+                                Theme.of(context).colorScheme.onSurfaceVariant),
                         onSubmit: (text) =>
                             context.read<ProductCubit>().changeName(text),
                       );
                     },
                   ),
                 ),
-                Column(
-                  children: [
-                    Row(
-                      children: const [
-                        Icon(Icons.local_dining),
-                        SizedBox(
-                          width: 12,
-                        ),
-                        Text("Nutrition facts")
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: BlocBuilder<ProductCubit, ProductState>(
-                        builder: (context, state) => NutritionFactsSection(
-                            nutritionFacts: state.nutritionFacts,
-                            onEdit: () => _showNutritionFactsDialog(context)),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      child: Column(
-                        children: [
-                          Row(
-                            children: const [
-                              Icon(Icons.inventory),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Text("Packagings")
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    BlocBuilder<ProductPackagingsCubit, ProductPackagingsState>(
+                Section(
+                    icon: Icons.local_dining,
+                    label: "Nutrition Facts",
+                    body: BlocBuilder<ProductCubit, ProductState>(
+                      builder: (context, state) => NutritionFactsSection(
+                          nutritionFacts: state.nutritionFacts,
+                          onEdit: () => _showNutritionFactsDialog(context)),
+                    )),
+                Section(
+                    icon: Icons.inventory,
+                    label: "Packagings",
+                    body: BlocBuilder<ProductPackagingsCubit,
+                            ProductPackagingsState>(
                         builder: (context, state) => PackagingSelector(
                               packagings: state.packagings,
                               onAdd: () {
                                 _showPackagingDialog(context);
                               },
-                            )),
-                  ],
-                ),
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(top: 12, bottom: 4),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.max,
-                        children: [
-                          Row(
-                            children: const [
-                              Icon(Icons.link),
-                              SizedBox(
-                                width: 12,
-                              ),
-                              Text("Used as")
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    BlocBuilder<ProductCubit, ProductState>(
+                            ))),
+                Section(
+                    icon: Icons.link,
+                    label: "Used as",
+                    body: BlocBuilder<ProductCubit, ProductState>(
                         builder: (context, state) => ArticlesList(
                               articles: state.compatibleArticles,
                               onUnlink: (articleId) => context
@@ -181,9 +178,7 @@ class _ProductPageState extends State<ProductPage> {
                                                   state.availableArticles);
                                         }),
                                       )),
-                            )),
-                  ],
-                ),
+                            ))),
               ],
             ),
           ),
@@ -217,7 +212,10 @@ class PackagingChip extends StatelessWidget {
             ),
             Text(
               "${packaging.weight} g",
-              style: const TextStyle(fontWeight: FontWeight.bold),
+              style: Theme.of(context)
+                  .chipTheme
+                  .labelStyle
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
           ],
         ));

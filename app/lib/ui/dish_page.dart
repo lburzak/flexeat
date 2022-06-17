@@ -32,6 +32,7 @@ class DishView extends StatelessWidget {
   Widget build(BuildContext context) {
     final entries = dish.ingredients.entries.toList();
     return Scaffold(
+      appBar: AppBar(),
       body: Column(
         children: [
           Padding(

@@ -44,9 +44,7 @@ class ProductEntry extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Hero(
-          tag: 'hero-productName-${product.id}',
-          child: Material(
-              type: MaterialType.transparency, child: Text(product.name))),
+          tag: 'hero-productName-${product.id}', child: Text(product.name)),
       onTap: () {
         context.router.push(
             ProductRoute(productId: product.id, initialName: product.name));

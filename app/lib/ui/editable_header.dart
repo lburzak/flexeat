@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class EditableHeader extends StatefulWidget {
   final void Function(String text)? onSubmit;
   final String initialText;
+  final TextStyle? style;
 
-  const EditableHeader({Key? key, this.onSubmit, required this.initialText})
+  const EditableHeader(
+      {Key? key, this.onSubmit, required this.initialText, this.style})
       : super(key: key);
 
   @override
@@ -38,7 +40,8 @@ class _EditableHeaderState extends State<EditableHeader> {
                 Expanded(
                   child: TextFormField(
                     focusNode: _titleFocusNode,
-                    style: Theme.of(context).textTheme.headline5,
+                    style:
+                        widget.style ?? Theme.of(context).textTheme.headline1,
                     controller: _controller,
                   ),
                 ),
@@ -61,7 +64,8 @@ class _EditableHeaderState extends State<EditableHeader> {
                     child: Material(
                       type: MaterialType.transparency,
                       child: Text(_controller.text,
-                          style: Theme.of(context).textTheme.headline1),
+                          style: widget.style ??
+                              Theme.of(context).textTheme.headline1),
                     ),
                   ),
                   onTap: () {

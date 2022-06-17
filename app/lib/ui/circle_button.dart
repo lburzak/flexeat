@@ -26,6 +26,6 @@ class CircleButton extends StatelessWidget {
         splashRadius: size / 2,
         iconSize: iconSize,
         onPressed: onPressed,
-        icon: Icon(icon),
+        icon: Icon(icon, color: Theme.of(context).colorScheme.onPrimary),
       ));
 }

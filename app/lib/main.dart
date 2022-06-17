@@ -41,9 +41,9 @@ class LightTheme {
   ThemeData build() {
     return _parent.copyWith(
         colorScheme: _colors,
-        scaffoldBackgroundColor: _colors.surfaceVariant,
+        scaffoldBackgroundColor: _colors.background,
         textTheme: _buildTextTheme(_parent.textTheme),
-        appBarTheme: _buildAppBarTheme(),
+        appBarTheme: _buildAppBarTheme(_parent.appBarTheme),
         floatingActionButtonTheme:
             _buildFloatingActionButtonTheme(_parent.floatingActionButtonTheme),
         chipTheme: _buildChipTheme(_parent.chipTheme),
@@ -62,8 +62,11 @@ class LightTheme {
         onBackground: Colors.black);
   }
 
-  AppBarTheme _buildAppBarTheme() {
-    return const AppBarTheme(backgroundColor: Colors.transparent, elevation: 0);
+  AppBarTheme _buildAppBarTheme(AppBarTheme base) {
+    return base.copyWith(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        iconTheme: _parent.iconTheme.copyWith(color: _colors.onBackground));
   }
 
   TextTheme _buildTextTheme(TextTheme base) {
@@ -84,8 +87,7 @@ class LightTheme {
   FloatingActionButtonThemeData _buildFloatingActionButtonTheme(
       FloatingActionButtonThemeData base) {
     return base.copyWith(
-        backgroundColor: _colors.primary,
-        foregroundColor: _colors.onBackground);
+        backgroundColor: _colors.primary, foregroundColor: _colors.onPrimary);
   }
 
   ChipThemeData _buildChipTheme(ChipThemeData base) {
