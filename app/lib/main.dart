@@ -147,7 +147,7 @@ class AppContainer {
           NutritionFactsFormModel(_container(), productId: productId);
 
   Factory<DishCubit, int> dishCubitFactory() => (int recipeId) => //
-      DishCubit(_container(), _container(), recipeId: recipeId);
+      DishCubit(_container(), _container(), _container(), recipeId: recipeId);
 }
 
 class MyApp extends StatefulWidget {
@@ -174,7 +174,8 @@ class _MyAppState extends State<MyApp> {
               Provider<Factory<NutritionFactsFormModel, int>>(
                   create: (_) => container.nutritionFactsFormModelFactory()),
               Provider<Factory<DishCubit, int>>(
-                  create: (_) => container.dishCubitFactory())
+                  create: (_) => container.dishCubitFactory()),
+              Provider<ArticleRepository>(create: (_) => container.provide())
             ],
             child: MultiBlocProvider(
               providers: [

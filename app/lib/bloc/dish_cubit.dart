@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
 import 'package:flexeat/model/product_ingredient.dart';
+import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class DishCubit extends Cubit<Dish> {
   final RecipeRepository _recipeRepository;
   final PackagingRepository _packagingRepository;
+  final ArticleRepository _articleRepository;
   final int recipeId;
   late final StreamSubscription _sub;
 
@@ -29,6 +31,7 @@ class DishCubit extends Cubit<Dish> {
   }
 
   DishCubit(this._recipeRepository, this._packagingRepository,
+      this._articleRepository,
       {required this.recipeId})
       : super(const Dish()) {
     _sub = _recipeRepository.watchById(recipeId).listen((recipe) {
@@ -50,7 +53,13 @@ class DishCubit extends Cubit<Dish> {
     _recipeRepository.updateNameById(recipeId, name: name);
   }
 
-  void addIngredient(int articleId, int weight) {
+  void addIngredient(int? articleId, String name, int weight) {
+    _addIngredient(articleId, name, weight);
+  }
+
+  Future<void> _addIngredient(int? articleId, String name, int weight) async {
+    articleId ??= await _articleRepository.create(name);
+
     _recipeRepository.addIngredientById(recipeId,
         articleId: articleId, weight: weight);
   }

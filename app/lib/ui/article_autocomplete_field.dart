@@ -3,44 +3,45 @@ import 'package:flexeat/model/article.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 
-class ArticleAutocorrectValue {
+class ArticleAutocompleteValue {
   final String input;
   final Article? matchedArticle;
 
-  const ArticleAutocorrectValue({
-    required this.input,
+  const ArticleAutocompleteValue({
+    this.input = "",
     this.matchedArticle,
   });
 }
 
-class ArticleAutocorrectField extends StatefulWidget {
+class ArticleAutocompleteField extends StatefulWidget {
   final List<Article> articles;
-  final void Function(ArticleAutocorrectValue value)? onChanged;
+  final void Function(ArticleAutocompleteValue value)? onChanged;
 
-  const ArticleAutocorrectField(
+  const ArticleAutocompleteField(
       {Key? key, required this.articles, this.onChanged})
       : super(key: key);
 
   @override
-  State<ArticleAutocorrectField> createState() =>
-      _ArticleAutocorrectFieldState();
+  State<ArticleAutocompleteField> createState() =>
+      _ArticleAutocompleteFieldState();
 }
 
-class _ArticleAutocorrectFieldState extends State<ArticleAutocorrectField> {
-  ArticleAutocorrectValue value = const ArticleAutocorrectValue(input: "");
+class _ArticleAutocompleteFieldState extends State<ArticleAutocompleteField> {
+  Article? matchedArticle;
+  final TextEditingController _controller = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return TypeAheadFormField<Article>(
-      initialValue: value.input,
       suggestionsCallback: _buildSuggestions,
       onSuggestionSelected: _onSelected,
       itemBuilder: (context, article) => ListTile(title: Text(article.name)),
       textFieldConfiguration: TextFieldConfiguration(
+          controller: _controller,
           onChanged: _onChanged,
           decoration: InputDecoration(
               border: const OutlineInputBorder(),
-              prefixIcon: value.matchedArticle == null
+              prefixIcon: matchedArticle == null
                   ? const SizedBox.shrink()
                   : const Icon(Icons.done, color: Colors.green))),
       direction: AxisDirection.up,
@@ -51,12 +52,10 @@ class _ArticleAutocorrectFieldState extends State<ArticleAutocorrectField> {
 
   void _onChanged(String text) {
     setState(() {
-      value = ArticleAutocorrectValue(
-          input: text,
-          matchedArticle:
-              widget.articles.firstWhereOrNull((i) => i.name == text));
+      matchedArticle = widget.articles.firstWhereOrNull((i) => i.name == text);
 
-      widget.onChanged?.call(value);
+      widget.onChanged?.call(ArticleAutocompleteValue(
+          input: text, matchedArticle: matchedArticle));
     });
   }
 
@@ -66,9 +65,13 @@ class _ArticleAutocorrectFieldState extends State<ArticleAutocorrectField> {
       .toList();
 
   void _onSelected(Article article) {
+    _controller.text = article.name;
+
     setState(() {
-      value =
-          ArticleAutocorrectValue(input: article.name, matchedArticle: article);
+      matchedArticle = article;
     });
+
+    widget.onChanged?.call(
+        ArticleAutocompleteValue(input: article.name, matchedArticle: article));
   }
 }

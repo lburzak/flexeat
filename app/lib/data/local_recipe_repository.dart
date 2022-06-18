@@ -39,9 +39,9 @@ class LocalRecipeRepository
     yield* dataEvents.asyncMap((event) => findAllHeaders());
   }
 
-  Future<List<Ingredient>> _findIngredientsById(int id) async {
+  Future<List<Ingredient>> _findIngredientsByRecipeId(int id) async {
     final rows = await _database.rawQuery(
-        "SELECT * FROM ${ingredient$} INNER JOIN ${article$} ON ${ingredient$articleId} = ${article$id} WHERE ${recipe$id} = ?",
+        "SELECT * FROM ${ingredient$} INNER JOIN ${article$} ON ${ingredient$articleId} = ${article$id} WHERE ${ingredient$recipeId} = ?",
         [id]);
 
     return rows.map((row) => row.toIngredient()).toList();
@@ -55,7 +55,7 @@ class LocalRecipeRepository
       return null;
     }
 
-    final ingredients = await _findIngredientsById(id);
+    final ingredients = await _findIngredientsByRecipeId(id);
 
     return Recipe(
         header: rows.first.toRecipeHeader(), ingredients: ingredients);

@@ -12,7 +12,7 @@ import 'package:provider/provider.dart';
 
 import '../main.dart';
 import '../model/article.dart';
-import 'article_autocorrect_field.dart';
+import 'article_autocomplete_field.dart';
 import 'nutrition_facts_dialog.dart';
 
 class ProductPage extends StatefulWidget {
@@ -297,7 +297,7 @@ class LinkArticleView extends StatefulWidget {
 }
 
 class _LinkArticleViewState extends State<LinkArticleView> {
-  ArticleAutocorrectValue value = const ArticleAutocorrectValue(input: "");
+  ArticleAutocompleteValue value = const ArticleAutocompleteValue(input: "");
 
   @override
   Widget build(BuildContext context) {
@@ -308,7 +308,7 @@ class _LinkArticleViewState extends State<LinkArticleView> {
       child: Row(
         children: [
           Expanded(
-            child: ArticleAutocorrectField(
+            child: ArticleAutocompleteField(
                 articles: widget.articles,
                 onChanged: (value) {
                   setState(() {

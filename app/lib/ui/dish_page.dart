@@ -2,6 +2,7 @@ import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
 import 'package:flexeat/model/product_ingredient.dart';
+import 'package:flexeat/ui/ingredient_form.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,7 +16,7 @@ class DishPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
+    return BlocProvider<DishCubit>(
         create: (context) => context.read<Factory<DishCubit, int>>()(recipeId),
         child: BlocBuilder<DishCubit, Dish>(
           builder: (context, state) => DishView(dish: state),
@@ -30,8 +31,24 @@ class DishView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<DishCubit>();
     final entries = dish.ingredients.entries.toList();
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showDialog(
+              context: context,
+              builder: (context) => BlocProvider<DishCubit>.value(
+                    value: cubit,
+                    child: Builder(builder: (context) {
+                      return IngredientForm(onSubmit: (value, weight) {
+                        context.read<DishCubit>().addIngredient(
+                            value.matchedArticle?.id, value.input, weight);
+                      });
+                    }),
+                  ));
+        },
+      ),
       appBar: AppBar(),
       body: Column(
         children: [
