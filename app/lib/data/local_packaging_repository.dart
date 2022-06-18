@@ -1,6 +1,9 @@
+import 'package:collection/collection.dart';
 import 'package:flexeat/data/database.dart';
+import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/data/row.dart';
+import 'package:flexeat/model/nutrition_facts.dart';
 import 'package:flexeat/model/packaging.dart';
 import 'package:flexeat/model/product.dart';
 import 'package:flexeat/model/product_packaging.dart';
@@ -82,7 +85,7 @@ class LocalPackagingRepository implements PackagingRepository {
   @override
   Future<List<ProductPackaging>> findProductPackagingsByArticleId(
       int articleId) async {
-    final rows = await _database.rawQuery("""
+    const sql = """
      SELECT pr.${product$id} as product_id,
             pr.${product$name} as product_name,
             pa.${packaging$id} as packaging_id,
@@ -96,16 +99,25 @@ class LocalPackagingRepository implements PackagingRepository {
                      ON par.${productArticle$articleId} = ar.${article$id})
             ON par.${productArticle$productId} = pr.${product$id}
      WHERE par.${productArticle$articleId} = ?
-     """, [articleId]);
-    return rows.map((e) => e.toProductPackaging()).toList();
+     """;
+    final rows = await _database.rawQuery(sql, [articleId]);
+    final nutritionFactsRows = await _database.query(nutritionFacts$);
+    return rows
+        .map((e) => e.toProductPackaging(
+            nutritionFacts: nutritionFactsRows
+                .firstWhereOrNull((row) => row['product_id'] == e['product_id'])
+                ?.toNutritionFacts()))
+        .toList();
   }
 }
 
 extension ProductPackagingSerialization on Row {
-  ProductPackaging toProductPackaging() => ProductPackaging(
-      product: Product(id: this['product_id'], name: this['product_name']),
-      packaging: Packaging(
-          id: this['packaging_id'],
-          weight: this['packaging_weight'],
-          label: this['packaging_label']));
+  ProductPackaging toProductPackaging({NutritionFacts? nutritionFacts}) =>
+      ProductPackaging(
+          product: Product(id: this['product_id'], name: this['product_name']),
+          packaging: Packaging(
+              id: this['packaging_id'],
+              weight: this['packaging_weight'],
+              label: this['packaging_label']),
+          nutritionFacts: nutritionFacts ?? const NutritionFacts());
 }

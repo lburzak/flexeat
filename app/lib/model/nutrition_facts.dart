@@ -51,4 +51,16 @@ class NutritionFacts {
       'salt': salt,
     };
   }
+
+  NutritionFacts scaled(int grams) => NutritionFacts(
+        energy: _scale(energy, grams),
+        fat: _scale(fat, grams),
+        carbohydrates: _scale(carbohydrates, grams),
+        fibre: _scale(fibre, grams),
+        protein: _scale(protein, grams),
+        salt: _scale(salt, grams),
+      );
+
+  static double? _scale(double? value, int grams) =>
+      value != null ? value / 100 * grams : null;
 }

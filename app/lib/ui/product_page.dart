@@ -130,9 +130,22 @@ class _ProductPageState extends State<ProductPage> {
                     icon: Icons.local_dining,
                     label: "Nutrition Facts",
                     body: BlocBuilder<ProductCubit, ProductState>(
-                      builder: (context, state) => NutritionFactsSection(
-                          nutritionFacts: state.nutritionFacts,
-                          onEdit: () => _showNutritionFactsDialog(context)),
+                      builder: (context, state) {
+                        final map = state.nutritionFacts.toMap();
+                        if (map.values.every((element) => element == null)) {
+                          return SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                  onPressed: () =>
+                                      _showNutritionFactsDialog(context),
+                                  child: Text(
+                                    "Add".toUpperCase(),
+                                  )));
+                        }
+                        return NutritionFactsSection(
+                            nutritionFacts: state.nutritionFacts,
+                            onEdit: () => _showNutritionFactsDialog(context));
+                      },
                     )),
                 Section(
                     icon: Icons.inventory,
@@ -462,40 +475,39 @@ class _PackagingInputDialogState extends State<PackagingInputDialog> {
 class NutritionFactsSection extends StatelessWidget {
   final void Function()? onEdit;
   final NutritionFacts nutritionFacts;
+  final Color? color;
 
   const NutritionFactsSection(
-      {Key? key, required this.nutritionFacts, this.onEdit})
+      {Key? key, required this.nutritionFacts, this.onEdit, this.color})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final map = nutritionFacts.toMap();
-    if (map.values.every((element) => element == null)) {
-      return SizedBox(
-          width: double.infinity,
-          child: ElevatedButton(
-              onPressed: onEdit,
-              child: Text(
-                "Add".toUpperCase(),
-              )));
-    }
-
     return GestureDetector(
       onTap: onEdit,
       child: Table(
         children: [
           TableRow(children: [
-            _NutritionFactCell(icon: Icons.bolt, value: nutritionFacts.energy),
-            _NutritionFactCell(
-                icon: Icons.water_drop, value: nutritionFacts.fat),
-            _NutritionFactCell(
-                icon: Icons.bakery_dining, value: nutritionFacts.carbohydrates),
+            NutritionFactCell(
+                icon: Icon(Icons.bolt, color: color),
+                value: nutritionFacts.energy),
+            NutritionFactCell(
+                icon: Icon(Icons.water_drop, color: color),
+                value: nutritionFacts.fat),
+            NutritionFactCell(
+                icon: Icon(Icons.bakery_dining, color: color),
+                value: nutritionFacts.carbohydrates),
           ]),
           TableRow(children: [
-            _NutritionFactCell(icon: Icons.hive, value: nutritionFacts.fibre),
-            _NutritionFactCell(
-                icon: Icons.whatshot, value: nutritionFacts.protein),
-            _NutritionFactCell(icon: Icons.fitbit, value: nutritionFacts.salt),
+            NutritionFactCell(
+                icon: Icon(Icons.hive, color: color),
+                value: nutritionFacts.fibre),
+            NutritionFactCell(
+                icon: Icon(Icons.whatshot, color: color),
+                value: nutritionFacts.protein),
+            NutritionFactCell(
+                icon: Icon(Icons.fitbit, color: color),
+                value: nutritionFacts.salt),
           ]),
         ],
       ),
@@ -503,11 +515,11 @@ class NutritionFactsSection extends StatelessWidget {
   }
 }
 
-class _NutritionFactCell extends StatelessWidget {
-  final IconData icon;
+class NutritionFactCell extends StatelessWidget {
+  final Icon icon;
   final double? value;
 
-  const _NutritionFactCell({Key? key, required this.icon, this.value})
+  const NutritionFactCell({Key? key, required this.icon, this.value})
       : super(key: key);
 
   @override
@@ -517,7 +529,7 @@ class _NutritionFactCell extends StatelessWidget {
       padding: const EdgeInsets.all(8.0),
       child: Row(
         children: [
-          Icon(icon),
+          icon,
           const SizedBox(width: 12),
           Text("${doubleToStringOrQuestionMark(value)} g")
         ],

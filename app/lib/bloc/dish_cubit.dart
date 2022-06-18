@@ -73,15 +73,14 @@ class DishCubit extends Cubit<Dish> {
         .firstWhere((element) => element.key.article.id == articleId)
         .key;
 
-    final packaging = await _packagingRepository.findById(packagingId);
-    final product =
-        await _packagingRepository.findProductByPackagingId(packagingId);
-
     final productPackaging =
-        ProductPackaging(product: product!, packaging: packaging!);
+        await _packagingRepository.findProductPackagingsByArticleId(articleId);
 
     emit(state.copyWith(
-        ingredients: state.ingredients.updated(ingredient, productPackaging)));
+        ingredients: state.ingredients.updated(
+            ingredient,
+            productPackaging.firstWhere(
+                (element) => element.packaging.id == packagingId))));
   }
 }
 

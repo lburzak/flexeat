@@ -38,7 +38,7 @@ class LocalNutritionFactsRepository
       return const NutritionFacts();
     }
 
-    return result.first.deserialize();
+    return result.first.toNutritionFacts();
   }
 
   @override
@@ -81,8 +81,8 @@ extension _Serialization on NutritionFacts {
   }
 }
 
-extension _Deserialization on Row {
-  NutritionFacts deserialize() => NutritionFacts(
+extension NutritionFactsDeserialization on Row {
+  NutritionFacts toNutritionFacts() => NutritionFacts(
         energy: this[energyColumn],
         fat: this[fatColumn],
         carbohydrates: this[carbohydratesColumn],

@@ -6,11 +6,13 @@ import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/ui/ingredient_form.dart';
 import 'package:flexeat/ui/product_packaging_selection_view.dart';
 import 'package:flexeat/ui/product_packaging_view.dart';
+import 'package:flexeat/ui/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
 
 import '../main.dart';
+import '../model/nutrition_facts.dart';
 import 'editable_header.dart';
 
 class DishPage extends StatelessWidget {
@@ -115,34 +117,47 @@ class IngredientView extends StatelessWidget {
     return Card(
       child: DefaultTextStyle(
         style: Theme.of(context).textTheme.bodyText1!,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Text(ingredient.article.name),
-                  Visibility(
-                    visible: productPackaging == null,
-                    child: IconButton(
-                        onPressed: () => _showBindProductDialog(context),
-                        icon: Icon(
-                          Icons.link,
-                          color: Theme.of(context).colorScheme.primary,
-                        )),
-                  ),
-                  const Spacer(),
-                  Text("${ingredient.weight} g"),
-                ],
+        child: ExpansionTile(
+          title: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: [
+                    Text(ingredient.article.name),
+                    Visibility(
+                      visible: productPackaging == null,
+                      child: IconButton(
+                          onPressed: () => _showBindProductDialog(context),
+                          icon: Icon(
+                            Icons.link,
+                            color: Theme.of(context).colorScheme.primary,
+                          )),
+                    ),
+                    const Spacer(),
+                    Text("${ingredient.weight} g"),
+                  ],
+                ),
               ),
-            ),
-            productPackaging != null
-                ? GestureDetector(
-                    child: ProductPackagingView(
-                        productPackaging: productPackaging!),
-                    onTap: () => _showBindProductDialog(context),
-                  )
-                : const SizedBox.shrink()
+              productPackaging != null
+                  ? Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: GestureDetector(
+                        child: ProductPackagingView(
+                            productPackaging: productPackaging!),
+                        onTap: () => _showBindProductDialog(context),
+                      ),
+                    )
+                  : const SizedBox.shrink(),
+            ],
+          ),
+          childrenPadding: const EdgeInsets.all(16),
+          children: [
+            NutritionFactsSection(
+                nutritionFacts: productPackaging == null
+                    ? const NutritionFacts()
+                    : productPackaging!.nutritionFacts
+                        .scaled(ingredient.weight))
           ],
         ),
       ),

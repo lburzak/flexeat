@@ -35,8 +35,10 @@ class ProductPackagingSelectionView extends StatelessWidget {
                     .read<PackagingRepository>()
                     .findProductPackagingsByArticleId(articleId),
                 builder: (context, snapshot) {
-                  return ListView.builder(
-                      itemCount: snapshot.data?.length,
+                  return ListView.separated(
+                      itemCount: snapshot.data?.length ?? 0,
+                      separatorBuilder: (context, index) =>
+                          const SizedBox(height: 8),
                       itemBuilder: (context, index) => GestureDetector(
                             onTap: () {
                               onSelected?.call(snapshot.requireData[index]);

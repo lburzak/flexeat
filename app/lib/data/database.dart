@@ -44,16 +44,24 @@ CREATE TABLE ${packaging$} (
 );
 """;
 
+const nutritionFacts$ = "nutrition_facts";
+const nutritionFacts$productId = "product_id";
+const nutritionFacts$energy = "energy";
+const nutritionFacts$fat = "fat";
+const nutritionFacts$carbohydrates = "carbohydrates";
+const nutritionFacts$fibre = "fibre";
+const nutritionFacts$protein = "protein";
+const nutritionFacts$salt = "salt";
 const createNutritionFactsTable = """
-CREATE TABLE nutrition_facts (
-  product_id INTEGER PRIMARY KEY,
-  energy REAL,
-  fat REAL,
-  carbohydrates REAL,
-  fibre REAL,
-  protein REAL,
-  salt REAL,
-  FOREIGN KEY (product_id) REFERENCES product(id)
+CREATE TABLE ${nutritionFacts$} (
+  ${nutritionFacts$productId} INTEGER PRIMARY KEY,
+  ${nutritionFacts$energy} REAL,
+  ${nutritionFacts$fat} REAL,
+  ${nutritionFacts$carbohydrates} REAL,
+  ${nutritionFacts$fibre} REAL,
+  ${nutritionFacts$protein} REAL,
+  ${nutritionFacts$salt} REAL,
+  FOREIGN KEY (${nutritionFacts$productId}) REFERENCES ${product$}(${product$id})
 );
 """;
 
