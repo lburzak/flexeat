@@ -3,6 +3,7 @@ import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/data/row.dart';
 import 'package:flexeat/model/packaging.dart';
 import 'package:flexeat/model/product.dart';
+import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -77,4 +78,34 @@ class LocalPackagingRepository implements PackagingRepository {
     return Packaging(
         id: row[idColumn], weight: row[weightColumn], label: row[labelColumn]);
   }
+
+  @override
+  Future<List<ProductPackaging>> findProductPackagingsByArticleId(
+      int articleId) async {
+    final rows = await _database.rawQuery("""
+     SELECT pr.${product$id} as product_id,
+            pr.${product$name} as product_name,
+            pa.${packaging$id} as packaging_id,
+            pa.${packaging$label} as packaging_label,
+            pa.${packaging$weight} as packaging_weight
+     FROM
+        (${packaging$} pa INNER JOIN ${product$} pr
+                       ON pa.${packaging$productId} = pr.${product$id})
+            INNER JOIN
+        (${article$} ar INNER JOIN ${productArticle$} par
+                     ON par.${productArticle$articleId} = ar.${article$id})
+            ON par.${productArticle$productId} = pr.${product$id}
+     WHERE par.${productArticle$articleId} = ?
+     """, [articleId]);
+    return rows.map((e) => e.toProductPackaging()).toList();
+  }
+}
+
+extension ProductPackagingSerialization on Row {
+  ProductPackaging toProductPackaging() => ProductPackaging(
+      product: Product(id: this['product_id'], name: this['product_name']),
+      packaging: Packaging(
+          id: this['packaging_id'],
+          weight: this['packaging_weight'],
+          label: this['packaging_label']));
 }

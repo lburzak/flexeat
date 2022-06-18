@@ -21,23 +21,26 @@ Future<void> _initDatabase(sqflite.Database db, int version) async {
 
 const product$ = "product";
 const product$id = "id";
+const product$name = "name";
 const createProductTable = """
 CREATE TABLE ${product$} (
   ${product$id} INTEGER PRIMARY KEY AUTOINCREMENT,
-  name TEXT NOT NULL
+  ${product$name} TEXT NOT NULL
 );
 """;
 
 const packaging$ = "packaging";
 const packaging$id = "id";
 const packaging$productId = "product_id";
+const packaging$weight = "weight";
+const packaging$label = "label";
 const createPackagingTable = """
 CREATE TABLE ${packaging$} (
   ${packaging$id} INTEGER PRIMARY KEY AUTOINCREMENT,
   ${packaging$productId} INTEGER NOT NULL,
-  weight INTEGER NOT NULL,
-  label TEXT,
-  FOREIGN KEY (product_id) REFERENCES product(id)
+  ${packaging$weight} INTEGER NOT NULL,
+  ${packaging$label} TEXT,
+  FOREIGN KEY (${packaging$productId}) REFERENCES ${product$}(${product$id})
 );
 """;
 
@@ -64,13 +67,16 @@ CREATE TABLE ${article$} (
 );
 """;
 
+const productArticle$ = "product_article";
+const productArticle$productId = "product_id";
+const productArticle$articleId = "article_id";
 const createProductArticleTable = """
-CREATE TABLE product_article(
-  product_id INTEGER,
-  article_id INTEGER,
-  FOREIGN KEY (product_id) REFERENCES product(id),
-  FOREIGN KEY (article_id) REFERENCES article(id),
-  PRIMARY KEY (product_id, article_id)
+CREATE TABLE ${productArticle$}(
+  ${productArticle$productId} INTEGER,
+  ${productArticle$articleId} INTEGER,
+  FOREIGN KEY (${productArticle$productId}) REFERENCES ${product$}(${product$id}),
+  FOREIGN KEY (${productArticle$articleId}) REFERENCES ${article$}(${article$id}),
+  PRIMARY KEY (${productArticle$productId}, ${productArticle$articleId})
 );
 """;
 

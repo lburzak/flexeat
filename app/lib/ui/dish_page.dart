@@ -2,9 +2,12 @@ import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
 import 'package:flexeat/model/product_ingredient.dart';
+import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/ui/ingredient_form.dart';
+import 'package:flexeat/ui/product_packaging_selection_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:provider/provider.dart';
 
 import '../main.dart';
 import 'editable_header.dart';
@@ -83,6 +86,8 @@ class IngredientView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final packagingRepository = context.read<PackagingRepository>();
+    final DishCubit cubit = context.read<DishCubit>();
     return Card(
       child: DefaultTextStyle(
         style: Theme.of(context).textTheme.bodyText1!,
@@ -96,7 +101,29 @@ class IngredientView extends StatelessWidget {
             ),
             productIngredient != null
                 ? ProductIngredientView(productIngredient: productIngredient!)
-                : ElevatedButton(onPressed: () {}, child: const Text("SELECT"))
+                : ElevatedButton(
+                    onPressed: () {
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (context) => MultiProvider(
+                                providers: [
+                                  Provider<PackagingRepository>.value(
+                                    value: packagingRepository,
+                                  ),
+                                  Provider<DishCubit>.value(value: cubit)
+                                ],
+                                child: Builder(builder: (context) {
+                                  return ProductPackagingSelectionView(
+                                    articleId: ingredient.article.id,
+                                    onSelected: (e) => context
+                                        .read<DishCubit>()
+                                        .selectProduct(ingredient.article.id,
+                                            e.packaging.id),
+                                  );
+                                }),
+                              ));
+                    },
+                    child: const Text("SELECT"))
           ],
         ),
       ),

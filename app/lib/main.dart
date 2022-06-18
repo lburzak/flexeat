@@ -175,7 +175,8 @@ class _MyAppState extends State<MyApp> {
                   create: (_) => container.nutritionFactsFormModelFactory()),
               Provider<Factory<DishCubit, int>>(
                   create: (_) => container.dishCubitFactory()),
-              Provider<ArticleRepository>(create: (_) => container.provide())
+              Provider<ArticleRepository>(create: (_) => container.provide()),
+              Provider<PackagingRepository>(create: (_) => container.provide()),
             ],
             child: MultiBlocProvider(
               providers: [
