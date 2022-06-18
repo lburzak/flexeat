@@ -1,8 +1,10 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
 import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
+import 'package:flexeat/ui/app_router.gr.dart';
 import 'package:flexeat/ui/ingredient_form.dart';
 import 'package:flexeat/ui/product_packaging_selection_view.dart';
 import 'package:flexeat/ui/product_packaging_view.dart';
@@ -149,7 +151,8 @@ class IngredientView extends StatelessWidget {
                       child: GestureDetector(
                         child: ProductPackagingView(
                             productPackaging: productPackaging!),
-                        onTap: () => _showBindProductDialog(context),
+                        onLongPress: () => _showBindProductDialog(context),
+                        onTap: () => context.navigateTo(ProductRoute(productId: productPackaging!.product.id)),
                       ),
                     )
                   : const SizedBox.shrink(),

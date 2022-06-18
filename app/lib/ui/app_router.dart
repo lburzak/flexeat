@@ -1,4 +1,3 @@
-import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flexeat/ui/dish_page.dart';
 import 'package:flexeat/ui/home_page.dart';
@@ -24,11 +23,12 @@ import 'package:flexeat/ui/recipes_list_page.dart';
         page: EmptyRouterPage,
         children: [
           AutoRoute(path: '', page: ProductsListPage),
-          AutoRoute(page: ProductPage),
+          AutoRoute(path: 'product/:productId', page: ProductPage),
           RedirectRoute(path: '*', redirectTo: '')
         ],
       ),
-    ])
+    ]),
+    AutoRoute(path: 'product/:productId', page: ProductPage),
   ],
 )
 class $AppRouter {}
