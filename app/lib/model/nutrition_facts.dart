@@ -52,6 +52,20 @@ class NutritionFacts {
     };
   }
 
+  NutritionFacts operator +(NutritionFacts other) {
+    return NutritionFacts(
+      energy: _addNutritionalValues(energy, other.energy),
+      fat: _addNutritionalValues(fat, other.fat),
+      carbohydrates: _addNutritionalValues(carbohydrates, other.carbohydrates),
+      fibre: _addNutritionalValues(fibre, other.fibre),
+      protein: _addNutritionalValues(protein, other.protein),
+      salt: _addNutritionalValues(salt, other.salt),
+    );
+  }
+
+  static double? _addNutritionalValues(double? value, double? other) =>
+      (value == null && other == null) ? null : (value ?? 0) + (other ?? 0);
+
   NutritionFacts scaled(int grams) => NutritionFacts(
         energy: _scale(energy, grams),
         fat: _scale(fat, grams),

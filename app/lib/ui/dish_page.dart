@@ -71,6 +71,11 @@ class DishView extends StatelessWidget {
                 onSubmit: (text) => context.read<DishCubit>().changeName(text),
               ),
             ),
+            Align(
+                alignment: Alignment.center,
+                child: NutritionFactsSection(
+                    nutritionFacts: context.select<DishCubit, NutritionFacts>(
+                        (cubit) => cubit.state.nutritionFacts))),
             Expanded(
               child: ListView.builder(
                   padding: const EdgeInsets.all(8),
@@ -152,7 +157,8 @@ class IngredientView extends StatelessWidget {
                         child: ProductPackagingView(
                             productPackaging: productPackaging!),
                         onLongPress: () => _showBindProductDialog(context),
-                        onTap: () => context.navigateTo(ProductRoute(productId: productPackaging!.product.id)),
+                        onTap: () => context.navigateTo(ProductRoute(
+                            productId: productPackaging!.product.id)),
                       ),
                     )
                   : const SizedBox.shrink(),

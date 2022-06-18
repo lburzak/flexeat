@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
+import 'package:flexeat/model/nutrition_facts.dart';
 import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
@@ -30,15 +31,29 @@ class DishCubit extends Cubit<Dish> {
     return newIngredients;
   }
 
+  NutritionFacts _summarizeNutritionFacts(
+      Map<Ingredient, ProductPackaging?> ingredients) {
+    var value = const NutritionFacts();
+
+    for (final entry in ingredients.entries) {
+      value += entry.value?.nutritionFacts.scaled(entry.key.weight) ??
+          const NutritionFacts();
+    }
+
+    return value;
+  }
+
   DishCubit(this._recipeRepository, this._packagingRepository,
       this._articleRepository,
       {required this.recipeId})
       : super(const Dish()) {
     _sub = _recipeRepository.watchById(recipeId).listen((recipe) {
       if (recipe != null) {
+        final ingredients = _mergeIngredients(recipe.ingredients);
         emit(state.copyWith(
             recipeHeader: recipe.header,
-            ingredients: _mergeIngredients(recipe.ingredients)));
+            ingredients: ingredients,
+            nutritionFacts: _summarizeNutritionFacts(ingredients)));
       }
     });
   }
@@ -76,11 +91,14 @@ class DishCubit extends Cubit<Dish> {
     final productPackaging =
         await _packagingRepository.findProductPackagingsByArticleId(articleId);
 
+    final ingredients = state.ingredients.updated(
+        ingredient,
+        productPackaging
+            .firstWhere((element) => element.packaging.id == packagingId));
+
     emit(state.copyWith(
-        ingredients: state.ingredients.updated(
-            ingredient,
-            productPackaging.firstWhere(
-                (element) => element.packaging.id == packagingId))));
+        nutritionFacts: _summarizeNutritionFacts(ingredients),
+        ingredients: ingredients));
   }
 }
 
