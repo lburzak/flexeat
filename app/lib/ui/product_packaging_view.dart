@@ -11,11 +11,14 @@ class ProductPackagingView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Theme.of(context).colorScheme.primary,
-      child: Row(
-        children: [
-          Text(productPackaging.product.name),
-          Text("${productPackaging.packaging.weight} g")
-        ],
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Text(productPackaging.product.name),
+            Text("${productPackaging.packaging.weight} g")
+          ],
+        ),
       ),
     );
   }

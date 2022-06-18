@@ -116,26 +116,24 @@ class IngredientView extends StatelessWidget {
         style: Theme.of(context).textTheme.bodyText1!,
         child: Column(
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Row(
-                    children: [
-                      Text(ingredient.article.name),
-                      Text("${ingredient.weight} g"),
-                    ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Text(ingredient.article.name),
+                  Visibility(
+                    visible: productPackaging == null,
+                    child: IconButton(
+                        onPressed: () => _showBindProductDialog(context),
+                        icon: Icon(
+                          Icons.link,
+                          color: Theme.of(context).colorScheme.primary,
+                        )),
                   ),
-                ),
-                Visibility(
-                  visible: productPackaging == null,
-                  child: IconButton(
-                      onPressed: () => _showBindProductDialog(context),
-                      icon: Icon(
-                        Icons.link,
-                        color: Theme.of(context).colorScheme.primary,
-                      )),
-                )
-              ],
+                  const Spacer(),
+                  Text("${ingredient.weight} g"),
+                ],
+              ),
             ),
             productPackaging != null
                 ? GestureDetector(
