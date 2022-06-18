@@ -77,8 +77,7 @@ class LightTheme {
         ),
         headline5: base.headline5?.copyWith(color: _colors.onBackground),
         headline6: base.headline6?.copyWith(color: _colors.onBackground),
-        bodyText1:
-            base.bodyText1?.copyWith(color: _colors.onBackground, fontSize: 16),
+        bodyText1: base.bodyText1?.copyWith(fontSize: 16),
         bodyText2:
             base.bodyText2?.copyWith(color: _colors.onPrimary, fontSize: 16));
   }

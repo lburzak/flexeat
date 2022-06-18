@@ -71,11 +71,12 @@ class DishView extends StatelessWidget {
                 onSubmit: (text) => context.read<DishCubit>().changeName(text),
               ),
             ),
-            Align(
-                alignment: Alignment.center,
-                child: NutritionFactsSection(
-                    nutritionFacts: context.select<DishCubit, NutritionFacts>(
-                        (cubit) => cubit.state.nutritionFacts))),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: NutritionFactsSection(
+                  nutritionFacts: context.select<DishCubit, NutritionFacts>(
+                      (cubit) => cubit.state.nutritionFacts)),
+            ),
             Expanded(
               child: ListView.builder(
                   padding: const EdgeInsets.all(8),

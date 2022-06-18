@@ -142,9 +142,15 @@ class _ProductPageState extends State<ProductPage> {
                                     "Add".toUpperCase(),
                                   )));
                         }
-                        return NutritionFactsSection(
-                            nutritionFacts: state.nutritionFacts,
-                            onEdit: () => _showNutritionFactsDialog(context));
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 32),
+                          child: NutritionFactsSection(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              nutritionFacts: state.nutritionFacts,
+                              onEdit: () => _showNutritionFactsDialog(context)),
+                        );
                       },
                     )),
                 Section(
@@ -485,31 +491,34 @@ class NutritionFactsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onEdit,
-      child: Table(
-        children: [
-          TableRow(children: [
-            NutritionFactCell(
-                icon: Icon(Icons.bolt, color: color),
-                value: nutritionFacts.energy),
-            NutritionFactCell(
-                icon: Icon(Icons.water_drop, color: color),
-                value: nutritionFacts.fat),
-            NutritionFactCell(
-                icon: Icon(Icons.bakery_dining, color: color),
-                value: nutritionFacts.carbohydrates),
-          ]),
-          TableRow(children: [
-            NutritionFactCell(
-                icon: Icon(Icons.hive, color: color),
-                value: nutritionFacts.fibre),
-            NutritionFactCell(
-                icon: Icon(Icons.whatshot, color: color),
-                value: nutritionFacts.protein),
-            NutritionFactCell(
-                icon: Icon(Icons.fitbit, color: color),
-                value: nutritionFacts.salt),
-          ]),
-        ],
+      child: DefaultTextStyle(
+        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: color),
+        child: Table(
+          children: [
+            TableRow(children: [
+              NutritionFactCell(
+                  icon: Icon(Icons.bolt, color: color),
+                  value: nutritionFacts.energy),
+              NutritionFactCell(
+                  icon: Icon(Icons.water_drop, color: color),
+                  value: nutritionFacts.fat),
+              NutritionFactCell(
+                  icon: Icon(Icons.bakery_dining, color: color),
+                  value: nutritionFacts.carbohydrates),
+            ]),
+            TableRow(children: [
+              NutritionFactCell(
+                  icon: Icon(Icons.hive, color: color),
+                  value: nutritionFacts.fibre),
+              NutritionFactCell(
+                  icon: Icon(Icons.whatshot, color: color),
+                  value: nutritionFacts.protein),
+              NutritionFactCell(
+                  icon: Icon(Icons.fitbit, color: color),
+                  value: nutritionFacts.salt),
+            ]),
+          ],
+        ),
       ),
     );
   }
@@ -531,7 +540,10 @@ class NutritionFactCell extends StatelessWidget {
         children: [
           icon,
           const SizedBox(width: 12),
-          Text("${doubleToStringOrQuestionMark(value)} g")
+          Text(
+            "${doubleToStringOrQuestionMark(value)} g",
+            textAlign: TextAlign.right,
+          )
         ],
       ),
     ));
