@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'database.dart';
 
-enum DataEvent { created, updated }
+enum DataEvent { created, updated, ingredientAdded }
 
 class LocalRecipeRepository
     with LiveRepository<DataEvent>
@@ -84,6 +84,8 @@ class LocalRecipeRepository
       ingredient$recipeId: id,
       ingredient$weight: weight
     });
+
+    emit(DataEvent.ingredientAdded);
   }
 }
 
