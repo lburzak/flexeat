@@ -56,26 +56,29 @@ class DishView extends StatelessWidget {
         },
       ),
       appBar: AppBar(),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 24.0),
-            child: EditableHeader(
-              initialText: context.select<DishCubit, String>(
-                  (cubit) => cubit.state.recipeHeader.name),
-              onSubmit: (text) => context.read<DishCubit>().changeName(text),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 12, right: 12, bottom: 12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 24.0),
+              child: EditableHeader(
+                initialText: context.select<DishCubit, String>(
+                    (cubit) => cubit.state.recipeHeader.name),
+                onSubmit: (text) => context.read<DishCubit>().changeName(text),
+              ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                padding: const EdgeInsets.all(8),
-                itemCount: entries.length,
-                itemBuilder: (context, index) => IngredientView(
-                    ingredient: entries[index].key,
-                    productPackaging: entries[index].value)),
-          ),
-        ],
+            Expanded(
+              child: ListView.builder(
+                  padding: const EdgeInsets.all(8),
+                  itemCount: entries.length,
+                  itemBuilder: (context, index) => IngredientView(
+                      ingredient: entries[index].key,
+                      productPackaging: entries[index].value)),
+            ),
+          ],
+        ),
       ),
     );
   }
