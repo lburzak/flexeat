@@ -1,10 +1,10 @@
 import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/product_ingredient.dart';
+import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/model/recipe_header.dart';
 
 class Dish {
   final RecipeHeader recipeHeader;
-  final Map<Ingredient, ProductIngredient?> ingredients;
+  final Map<Ingredient, ProductPackaging?> ingredients;
 
   const Dish({
     this.recipeHeader = const RecipeHeader(),
@@ -13,7 +13,7 @@ class Dish {
 
   Dish copyWith({
     RecipeHeader? recipeHeader,
-    Map<Ingredient, ProductIngredient?>? ingredients,
+    Map<Ingredient, ProductPackaging?>? ingredients,
   }) {
     return Dish(
       recipeHeader: recipeHeader ?? this.recipeHeader,

@@ -1,10 +1,11 @@
 import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/product_ingredient.dart';
+import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/ui/ingredient_form.dart';
 import 'package:flexeat/ui/product_packaging_selection_view.dart';
+import 'package:flexeat/ui/product_packaging_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
@@ -68,7 +69,7 @@ class DishView extends StatelessWidget {
                 itemCount: entries.length,
                 itemBuilder: (context, index) => IngredientView(
                     ingredient: entries[index].key,
-                    productIngredient: entries[index].value)),
+                    productPackaging: entries[index].value)),
           ),
         ],
       ),
@@ -78,10 +79,10 @@ class DishView extends StatelessWidget {
 
 class IngredientView extends StatelessWidget {
   final Ingredient ingredient;
-  final ProductIngredient? productIngredient;
+  final ProductPackaging? productPackaging;
 
   const IngredientView(
-      {Key? key, required this.ingredient, this.productIngredient})
+      {Key? key, required this.ingredient, this.productPackaging})
       : super(key: key);
 
   void _showBindProductDialog(BuildContext context) {
@@ -121,10 +122,10 @@ class IngredientView extends StatelessWidget {
                 Text("${ingredient.weight} g")
               ],
             ),
-            productIngredient != null
+            productPackaging != null
                 ? GestureDetector(
-                    child: ProductIngredientView(
-                        productIngredient: productIngredient!),
+                    child: ProductPackagingView(
+                        productPackaging: productPackaging!),
                     onTap: () => _showBindProductDialog(context),
                   )
                 : ElevatedButton(
@@ -132,26 +133,6 @@ class IngredientView extends StatelessWidget {
                     child: const Text("SELECT"))
           ],
         ),
-      ),
-    );
-  }
-}
-
-class ProductIngredientView extends StatelessWidget {
-  final ProductIngredient productIngredient;
-
-  const ProductIngredientView({Key? key, required this.productIngredient})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Theme.of(context).colorScheme.primary,
-      child: Row(
-        children: [
-          Text(productIngredient.product.name),
-          Text("${productIngredient.packaging.weight} g")
-        ],
       ),
     );
   }

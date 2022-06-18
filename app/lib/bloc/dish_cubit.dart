@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/product_ingredient.dart';
+import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
@@ -15,9 +15,9 @@ class DishCubit extends Cubit<Dish> {
   final int recipeId;
   late final StreamSubscription _sub;
 
-  Map<Ingredient, ProductIngredient?> _mergeIngredients(
+  Map<Ingredient, ProductPackaging?> _mergeIngredients(
       List<Ingredient> ingredients) {
-    final Map<Ingredient, ProductIngredient?> newIngredients = {};
+    final Map<Ingredient, ProductPackaging?> newIngredients = {};
 
     for (final ingredient in ingredients) {
       if (state.ingredients.containsKey(ingredient)) {
@@ -77,11 +77,11 @@ class DishCubit extends Cubit<Dish> {
     final product =
         await _packagingRepository.findProductByPackagingId(packagingId);
 
-    final productIngredient =
-        ProductIngredient(product: product!, packaging: packaging!);
+    final productPackaging =
+        ProductPackaging(product: product!, packaging: packaging!);
 
     emit(state.copyWith(
-        ingredients: state.ingredients.updated(ingredient, productIngredient)));
+        ingredients: state.ingredients.updated(ingredient, productPackaging)));
   }
 }
 
