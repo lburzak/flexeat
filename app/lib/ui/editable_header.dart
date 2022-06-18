@@ -58,24 +58,27 @@ class _EditableHeaderState extends State<EditableHeader> {
           )
         : Row(
             children: [
-              InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Material(
-                      type: MaterialType.transparency,
-                      child: Text(_controller.text,
-                          style: widget.style ??
-                              Theme.of(context).textTheme.headline1),
-                    ),
-                  ),
-                  onTap: () {
-                    setState(() {
-                      _editing = true;
-                    });
-                    _titleFocusNode.requestFocus();
-                    _controller.selection = TextSelection(
-                        baseOffset: 0, extentOffset: _controller.text.length);
-                  }),
+              Flexible(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: InkWell(
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Text(_controller.text,
+                            style: widget.style ??
+                                Theme.of(context).textTheme.headline1),
+                      ),
+                      onTap: () {
+                        setState(() {
+                          _editing = true;
+                        });
+                        _titleFocusNode.requestFocus();
+                        _controller.selection = TextSelection(
+                            baseOffset: 0,
+                            extentOffset: _controller.text.length);
+                      }),
+                ),
+              ),
             ],
           );
   }

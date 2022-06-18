@@ -57,6 +57,7 @@ class DishView extends StatelessWidget {
       ),
       appBar: AppBar(),
       body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 24.0),
