@@ -66,6 +66,7 @@ class DishView extends StatelessWidget {
           ),
           Expanded(
             child: ListView.builder(
+                padding: const EdgeInsets.all(8),
                 itemCount: entries.length,
                 itemBuilder: (context, index) => IngredientView(
                     ingredient: entries[index].key,

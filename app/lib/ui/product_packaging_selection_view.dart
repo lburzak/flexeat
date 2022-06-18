@@ -14,22 +14,41 @@ class ProductPackagingSelectionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<ProductPackaging>>(
-        initialData: const [],
-        future: context
-            .read<PackagingRepository>()
-            .findProductPackagingsByArticleId(articleId),
-        builder: (context, snapshot) {
-          return ListView.builder(
-              itemCount: snapshot.data?.length,
-              itemBuilder: (context, index) => GestureDetector(
-                    onTap: () {
-                      onSelected?.call(snapshot.requireData[index]);
-                      Navigator.of(context).pop();
-                    },
-                    child: ProductPackagingView(
-                        productPackaging: snapshot.requireData[index]),
-                  ));
-        });
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              "Select packaging",
+              style: Theme.of(context).textTheme.headline6,
+            ),
+          ),
+          SizedBox(
+            height: 250,
+            child: FutureBuilder<List<ProductPackaging>>(
+                initialData: const [],
+                future: context
+                    .read<PackagingRepository>()
+                    .findProductPackagingsByArticleId(articleId),
+                builder: (context, snapshot) {
+                  return ListView.builder(
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index) => GestureDetector(
+                            onTap: () {
+                              onSelected?.call(snapshot.requireData[index]);
+                              Navigator.of(context).pop();
+                            },
+                            child: ProductPackagingView(
+                                productPackaging: snapshot.requireData[index]),
+                          ));
+                }),
+          ),
+        ],
+      ),
+    );
   }
 }
