@@ -53,7 +53,7 @@ class LightTheme {
 
   static ColorScheme _buildColorScheme(ThemeData parent) {
     return parent.colorScheme.copyWith(
-        background: const Color(0xffDFDFDF),
+        background: const Color(0xfff5f5f5),
         primary: const Color(0xff005cb2),
         onPrimary: Colors.white,
         surfaceVariant: Colors.blue.shade600,

@@ -10,12 +10,25 @@ class ProductPackagingView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.primary,
+      color: Theme.of(context).colorScheme.surfaceVariant,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
             Text(productPackaging.product.name),
+            const Spacer(),
+            Icon(
+              Icons.inventory,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              size: 16,
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Text(productPackaging.packaging.label),
+            const SizedBox(
+              width: 8,
+            ),
             Text("${productPackaging.packaging.weight} g")
           ],
         ),
