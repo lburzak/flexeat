@@ -118,8 +118,23 @@ class IngredientView extends StatelessWidget {
           children: [
             Row(
               children: [
-                Text(ingredient.article.name),
-                Text("${ingredient.weight} g")
+                Expanded(
+                  child: Row(
+                    children: [
+                      Text(ingredient.article.name),
+                      Text("${ingredient.weight} g"),
+                    ],
+                  ),
+                ),
+                Visibility(
+                  visible: productPackaging == null,
+                  child: IconButton(
+                      onPressed: () => _showBindProductDialog(context),
+                      icon: Icon(
+                        Icons.link,
+                        color: Theme.of(context).colorScheme.primary,
+                      )),
+                )
               ],
             ),
             productPackaging != null
@@ -128,9 +143,7 @@ class IngredientView extends StatelessWidget {
                         productPackaging: productPackaging!),
                     onTap: () => _showBindProductDialog(context),
                   )
-                : ElevatedButton(
-                    onPressed: () => _showBindProductDialog(context),
-                    child: const Text("SELECT"))
+                : const SizedBox.shrink()
           ],
         ),
       ),
