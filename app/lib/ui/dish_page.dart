@@ -84,10 +84,32 @@ class IngredientView extends StatelessWidget {
       {Key? key, required this.ingredient, this.productIngredient})
       : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
+  void _showBindProductDialog(BuildContext context) {
     final packagingRepository = context.read<PackagingRepository>();
     final DishCubit cubit = context.read<DishCubit>();
+
+    showModalBottomSheet(
+        context: context,
+        builder: (context) => MultiProvider(
+              providers: [
+                Provider<PackagingRepository>.value(
+                  value: packagingRepository,
+                ),
+                Provider<DishCubit>.value(value: cubit)
+              ],
+              child: Builder(builder: (context) {
+                return ProductPackagingSelectionView(
+                  articleId: ingredient.article.id,
+                  onSelected: (e) => context
+                      .read<DishCubit>()
+                      .selectProduct(ingredient.article.id, e.packaging.id),
+                );
+              }),
+            ));
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       child: DefaultTextStyle(
         style: Theme.of(context).textTheme.bodyText1!,
@@ -100,29 +122,13 @@ class IngredientView extends StatelessWidget {
               ],
             ),
             productIngredient != null
-                ? ProductIngredientView(productIngredient: productIngredient!)
+                ? GestureDetector(
+                    child: ProductIngredientView(
+                        productIngredient: productIngredient!),
+                    onTap: () => _showBindProductDialog(context),
+                  )
                 : ElevatedButton(
-                    onPressed: () {
-                      showModalBottomSheet(
-                          context: context,
-                          builder: (context) => MultiProvider(
-                                providers: [
-                                  Provider<PackagingRepository>.value(
-                                    value: packagingRepository,
-                                  ),
-                                  Provider<DishCubit>.value(value: cubit)
-                                ],
-                                child: Builder(builder: (context) {
-                                  return ProductPackagingSelectionView(
-                                    articleId: ingredient.article.id,
-                                    onSelected: (e) => context
-                                        .read<DishCubit>()
-                                        .selectProduct(ingredient.article.id,
-                                            e.packaging.id),
-                                  );
-                                }),
-                              ));
-                    },
+                    onPressed: () => _showBindProductDialog(context),
                     child: const Text("SELECT"))
           ],
         ),
