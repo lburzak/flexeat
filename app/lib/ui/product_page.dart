@@ -557,7 +557,7 @@ class NutritionFactCell extends StatelessWidget {
       if (intValue == value) {
         return intValue.toString();
       } else {
-        return value.toString();
+        return value.toStringAsPrecision(3);
       }
     }
   }
