@@ -43,7 +43,9 @@ class DishView extends StatelessWidget {
     final cubit = context.read<DishCubit>();
     final entries = dish.ingredients.entries.toList();
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
+        label: const Text("ADD INGREDIENT"),
+        icon: const Icon(Icons.add),
         onPressed: () {
           showDialog(
               context: context,
