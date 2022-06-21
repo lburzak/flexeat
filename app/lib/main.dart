@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
@@ -7,6 +8,7 @@ import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
 import 'package:flexeat/bloc/recipes_list_cubit.dart';
 import 'package:flexeat/data/database.dart' as database;
+import 'package:flexeat/data/food_api.dart';
 import 'package:flexeat/data/local_article_repository.dart';
 import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_packaging_repository.dart';
@@ -19,6 +21,7 @@ import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/repository/recipe_repository.dart';
 import 'package:flexeat/ui/app_router.gr.dart';
 import 'package:flexeat/usecase/create_product.dart';
+import 'package:flexeat/usecase/create_product_from_ean.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -114,8 +117,8 @@ class AppContainer {
     _container.registerSingleton<ProductRepository>(
         (container) => LocalProductRepository(container()));
     _container.registerSingleton((container) => LoadingCubit());
-    _container.registerFactory((container) =>
-        ProductsListCubit(container(), container(), container(), container()));
+    _container.registerFactory((container) => ProductsListCubit(
+        container(), container(), container(), container(), container()));
     _container.registerSingleton((container) => NavigationCubit());
     _container.registerFactory<PackagingRepository>(
         (container) => LocalPackagingRepository(container()));
@@ -129,6 +132,10 @@ class AppContainer {
     _container.registerInstance(database);
     _container.registerFactory(
         (container) => RecipesListCubit(container(), container()));
+    _container
+        .registerFactory((c) => CreateProductFromEan(c(), c(), c(), c(), c()));
+    _container.registerFactory((c) => FoodApi(c()));
+    _container.registerSingleton((container) => Dio());
   }
 
   T provide<T>() => _container<T>();

@@ -5,6 +5,7 @@ import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/repository/product_repository.dart';
 import 'package:flexeat/state/products_list_state.dart';
 import 'package:flexeat/usecase/create_product.dart';
+import 'package:flexeat/usecase/create_product_from_ean.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../model/product.dart';
@@ -14,9 +15,10 @@ class ProductsListCubit extends Cubit<ProductsListState> {
   final NavigationCubit _navigationCubit;
   final CreateProduct _createProduct;
   late StreamSubscription<List<Product>> _productsSubscription;
+  final CreateProductFromEan _createProductFromEan;
 
   ProductsListCubit(ProductRepository productRepository, this._navigationCubit,
-      this._loadingCubit, this._createProduct)
+      this._loadingCubit, this._createProduct, this._createProductFromEan)
       : super(const ProductsListState()) {
     _productsSubscription =
         productRepository.watchAll().listen(_updateProducts);
@@ -36,5 +38,9 @@ class ProductsListCubit extends Cubit<ProductsListState> {
   Future<void> close() async {
     _productsSubscription.cancel();
     return super.close();
+  }
+
+  void createProductFromEan(String code) {
+    _createProductFromEan(code).listenIn(_loadingCubit);
   }
 }

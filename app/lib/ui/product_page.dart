@@ -104,101 +104,108 @@ class _ProductPageState extends State<ProductPage> {
             iconTheme: Theme.of(context).iconTheme.copyWith(
                 color: Theme.of(context).colorScheme.onSurfaceVariant),
           ),
-          body: Padding(
-            padding:
-                const EdgeInsets.only(left: 12, right: 12, top: 0, bottom: 12),
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 24.0),
-                  child: BlocBuilder<ProductCubit, ProductState>(
-                    builder: (context, state) {
-                      return EditableHeader(
-                        initialText: state.productName,
-                        style: Theme.of(context).textTheme.headline1?.copyWith(
-                            color:
-                                Theme.of(context).colorScheme.onSurfaceVariant),
-                        onSubmit: (text) =>
-                            context.read<ProductCubit>().changeName(text),
-                      );
-                    },
-                  ),
-                ),
-                Section(
-                    icon: Icons.local_dining,
-                    label: "Nutrition Facts",
-                    body: BlocBuilder<ProductCubit, ProductState>(
+          body: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: 12, right: 12, top: 0, bottom: 12),
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 24.0),
+                    child: BlocBuilder<ProductCubit, ProductState>(
                       builder: (context, state) {
-                        final map = state.nutritionFacts.toMap();
-                        if (map.values.every((element) => element == null)) {
-                          return SizedBox(
-                              width: double.infinity,
-                              child: ElevatedButton(
-                                  onPressed: () =>
-                                      _showNutritionFactsDialog(context),
-                                  child: Text(
-                                    "Add".toUpperCase(),
-                                  )));
-                        }
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 32),
-                          child: NutritionFactsSection(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .onSurfaceVariant,
-                              nutritionFacts: state.nutritionFacts,
-                              onEdit: () => _showNutritionFactsDialog(context)),
+                        return EditableHeader(
+                          initialText: state.productName,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline1
+                              ?.copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onSurfaceVariant),
+                          onSubmit: (text) =>
+                              context.read<ProductCubit>().changeName(text),
                         );
                       },
-                    )),
-                Section(
-                    icon: Icons.inventory,
-                    label: "Packagings",
-                    body: BlocBuilder<ProductPackagingsCubit,
-                            ProductPackagingsState>(
-                        builder: (context, state) => PackagingSelector(
-                              packagings: state.packagings,
-                              onAdd: () {
-                                _showPackagingDialog(context);
-                              },
-                            ))),
-                Section(
-                    icon: Icons.link,
-                    label: "Used as",
-                    body: BlocBuilder<ProductCubit, ProductState>(
-                        builder: (context, state) => ArticlesList(
-                              articles: state.compatibleArticles,
-                              onUnlink: (articleId) => context
-                                  .read<ProductCubit>()
-                                  .unlinkArticle(articleId),
-                              onAdd: () => showModalBottomSheet(
-                                  context: context,
-                                  builder: (context) => Provider(
-                                        create: (context) => context.read<
-                                                Factory<ProductCubit, int>>()(
-                                            widget.productId),
-                                        child: Builder(builder: (context) {
-                                          return LinkArticleView(
-                                              onSubmitArticle: (article) {
-                                                context
-                                                    .read<ProductCubit>()
-                                                    .linkArticle(article.id);
-                                                Navigator.of(context).pop();
-                                              },
-                                              onSubmitText: (text) {
-                                                context
-                                                    .read<ProductCubit>()
-                                                    .linkNewArticle(text);
-                                                Navigator.of(context).pop();
-                                              },
-                                              articles:
-                                                  state.availableArticles);
-                                        }),
-                                      )),
-                            ))),
-              ],
+                    ),
+                  ),
+                  Section(
+                      icon: Icons.local_dining,
+                      label: "Nutrition Facts",
+                      body: BlocBuilder<ProductCubit, ProductState>(
+                        builder: (context, state) {
+                          final map = state.nutritionFacts.toMap();
+                          if (map.values.every((element) => element == null)) {
+                            return SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                    onPressed: () =>
+                                        _showNutritionFactsDialog(context),
+                                    child: Text(
+                                      "Add".toUpperCase(),
+                                    )));
+                          }
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 32),
+                            child: NutritionFactsSection(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurfaceVariant,
+                                nutritionFacts: state.nutritionFacts,
+                                onEdit: () =>
+                                    _showNutritionFactsDialog(context)),
+                          );
+                        },
+                      )),
+                  Section(
+                      icon: Icons.inventory,
+                      label: "Packagings",
+                      body: BlocBuilder<ProductPackagingsCubit,
+                              ProductPackagingsState>(
+                          builder: (context, state) => PackagingSelector(
+                                packagings: state.packagings,
+                                onAdd: () {
+                                  _showPackagingDialog(context);
+                                },
+                              ))),
+                  Section(
+                      icon: Icons.link,
+                      label: "Used as",
+                      body: BlocBuilder<ProductCubit, ProductState>(
+                          builder: (context, state) => ArticlesList(
+                                articles: state.compatibleArticles,
+                                onUnlink: (articleId) => context
+                                    .read<ProductCubit>()
+                                    .unlinkArticle(articleId),
+                                onAdd: () => showModalBottomSheet(
+                                    context: context,
+                                    builder: (context) => Provider(
+                                          create: (context) => context.read<
+                                                  Factory<ProductCubit, int>>()(
+                                              widget.productId),
+                                          child: Builder(builder: (context) {
+                                            return LinkArticleView(
+                                                onSubmitArticle: (article) {
+                                                  context
+                                                      .read<ProductCubit>()
+                                                      .linkArticle(article.id);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                onSubmitText: (text) {
+                                                  context
+                                                      .read<ProductCubit>()
+                                                      .linkNewArticle(text);
+                                                  Navigator.of(context).pop();
+                                                },
+                                                articles:
+                                                    state.availableArticles);
+                                          }),
+                                        )),
+                              ))),
+                ],
+              ),
             ),
           ),
         );

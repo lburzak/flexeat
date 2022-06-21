@@ -5,6 +5,7 @@ import 'package:flexeat/model/product.dart';
 import 'package:flexeat/state/products_list_state.dart';
 import 'package:flexeat/ui/app_router.gr.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductsListPage extends StatelessWidget {
@@ -25,13 +26,22 @@ class ProductsListPage extends StatelessWidget {
                   itemBuilder: (context, index) =>
                       ProductEntry(product: state.products[index]),
                 )),
-        floatingActionButton: FloatingActionButton(
-            child: const Icon(Icons.add),
-            onPressed: () {
-              context.read<ProductsListCubit>().createProduct();
-            }),
+        floatingActionButton: GestureDetector(
+          onLongPress: () => _scanAsync(context),
+          child: FloatingActionButton(
+              child: const Icon(Icons.add),
+              onPressed: () {
+                context.read<ProductsListCubit>().createProduct();
+              }),
+        ),
       ),
     );
+  }
+
+  void _scanAsync(BuildContext context) async {
+    final code = await FlutterBarcodeScanner.scanBarcode(
+        "#ff6666", "Cancel", false, ScanMode.BARCODE);
+    context.read<ProductsListCubit>().createProductFromEan(code);
   }
 }
 
