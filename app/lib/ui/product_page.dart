@@ -147,16 +147,12 @@ class _ProductPageState extends State<ProductPage> {
                                       "Add".toUpperCase(),
                                     )));
                           }
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            child: NutritionFactsSection(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSurfaceVariant,
-                                nutritionFacts: state.nutritionFacts,
-                                onEdit: () =>
-                                    _showNutritionFactsDialog(context)),
-                          );
+                          return NutritionFactsSection(
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurfaceVariant,
+                              nutritionFacts: state.nutritionFacts,
+                              onEdit: () => _showNutritionFactsDialog(context));
                         },
                       )),
                   Section(
@@ -505,7 +501,8 @@ class NutritionFactsSection extends StatelessWidget {
             TableRow(children: [
               NutritionFactCell(
                   icon: Icon(Icons.bolt, color: color),
-                  value: nutritionFacts.energy),
+                  value: nutritionFacts.energy,
+                  unit: "kcal"),
               NutritionFactCell(
                   icon: Icon(Icons.water_drop, color: color),
                   value: nutritionFacts.fat),
@@ -534,8 +531,10 @@ class NutritionFactsSection extends StatelessWidget {
 class NutritionFactCell extends StatelessWidget {
   final Icon icon;
   final double? value;
+  final String unit;
 
-  const NutritionFactCell({Key? key, required this.icon, this.value})
+  const NutritionFactCell(
+      {Key? key, required this.icon, this.value, this.unit = "g"})
       : super(key: key);
 
   @override
@@ -548,7 +547,7 @@ class NutritionFactCell extends StatelessWidget {
           icon,
           const SizedBox(width: 12),
           Text(
-            "${doubleToStringOrQuestionMark(value)} g",
+            "${doubleToStringOrQuestionMark(value)} $unit",
             textAlign: TextAlign.right,
           )
         ],
