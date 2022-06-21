@@ -147,7 +147,9 @@ class IngredientView extends StatelessWidget {
         child: ExpansionTile(
           leading: IconButton(
             icon: const Icon(Icons.remove),
-            onPressed: () {},
+            onPressed: () {
+              context.read<DishCubit>().removeIngredient(ingredient.article.id);
+            },
           ),
           title: Column(
             children: [

@@ -9,7 +9,7 @@ import 'package:sqflite/sqflite.dart';
 
 import 'database.dart';
 
-enum DataEvent { created, updated, ingredientAdded, deleted }
+enum DataEvent { created, updated, ingredientAdded, deleted, ingredientRemoved }
 
 class LocalRecipeRepository
     with LiveRepository<DataEvent>
@@ -94,6 +94,14 @@ class LocalRecipeRepository
         .delete(recipe$, where: "${recipe$id} = ?", whereArgs: [recipeId]);
 
     emit(DataEvent.deleted);
+  }
+
+  @override
+  Future<void> removeIngredientById(int recipeId, int articleId) async {
+    await _database.delete(ingredient$,
+        where: "${ingredient$articleId} = ? AND ${ingredient$recipeId} = ?",
+        whereArgs: [articleId, recipeId]);
+    emit(DataEvent.ingredientRemoved);
   }
 }
 

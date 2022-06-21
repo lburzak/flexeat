@@ -108,6 +108,20 @@ class DishCubit extends Cubit<Dish> {
         .removeById(recipeId)
         .then((value) => _navigationCubit.navigateBack());
   }
+
+  void unlinkIngredient(int articleId) async {
+    final ingredients =
+        Map<Ingredient, ProductPackaging>.from(state.ingredients);
+    ingredients.removeWhere((key, value) => key.article.id == articleId);
+
+    emit(state.copyWith(
+        nutritionFacts: _summarizeNutritionFacts(ingredients),
+        ingredients: ingredients));
+  }
+
+  void removeIngredient(int articleId) async {
+    _recipeRepository.removeIngredientById(recipeId, articleId);
+  }
 }
 
 extension Updated<K, V> on Map<K, V> {
