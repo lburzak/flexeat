@@ -40,6 +40,7 @@ class _ArticleAutocompleteFieldState extends State<ArticleAutocompleteField> {
           controller: _controller,
           onChanged: _onChanged,
           decoration: InputDecoration(
+              labelText: "Article",
               border: const OutlineInputBorder(),
               prefixIcon: matchedArticle == null
                   ? const SizedBox.shrink()

@@ -37,8 +37,12 @@ class _IngredientFormState extends State<IngredientForm> {
                   },
                 );
               }),
+          const SizedBox(
+            height: 12,
+          ),
           TextFormField(
             decoration: const InputDecoration(
+                border: OutlineInputBorder(),
                 labelText: "Net weight",
                 suffixText: "grams",
                 prefixIcon: Icon(Icons.scale)),
