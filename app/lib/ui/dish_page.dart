@@ -145,13 +145,22 @@ class IngredientView extends StatelessWidget {
       child: DefaultTextStyle(
         style: Theme.of(context).textTheme.bodyText1!,
         child: ExpansionTile(
+          leading: IconButton(
+            icon: const Icon(Icons.remove),
+            onPressed: () {},
+          ),
           title: Column(
             children: [
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: Row(
                   children: [
-                    Text(ingredient.article.name),
+                    Expanded(
+                      child: Text(
+                        ingredient.article.name,
+                        maxLines: 3,
+                      ),
+                    ),
                     Visibility(
                       visible: productPackaging == null,
                       child: IconButton(
