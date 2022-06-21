@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
 import 'package:flexeat/model/nutrition_facts.dart';
@@ -13,6 +14,7 @@ class DishCubit extends Cubit<Dish> {
   final RecipeRepository _recipeRepository;
   final PackagingRepository _packagingRepository;
   final ArticleRepository _articleRepository;
+  final NavigationCubit _navigationCubit;
   final int recipeId;
   late final StreamSubscription _sub;
 
@@ -44,7 +46,7 @@ class DishCubit extends Cubit<Dish> {
   }
 
   DishCubit(this._recipeRepository, this._packagingRepository,
-      this._articleRepository,
+      this._articleRepository, this._navigationCubit,
       {required this.recipeId})
       : super(const Dish()) {
     _sub = _recipeRepository.watchById(recipeId).listen((recipe) {
@@ -99,6 +101,12 @@ class DishCubit extends Cubit<Dish> {
     emit(state.copyWith(
         nutritionFacts: _summarizeNutritionFacts(ingredients),
         ingredients: ingredients));
+  }
+
+  void remove() {
+    _recipeRepository
+        .removeById(recipeId)
+        .then((value) => _navigationCubit.navigateBack());
   }
 }
 

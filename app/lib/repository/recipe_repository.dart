@@ -12,4 +12,6 @@ abstract class RecipeRepository {
 
   Future<void> addIngredientById(int id,
       {required int articleId, required int weight});
+
+  Future<void> removeById(int recipeId);
 }
