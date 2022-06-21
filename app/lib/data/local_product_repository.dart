@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flexeat/data/database.dart';
 import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
 import 'package:flexeat/model/product.dart';
@@ -10,7 +11,7 @@ const productTable = 'product';
 const nameColumn = 'name';
 const idColumn = 'id';
 
-enum _DataEvent { productCreated, productChanged }
+enum _DataEvent { productCreated, productChanged, productRemoved }
 
 class LocalProductRepository
     with LiveRepository<_DataEvent>
@@ -59,13 +60,21 @@ class LocalProductRepository
   Stream<List<Product>> watchAll() async* {
     final applicableEvents = [
       _DataEvent.productCreated,
-      _DataEvent.productChanged
+      _DataEvent.productChanged,
+      _DataEvent.productRemoved
     ];
 
     yield await findAll();
     yield* dataEvents
         .where((event) => applicableEvents.contains(event))
         .asyncMap((event) => findAll());
+  }
+
+  @override
+  Future<void> removeById(int productId) async {
+    await _database
+        .delete(product$, where: "${product$id} = ?", whereArgs: [productId]);
+    emit(_DataEvent.productRemoved);
   }
 
   Row _serialize(Product product) {

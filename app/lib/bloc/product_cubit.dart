@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flexeat/bloc/loading_cubit.dart';
+import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/repository/article_repository.dart';
 import 'package:flexeat/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/repository/product_repository.dart';
@@ -15,12 +16,17 @@ class ProductCubit extends Cubit<ProductState> {
   final ArticleRepository _articleRepository;
   final LoadingCubit _loadingCubit;
   final int _productId;
+  final NavigationCubit _navigationCubit;
   late StreamSubscription subscription;
   late StreamSubscription allArticlesSub;
   late StreamSubscription productArticlesSub;
 
-  ProductCubit(this._productRepository, this._loadingCubit,
-      this._nutritionFactsRepository, this._articleRepository,
+  ProductCubit(
+      this._productRepository,
+      this._loadingCubit,
+      this._nutritionFactsRepository,
+      this._articleRepository,
+      this._navigationCubit,
       {required int productId})
       : _productId = productId,
         super(const ProductState()) {
@@ -79,5 +85,12 @@ class ProductCubit extends Cubit<ProductState> {
     _articleRepository.create(name).then((id) {
       _articleRepository.linkToProduct(id, _productId);
     });
+  }
+
+  void remove() {
+    _productRepository
+        .removeById(_productId)
+        .listenIn(_loadingCubit)
+        .then((value) => _navigationCubit.navigateBack());
   }
 }

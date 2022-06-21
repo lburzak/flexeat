@@ -6,9 +6,13 @@ abstract class NavigationState {
 
   static NavigationState stay() => StayNavigationState();
 
+  static NavigationState back() => BackNavigationState();
+
   static NavigationState toDish(int recipeId) =>
       ToDishNavigationState(recipeId: recipeId);
 }
+
+class BackNavigationState extends NavigationState {}
 
 class StayNavigationState extends NavigationState {}
 
@@ -37,5 +41,9 @@ class NavigationCubit extends Cubit<NavigationState> {
 
   void navigateToRecipe({required int id}) {
     emit(NavigationState.toDish(id));
+  }
+
+  void navigateBack() {
+    emit(NavigationState.back());
   }
 }

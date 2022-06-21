@@ -141,7 +141,7 @@ class AppContainer {
   T provide<T>() => _container<T>();
 
   Factory<ProductCubit, int> productCubitFactory() => (int productId) =>
-      ProductCubit(provide(), provide(), provide(), provide(),
+      ProductCubit(provide(), provide(), provide(), provide(), provide(),
           productId: productId);
 
   Factory<ProductPackagingsCubit, int> packagingsCubitFactory() =>

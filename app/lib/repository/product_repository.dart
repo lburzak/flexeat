@@ -6,4 +6,5 @@ abstract class ProductRepository {
   Future<void> update(Product product);
   Future<List<Product>> findAll();
   Stream<List<Product>> watchAll();
+  Future<void> removeById(int productId);
 }
