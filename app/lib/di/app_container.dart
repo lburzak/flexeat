@@ -85,17 +85,17 @@ class AppContainer {
       ];
 
   List<BlocProvider> buildBlocProviders() => [
-        BlocProvider(
-          create: (context) => provide<NavigationCubit>(),
+        BlocProvider<NavigationCubit>(
+          create: (context) => provide(),
         ),
-        BlocProvider(
-          create: (context) => provide<ProductsListCubit>(),
+        BlocProvider<ProductsListCubit>(
+          create: (context) => provide(),
         ),
-        BlocProvider(
-          create: (context) => provide<RecipesListCubit>(),
+        BlocProvider<RecipesListCubit>(
+          create: (context) => provide(),
         ),
-        BlocProvider(
-          create: (context) => provide<LoadingCubit>(),
+        BlocProvider<LoadingCubit>(
+          create: (context) => provide(),
         )
       ];
 }
