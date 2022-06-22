@@ -2,7 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 
-import 'database.dart';
+import '../sqlite/database.dart';
 
 class DatabaseLoader extends StatefulWidget {
   final Widget Function(BuildContext context, bool loaded) builder;

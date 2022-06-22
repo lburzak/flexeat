@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:flexeat/data/database.dart';
-import 'package:flexeat/data/live_repository.dart';
-import 'package:flexeat/data/row.dart';
+import 'package:flexeat/data/event/live_repository.dart';
+import 'package:flexeat/data/sqlite/database.dart';
+import 'package:flexeat/data/sqlite/row.dart';
 import 'package:flexeat/domain/model/product.dart';
 import 'package:flexeat/domain/repository/product_repository.dart';
 import 'package:sqflite/sqflite.dart';

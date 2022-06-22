@@ -1,4 +1,4 @@
-import 'package:flexeat/data/database.dart' as database;
+import 'package:flexeat/data/sqlite/database.dart' as database;
 import 'package:flexeat/di/app_container.dart';
 import 'package:flexeat/ui/app.dart';
 import 'package:flutter/material.dart';

@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:flexeat/data/database.dart';
-import 'package:flexeat/data/local_nutrition_facts_repository.dart';
-import 'package:flexeat/data/local_product_repository.dart';
-import 'package:flexeat/data/row.dart';
+import 'package:flexeat/data/sqlite/database.dart';
+import 'package:flexeat/data/sqlite/local_nutrition_facts_repository.dart';
+import 'package:flexeat/data/sqlite/local_product_repository.dart';
+import 'package:flexeat/data/sqlite/row.dart';
 import 'package:flexeat/domain/model/nutrition_facts.dart';
 import 'package:flexeat/domain/model/packaging.dart';
 import 'package:flexeat/domain/model/product.dart';
