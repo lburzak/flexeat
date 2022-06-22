@@ -1,7 +1,7 @@
-import 'package:flexeat/data/food_api.dart';
 import 'package:flexeat/domain/model/packaging.dart';
 import 'package:flexeat/domain/model/product.dart';
 import 'package:flexeat/domain/repository/article_repository.dart';
+import 'package:flexeat/domain/repository/food_repository.dart';
 import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:flexeat/domain/repository/product_repository.dart';
@@ -11,17 +11,17 @@ class CreateProductFromEan {
   final NutritionFactsRepository _nutritionFactsRepository;
   final PackagingRepository _packagingRepository;
   final ArticleRepository _articleRepository;
-  final FoodApi _foodApi;
+  final FoodRepository _foodRepository;
 
   CreateProductFromEan(
       this._productRepository,
-      this._foodApi,
+      this._foodRepository,
       this._nutritionFactsRepository,
       this._packagingRepository,
       this._articleRepository);
 
   Future<int?> call(String code) async {
-    final result = await _foodApi.fetchProductByEan(code);
+    final result = await _foodRepository.findProductByEan(code);
 
     if (result == null) {
       return null;

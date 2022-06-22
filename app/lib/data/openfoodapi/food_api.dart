@@ -1,30 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:flexeat/domain/model/food.dart';
 import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/repository/food_repository.dart';
 
-class FoodResult {
-  final List<String> categories;
-  final NutritionFacts nutritionFacts;
-  final String name;
-  final String genericName;
-  final int? quantity;
-  final String packaging;
-
-  const FoodResult({
-    required this.categories,
-    required this.nutritionFacts,
-    required this.name,
-    required this.genericName,
-    required this.quantity,
-    required this.packaging,
-  });
-}
-
-class FoodApi {
+class FoodApi implements FoodRepository {
   final Dio _dio;
 
   FoodApi(this._dio);
 
-  Future<FoodResult?> fetchProductByEan(String code) async {
+  @override
+  Future<Food?> findProductByEan(String code) async {
     final result = await _dio
         .get("https://world.openfoodfacts.org/api/v0/product/$code.json");
 
@@ -32,7 +17,7 @@ class FoodApi {
       return null;
     }
 
-    return FoodResult(
+    return Food(
         categories: result.data["product"]["categories"]?.split(", ") ?? [],
         nutritionFacts: NutritionFacts(
             energy: (result.data["product"]["nutriments"]["energy-kcal_100g"]

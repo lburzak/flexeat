@@ -7,13 +7,14 @@ import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
 import 'package:flexeat/bloc/recipes_list_cubit.dart';
-import 'package:flexeat/data/food_api.dart';
 import 'package:flexeat/data/local_article_repository.dart';
 import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_packaging_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/data/local_recipe_repository.dart';
+import 'package:flexeat/data/openfoodapi/food_api.dart';
 import 'package:flexeat/domain/repository/article_repository.dart';
+import 'package:flexeat/domain/repository/food_repository.dart';
 import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:flexeat/domain/repository/product_repository.dart';
@@ -51,7 +52,7 @@ class AppContainer {
         (container) => RecipesListCubit(container(), container()));
     _container
         .registerFactory((c) => CreateProductFromEan(c(), c(), c(), c(), c()));
-    _container.registerFactory((c) => FoodApi(c()));
+    _container.registerFactory<FoodRepository>((c) => FoodApi(c()));
     _container.registerSingleton((container) => Dio());
   }
 
