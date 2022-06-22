@@ -1,5 +1,5 @@
 import 'package:flexeat/domain/model/article.dart';
-import 'package:flexeat/ui/widget/article_autocomplete_field.dart';
+import 'package:flexeat/ui/view/article_autocomplete_field.dart';
 import 'package:flutter/material.dart';
 
 class LinkArticleView extends StatefulWidget {

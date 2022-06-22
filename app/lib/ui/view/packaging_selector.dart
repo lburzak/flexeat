@@ -1,7 +1,7 @@
 import 'package:flexeat/domain/model/packaging.dart';
 import 'package:flutter/material.dart';
 
-import 'circle_button.dart';
+import '../widget/circle_button.dart';
 
 class PackagingSelector extends StatefulWidget {
   final List<Packaging> packagings;
