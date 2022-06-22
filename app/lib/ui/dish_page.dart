@@ -1,22 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
+import 'package:flexeat/main.dart';
 import 'package:flexeat/model/dish.dart';
 import 'package:flexeat/model/ingredient.dart';
+import 'package:flexeat/model/nutrition_facts.dart';
 import 'package:flexeat/model/product_packaging.dart';
 import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/ui/app_router.gr.dart';
+import 'package:flexeat/ui/editable_header.dart';
 import 'package:flexeat/ui/ingredient_form.dart';
+import 'package:flexeat/ui/nutriton_facts_view.dart';
 import 'package:flexeat/ui/product_packaging_selection_view.dart';
 import 'package:flexeat/ui/product_packaging_view.dart';
-import 'package:flexeat/ui/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import '../main.dart';
-import '../model/nutrition_facts.dart';
-import 'editable_header.dart';
 
 class DishPage extends StatelessWidget {
   final int recipeId;
@@ -87,7 +86,7 @@ class DishView extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: NutritionFactsSection(
+                child: NutritionFactsView(
                     nutritionFacts: context.select<DishCubit, NutritionFacts>(
                         (cubit) => cubit.state.nutritionFacts)),
               ),
@@ -193,7 +192,7 @@ class IngredientView extends StatelessWidget {
           ),
           childrenPadding: const EdgeInsets.all(16),
           children: [
-            NutritionFactsSection(
+            NutritionFactsView(
                 nutritionFacts: productPackaging == null
                     ? const NutritionFacts()
                     : productPackaging!.nutritionFacts

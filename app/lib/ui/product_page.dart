@@ -1,21 +1,19 @@
-import 'package:auto_route/auto_route.dart';
-import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/main.dart';
+import 'package:flexeat/model/article.dart';
 import 'package:flexeat/model/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
+import 'package:flexeat/ui/article_autocomplete_field.dart';
 import 'package:flexeat/ui/circle_button.dart';
 import 'package:flexeat/ui/editable_header.dart';
+import 'package:flexeat/ui/nutrition_facts_dialog.dart';
+import 'package:flexeat/ui/nutriton_facts_view.dart';
+import 'package:flexeat/ui/page_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:provider/provider.dart';
-
-import '../main.dart';
-import '../model/article.dart';
-import 'article_autocomplete_field.dart';
-import 'nutrition_facts_dialog.dart';
 
 class ProductPage extends StatefulWidget {
   final int productId;
@@ -26,50 +24,6 @@ class ProductPage extends StatefulWidget {
 
   @override
   State<ProductPage> createState() => _ProductPageState();
-}
-
-class Section extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final Widget body;
-
-  const Section(
-      {Key? key, required this.icon, required this.label, required this.body})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<NavigationCubit, NavigationState>(
-      listener: (context, state) {
-        if (state is BackNavigationState) {
-          context.router.pop();
-        }
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(vertical: 12),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Icon(icon,
-                        color: Theme.of(context).colorScheme.onSurfaceVariant),
-                    const SizedBox(
-                      width: 12,
-                    ),
-                    Text(label)
-                  ],
-                ),
-              ],
-            ),
-          ),
-          body,
-        ],
-      ),
-    );
-  }
 }
 
 class _ProductPageState extends State<ProductPage> {
@@ -147,7 +101,7 @@ class _ProductPageState extends State<ProductPage> {
                       },
                     ),
                   ),
-                  Section(
+                  PageSection(
                       icon: Icons.local_dining,
                       label: "Nutrition Facts",
                       body: BlocBuilder<ProductCubit, ProductState>(
@@ -163,7 +117,7 @@ class _ProductPageState extends State<ProductPage> {
                                       "Add".toUpperCase(),
                                     )));
                           }
-                          return NutritionFactsSection(
+                          return NutritionFactsView(
                               color: Theme.of(context)
                                   .colorScheme
                                   .onSurfaceVariant,
@@ -171,7 +125,7 @@ class _ProductPageState extends State<ProductPage> {
                               onEdit: () => _showNutritionFactsDialog(context));
                         },
                       )),
-                  Section(
+                  PageSection(
                       icon: Icons.inventory,
                       label: "Packagings",
                       body: BlocBuilder<ProductPackagingsCubit,
@@ -182,7 +136,7 @@ class _ProductPageState extends State<ProductPage> {
                                   _showPackagingDialog(context);
                                 },
                               ))),
-                  Section(
+                  PageSection(
                       icon: Icons.link,
                       label: "Used as",
                       body: BlocBuilder<ProductCubit, ProductState>(
@@ -494,93 +448,5 @@ class _PackagingInputDialogState extends State<PackagingInputDialog> {
     widget.onSubmit?.call(weight, _label);
 
     Navigator.of(context).pop();
-  }
-}
-
-class NutritionFactsSection extends StatelessWidget {
-  final void Function()? onEdit;
-  final NutritionFacts nutritionFacts;
-  final Color? color;
-
-  const NutritionFactsSection(
-      {Key? key, required this.nutritionFacts, this.onEdit, this.color})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onEdit,
-      child: DefaultTextStyle(
-        style: Theme.of(context).textTheme.bodyText1!.copyWith(color: color),
-        child: Table(
-          children: [
-            TableRow(children: [
-              NutritionFactCell(
-                  icon: Icon(Icons.bolt, color: color),
-                  value: nutritionFacts.energy,
-                  unit: "kcal"),
-              NutritionFactCell(
-                  icon: Icon(Icons.water_drop, color: color),
-                  value: nutritionFacts.fat),
-              NutritionFactCell(
-                  icon: Icon(Icons.bakery_dining, color: color),
-                  value: nutritionFacts.carbohydrates),
-            ]),
-            TableRow(children: [
-              NutritionFactCell(
-                  icon: Icon(Icons.hive, color: color),
-                  value: nutritionFacts.fibre),
-              NutritionFactCell(
-                  icon: Icon(Icons.whatshot, color: color),
-                  value: nutritionFacts.protein),
-              NutritionFactCell(
-                  icon: Icon(Icons.fitbit, color: color),
-                  value: nutritionFacts.salt),
-            ]),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class NutritionFactCell extends StatelessWidget {
-  final Icon icon;
-  final double? value;
-  final String unit;
-
-  const NutritionFactCell(
-      {Key? key, required this.icon, this.value, this.unit = "g"})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return TableCell(
-        child: Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Row(
-        children: [
-          icon,
-          const SizedBox(width: 12),
-          Text(
-            "${doubleToStringOrQuestionMark(value)} $unit",
-            textAlign: TextAlign.right,
-          )
-        ],
-      ),
-    ));
-  }
-
-  String doubleToStringOrQuestionMark(double? value) {
-    if (value == null) {
-      return '?';
-    } else {
-      final intValue = value.toInt();
-      if (intValue == value) {
-        return intValue.toString();
-      } else {
-        return value.toStringAsPrecision(3);
-      }
-    }
   }
 }
