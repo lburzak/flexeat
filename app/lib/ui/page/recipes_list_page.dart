@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/bloc/recipes_list_cubit.dart';
 import 'package:flexeat/model/recipe_header.dart';
-import 'package:flexeat/ui/app_router.gr.dart';
+import 'package:flexeat/ui/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

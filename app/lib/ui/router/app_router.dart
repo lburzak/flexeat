@@ -1,9 +1,9 @@
 import 'package:auto_route/auto_route.dart';
-import 'package:flexeat/ui/dish_page.dart';
-import 'package:flexeat/ui/home_page.dart';
-import 'package:flexeat/ui/product_page.dart';
-import 'package:flexeat/ui/products_list_page.dart';
-import 'package:flexeat/ui/recipes_list_page.dart';
+import 'package:flexeat/ui/page/dish_page.dart';
+import 'package:flexeat/ui/page/home_page.dart';
+import 'package:flexeat/ui/page/product_page.dart';
+import 'package:flexeat/ui/page/products_list_page.dart';
+import 'package:flexeat/ui/page/recipes_list_page.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',

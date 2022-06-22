@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
-import '../main.dart';
+import '../../main.dart';
 
 class NutritionFactsDialog extends StatelessWidget {
   final int productId;
