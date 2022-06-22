@@ -1,9 +1,8 @@
 import 'package:flexeat/bloc/nutrition_facts_form_model.dart';
+import 'package:flexeat/di/factory.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:reactive_forms/reactive_forms.dart';
-
-import '../../main.dart';
 
 class NutritionFactsDialog extends StatelessWidget {
   final int productId;
