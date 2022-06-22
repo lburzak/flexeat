@@ -1,10 +1,10 @@
 import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
-import 'package:flexeat/model/article.dart';
-import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/recipe.dart';
-import 'package:flexeat/model/recipe_header.dart';
-import 'package:flexeat/repository/recipe_repository.dart';
+import 'package:flexeat/domain/model/article.dart';
+import 'package:flexeat/domain/model/ingredient.dart';
+import 'package:flexeat/domain/model/recipe.dart';
+import 'package:flexeat/domain/model/recipe_header.dart';
+import 'package:flexeat/domain/repository/recipe_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'database.dart';

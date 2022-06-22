@@ -1,4 +1,4 @@
-import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
 
 abstract class NutritionFactsRepository {
   Future<NutritionFacts> findByProductId(int productId);

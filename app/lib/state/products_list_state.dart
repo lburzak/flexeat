@@ -1,4 +1,4 @@
-import '../model/product.dart';
+import 'package:flexeat/domain/model/product.dart';
 
 class ProductsListState {
   final List<Product> products;

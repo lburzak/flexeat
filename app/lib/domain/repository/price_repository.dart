@@ -1,4 +1,4 @@
-import 'package:flexeat/model/price.dart';
+import 'package:flexeat/domain/model/price.dart';
 
 abstract class PriceRepository {
   Future<void> insert(int packagingId, Price price);

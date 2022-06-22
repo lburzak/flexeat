@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
 
 class FoodResult {
   final List<String> categories;

@@ -1,5 +1,5 @@
-import 'package:flexeat/model/recipe.dart';
-import 'package:flexeat/model/recipe_header.dart';
+import 'package:flexeat/domain/model/recipe.dart';
+import 'package:flexeat/domain/model/recipe_header.dart';
 
 abstract class RecipeRepository {
   Future<int> create(String name);

@@ -1,4 +1,4 @@
-import 'package:flexeat/model/packaging.dart';
+import 'package:flexeat/domain/model/packaging.dart';
 import 'package:flutter/material.dart';
 
 import 'circle_button.dart';

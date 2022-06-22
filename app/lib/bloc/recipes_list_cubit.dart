@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:flexeat/model/recipe_header.dart';
-import 'package:flexeat/repository/recipe_repository.dart';
+import 'package:flexeat/domain/model/recipe_header.dart';
+import 'package:flexeat/domain/repository/recipe_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'navigation_cubit.dart';

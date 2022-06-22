@@ -1,5 +1,5 @@
-import 'package:flexeat/model/product.dart';
-import 'package:flexeat/repository/product_repository.dart';
+import 'package:flexeat/domain/model/product.dart';
+import 'package:flexeat/domain/repository/product_repository.dart';
 
 class CreateProduct {
   final ProductRepository _productRepository;

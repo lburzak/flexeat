@@ -1,4 +1,4 @@
-import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
 import 'package:flutter/material.dart';
 
 class NutritionFactsView extends StatelessWidget {

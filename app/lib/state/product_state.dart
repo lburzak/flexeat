@@ -1,8 +1,7 @@
 import 'package:equatable/equatable.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/article.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
 import 'package:meta/meta.dart';
-
-import '../model/article.dart';
 
 @immutable
 class ProductState extends Equatable {

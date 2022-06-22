@@ -1,12 +1,12 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flexeat/bloc/dish_cubit.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
+import 'package:flexeat/domain/model/dish.dart';
+import 'package:flexeat/domain/model/ingredient.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/product_packaging.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:flexeat/main.dart';
-import 'package:flexeat/model/dish.dart';
-import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/model/product_packaging.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
 import 'package:flexeat/ui/dialog/ingredient_form.dart';
 import 'package:flexeat/ui/router/app_router.gr.dart';
 import 'package:flexeat/ui/view/nutriton_facts_view.dart';

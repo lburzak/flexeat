@@ -1,6 +1,6 @@
 import 'package:flexeat/bloc/nutrition_facts_cubit.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/repository/nutrition_facts_repository.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';

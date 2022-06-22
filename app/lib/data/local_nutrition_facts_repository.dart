@@ -1,9 +1,8 @@
 import 'package:flexeat/data/live_repository.dart';
 import 'package:flexeat/data/row.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
 import 'package:sqflite/sqflite.dart';
-
-import '../repository/nutrition_facts_repository.dart';
 
 const nutritionFactsTable = 'nutrition_facts';
 const productIdColumn = 'product_id';

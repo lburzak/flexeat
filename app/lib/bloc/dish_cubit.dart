@@ -1,13 +1,13 @@
 import 'dart:async';
 
 import 'package:flexeat/bloc/navigation_cubit.dart';
-import 'package:flexeat/model/dish.dart';
-import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/model/product_packaging.dart';
-import 'package:flexeat/repository/article_repository.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
-import 'package:flexeat/repository/recipe_repository.dart';
+import 'package:flexeat/domain/model/dish.dart';
+import 'package:flexeat/domain/model/ingredient.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/product_packaging.dart';
+import 'package:flexeat/domain/repository/article_repository.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
+import 'package:flexeat/domain/repository/recipe_repository.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DishCubit extends Cubit<Dish> {

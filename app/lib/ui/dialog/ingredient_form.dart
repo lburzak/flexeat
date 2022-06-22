@@ -1,5 +1,5 @@
-import 'package:flexeat/model/article.dart';
-import 'package:flexeat/repository/article_repository.dart';
+import 'package:flexeat/domain/model/article.dart';
+import 'package:flexeat/domain/repository/article_repository.dart';
 import 'package:flexeat/ui/widget/article_autocomplete_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

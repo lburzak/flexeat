@@ -1,4 +1,4 @@
-import 'package:flexeat/model/product_packaging.dart';
+import 'package:flexeat/domain/model/product_packaging.dart';
 import 'package:flutter/material.dart';
 
 class ProductPackagingView extends StatelessWidget {

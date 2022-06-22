@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
+import 'package:flexeat/domain/model/packaging.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';

@@ -1,10 +1,10 @@
 import 'package:flexeat/data/food_api.dart';
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/model/product.dart';
-import 'package:flexeat/repository/article_repository.dart';
-import 'package:flexeat/repository/nutrition_facts_repository.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
-import 'package:flexeat/repository/product_repository.dart';
+import 'package:flexeat/domain/model/packaging.dart';
+import 'package:flexeat/domain/model/product.dart';
+import 'package:flexeat/domain/repository/article_repository.dart';
+import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
+import 'package:flexeat/domain/repository/product_repository.dart';
 
 class CreateProductFromEan {
   final ProductRepository _productRepository;

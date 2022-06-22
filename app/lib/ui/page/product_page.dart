@@ -1,7 +1,7 @@
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
 import 'package:flexeat/main.dart';
-import 'package:flexeat/model/packaging.dart';
+import 'package:flexeat/domain/model/packaging.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 import 'package:flexeat/state/product_state.dart';
 import 'package:flexeat/ui/dialog/nutrition_facts_dialog.dart';

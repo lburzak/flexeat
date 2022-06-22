@@ -1,5 +1,5 @@
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/repository/nutrition_facts_repository.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
 import 'package:reactive_forms/reactive_forms.dart';
 
 class NutritionFactsFormModel {

@@ -1,6 +1,6 @@
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/model/product.dart';
-import 'package:flexeat/model/product_packaging.dart';
+import 'package:flexeat/domain/model/packaging.dart';
+import 'package:flexeat/domain/model/product.dart';
+import 'package:flexeat/domain/model/product_packaging.dart';
 
 abstract class PackagingRepository {
   Future<List<Packaging>> findAllByProductId(int productId);

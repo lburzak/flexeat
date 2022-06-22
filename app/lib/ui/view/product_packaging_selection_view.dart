@@ -1,5 +1,5 @@
-import 'package:flexeat/model/product_packaging.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
+import 'package:flexeat/domain/model/product_packaging.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:flexeat/ui/view/product_packaging_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

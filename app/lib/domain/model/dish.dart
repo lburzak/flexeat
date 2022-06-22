@@ -1,7 +1,7 @@
-import 'package:flexeat/model/ingredient.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/model/product_packaging.dart';
-import 'package:flexeat/model/recipe_header.dart';
+import 'ingredient.dart';
+import 'nutrition_facts.dart';
+import 'product_packaging.dart';
+import 'recipe_header.dart';
 
 class Dish {
   final RecipeHeader recipeHeader;

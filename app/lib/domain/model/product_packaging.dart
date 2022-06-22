@@ -1,6 +1,6 @@
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/model/product.dart';
+import 'nutrition_facts.dart';
+import 'packaging.dart';
+import 'product.dart';
 
 class ProductPackaging {
   final Product product;

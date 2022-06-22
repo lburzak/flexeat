@@ -3,11 +3,11 @@ import 'package:flexeat/data/database.dart';
 import 'package:flexeat/data/local_nutrition_facts_repository.dart';
 import 'package:flexeat/data/local_product_repository.dart';
 import 'package:flexeat/data/row.dart';
-import 'package:flexeat/model/nutrition_facts.dart';
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/model/product.dart';
-import 'package:flexeat/model/product_packaging.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
+import 'package:flexeat/domain/model/nutrition_facts.dart';
+import 'package:flexeat/domain/model/packaging.dart';
+import 'package:flexeat/domain/model/product.dart';
+import 'package:flexeat/domain/model/product_packaging.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:sqflite/sqflite.dart';
 
 const packagingTable = 'packaging';

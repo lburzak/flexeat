@@ -1,5 +1,5 @@
-import 'package:flexeat/model/price.dart';
-import 'package:flexeat/repository/price_repository.dart';
+import 'package:flexeat/domain/model/price.dart';
+import 'package:flexeat/domain/repository/price_repository.dart';
 
 class ReportPrice {
   final PriceRepository _priceRepository;

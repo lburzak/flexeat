@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
-import 'package:flexeat/model/packaging.dart';
-import 'package:flexeat/repository/packaging_repository.dart';
+import 'package:flexeat/domain/model/packaging.dart';
+import 'package:flexeat/domain/repository/packaging_repository.dart';
 import 'package:flexeat/state/product_packagings_state.dart';
 
 class ProductPackagingsCubit extends Cubit<ProductPackagingsState> {

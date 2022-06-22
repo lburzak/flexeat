@@ -1,6 +1,5 @@
-import 'package:flexeat/model/recipe_header.dart';
-
 import 'ingredient.dart';
+import 'recipe_header.dart';
 
 class Recipe {
   final RecipeHeader header;

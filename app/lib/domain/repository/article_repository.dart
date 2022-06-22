@@ -1,4 +1,4 @@
-import 'package:flexeat/model/article.dart';
+import 'package:flexeat/domain/model/article.dart';
 
 abstract class ArticleRepository {
   Future<int> create(String name);
