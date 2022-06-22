@@ -2,11 +2,11 @@ import 'dart:async';
 
 import 'package:flexeat/bloc/loading_cubit.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
+import 'package:flexeat/bloc/state/product_state.dart';
 import 'package:flexeat/domain/model/product.dart';
 import 'package:flexeat/domain/repository/article_repository.dart';
 import 'package:flexeat/domain/repository/nutrition_facts_repository.dart';
 import 'package:flexeat/domain/repository/product_repository.dart';
-import 'package:flexeat/state/product_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ProductCubit extends Cubit<ProductState> {

@@ -2,7 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flexeat/bloc/navigation_cubit.dart';
 import 'package:flexeat/bloc/products_list_cubit.dart';
 import 'package:flexeat/domain/model/product.dart';
-import 'package:flexeat/state/products_list_state.dart';
+import 'package:flexeat/bloc/state/products_list_state.dart';
 import 'package:flexeat/ui/router/app_router.gr.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_barcode_scanner/flutter_barcode_scanner.dart';

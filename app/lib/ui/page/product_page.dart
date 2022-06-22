@@ -1,9 +1,9 @@
 import 'package:flexeat/bloc/product_cubit.dart';
 import 'package:flexeat/bloc/product_packagings_cubit.dart';
-import 'package:flexeat/main.dart';
+import 'package:flexeat/bloc/state/product_packagings_state.dart';
+import 'package:flexeat/bloc/state/product_state.dart';
 import 'package:flexeat/domain/model/packaging.dart';
-import 'package:flexeat/state/product_packagings_state.dart';
-import 'package:flexeat/state/product_state.dart';
+import 'package:flexeat/main.dart';
 import 'package:flexeat/ui/dialog/nutrition_facts_dialog.dart';
 import 'package:flexeat/ui/dialog/packaging_input_dialog.dart';
 import 'package:flexeat/ui/view/articles_list_view.dart';
